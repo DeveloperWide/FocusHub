@@ -1,12 +1,24 @@
 import "./App.css"
-import axios from "axios";
-import { useEffect, useState } from "react";
 import SidebarLayout from "./layouts/SidebarLayout";
+import { Route, Routes } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import Task from "./components/Task";
+import Goal from "./components/Goal";
+import Time from "./components/Time";
+import Calendar from "./components/Calendar";
 
 
 const App = () => {
   return (
-    <SidebarLayout />
+    <Routes>
+      <Route path="/" element={<SidebarLayout />}>
+        <Route path="dashboard" element={<Dashboard />}/>
+        <Route path="tasks" element={<Task />}/>
+        <Route path="goals" element={<Goal />}/>
+        <Route path="time" element={<Time />}/>
+        <Route path="calendar" element={<Calendar />}/>
+      </Route>
+    </Routes>
   )
 }
 

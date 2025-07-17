@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import OutlinedFlagRoundedIcon from '@mui/icons-material/OutlinedFlagRounded';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
@@ -6,76 +6,113 @@ import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
 import AccessAlarmsRoundedIcon from '@mui/icons-material/AccessAlarmsRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Outlet } from 'react-router-dom';
+
+const SIDEBAR_WIDTH = "w-64"; // 16rem
 
 const SidebarLayout = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(prev => !prev);
-    };
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-    return (
-        <div className="flex">
-            {/* Sidebar Toggle Button */}
-            <button
-                onClick={toggleSidebar}
-                type="button"
-                className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:text-gray-900 dark:hover:cursor-pointer dark:focus:ring-gray-600"
-                aria-controls="default-sidebar"
-                aria-expanded={isSidebarOpen}
+  return (
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
+      <aside
+  className={`fixed top-0 left-0 z-40 h-full ${SIDEBAR_WIDTH} bg-gray-50 dark:bg-[#232428] transform transition-transform duration-300 ease-in-out
+  ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
+>
+  <div className="h-full px-4 py-4 flex flex-col justify-between">
+    {/* Top Header */}
+    <div>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl text-indigo-500 font-semibold flex items-center gap-1">
+          FocusHub <BarChartRoundedIcon className="text-blue-500" />
+        </h2>
+        <button
+          onClick={toggleSidebar}
+          className="sm:hidden text-gray-400 hover:text-gray-900 dark:hover:text-white hover:cursor-pointer"
+        >
+          <ClearRoundedIcon sx={{ fontSize: 30 }} />
+        </button>
+      </div>
+
+      {/* Top Navigation Items */}
+      <ul className="mt-6 space-y-2 font-medium">
+        {[
+          { label: "Dashboard", icon: <QueryStatsRoundedIcon />, href: "/dashboard" },
+          { label: "Tasks", icon: <AddTaskRoundedIcon />, href: "/tasks", badge: "Pro" },
+          { label: "Goals", icon: <OutlinedFlagRoundedIcon />, href: "/goals", badge: 3 },
+          { label: "Time", icon: <AccessAlarmsRoundedIcon />, href: "/time" },
+          { label: "Calendar", icon: <CalendarMonthRoundedIcon />, href: "/calendar" },
+        ].map((item, idx) => (
+          <li key={idx}>
+            <a
+              href={item.href}
+              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-                <span className="sr-only">Open sidebar</span>
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z" />
-                </svg>
-            </button>
+              {item.icon}
+              <span className="ml-3">{item.label}</span>
+              {item.badge && (
+                <span className="ml-auto px-2 text-sm font-medium bg-gray-100 text-gray-800 rounded-full dark:bg-gray-900 dark:text-gray-300">
+                  {item.badge}
+                </span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
 
-            {/* Sidebar */}
-            <aside
-                id="default-sidebar"
-                className={`fixed top-0 flex justify-center items-center left-0 z-40 w-60 sm:w-50 h-screen transition-transform bg-gray-50 dark:bg-[#232428] overflow-y-auto ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                    } sm:translate-x-0`}
-                aria-label="Sidebar"
-            >
-                <div className="h-full w-full sm:w-[90%] px-3 py-4 flex flex-col">
-                    <div className='flex justify-center items-center gap-3'>
-                        <h2 className='text-3xl py-2 text-indigo-500 font-semibold flex gap-1'>FocusHub <i className='text-blue-500'><BarChartRoundedIcon /></i></h2>
-                        <i className='self-end inline-block sm:hidden py-2'><ClearRoundedIcon sx={{ fontSize: "30px" }} /></i>
-                    </div>
-                    <ul className="space-y-2 font-medium">
-                        {[
-                            { label: 'Dashboard', icon: <QueryStatsRoundedIcon /> },
-                            { label: 'Tasks', icon: <AddTaskRoundedIcon />, href: '#', badge: 'Pro' },
-                            { label: 'Goals', icon: <OutlinedFlagRoundedIcon />, href: '#', badge: 3 },
-                            { label: 'Time', icon: <AccessAlarmsRoundedIcon />, href: '#' },
-                            { label: 'Calendar', icon: <CalendarMonthRoundedIcon />, href: '#' },
-                        ].map((item, idx) => (
-                            <li key={idx}>
-                                <a className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                    {/* Placeholder icon */}
-                                    {item.icon}
-                                    <span className="ms-3">{item.label}</span>
-                                    {item.badge && (
-                                        <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-900 dark:text-gray-300">
-                                            {item.badge}
-                                        </span>
-                                    )}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </aside>
+    {/* Bottom Navigation Items */}
+    <ul className="space-y-2 font-medium">
+      {[
+        { label: "Settings", icon: <SettingsIcon />, href: "/settings" },
+        { label: "Log Out", icon: <LogoutIcon />, href: "/logout" },
+      ].map((item, idx) => (
+        <li key={idx}>
+          <a
+            href={item.href}
+            className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            {item.icon}
+            <span className="ml-3">{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</aside>
 
 
-        </div>
-    );
+      {/* Content */}
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out
+        ${isSidebarOpen ? "sm:ml-0" : ""} sm:ml-64`}
+      >
+        {/* Toggle Button for small screens */}
+        <button
+          onClick={toggleSidebar}
+          className="sm:hidden p-3 text-gray-500 hover:bg-gray-100 dark:text-gray-400  hover:cursor-pointer w-10 h-8 mb-4 mx-2"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              clipRule="evenodd"
+              fillRule="evenodd"
+              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+            />
+          </svg>
+        </button>
+
+        {/* Main App Content */}
+        <main className="flex-1 overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 };
-
-const PlusIcon = () => (
-    <svg className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-    </svg>
-);
 
 export default SidebarLayout;
