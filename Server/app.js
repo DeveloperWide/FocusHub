@@ -1,19 +1,27 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const { connectDb } = require("./config/db");
 const PORT = 8080;
+
+// Connect to Db
+connectDb().then(() => {
+    console.log(`Connected to Db`);
+}).catch((err) => {
+    console.log("----ERROR----");
+    console.log(err)
+});
+
+// Routes
+const taskRoutes = require("./routes/taskRoutes");
+
 
 app.use(express.json());
 app.use(cors({
     origin: "http://localhost:5173/"
 }))
 
-app.get("/api", (req, res) => {
-    res.json({
-        success: true,
-        message: "Hey Everyone"
-    })
-});
+app.use("/api/tasks" , taskRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)
