@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+.table-header{
+    @apply text-left text-gray-600 font-normal text-[16px] py-2;
+}
+
+.task-priority , .task-title{
+   @apply  py-1;
+}
