@@ -32,7 +32,7 @@ const TaskTable = ({ tasks }) => {
                     return (
                         <tr key={idx}>
                             <td className="task-title font-semibold text-[14px] px-5 py-2">
-                                {task.title}
+                                <a href={`/tasks/${task._id}`}>{task.title}</a>
                             </td>
                             <td className={`task-priority text-[13px] px-2 py-1 inline-flex items-center gap-1 rounded ${priorityStyles.text} ${priorityStyles.bg} mb-1.5`}>
                                 <OutlinedFlagIcon sx={{ fontSize: "13px" }} />

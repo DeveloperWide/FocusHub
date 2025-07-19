@@ -39,9 +39,6 @@ const Task = () => {
   console.log(inProgressTasks);
   console.log(completedTasks);
 
-  const handleAddTask = (newTask) => {
-    setData(prev => [...prev, newTask]);
-  };
 
   return (
     <div>
@@ -78,7 +75,6 @@ const Task = () => {
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={handleAddTask}
       />
     </div>
 
