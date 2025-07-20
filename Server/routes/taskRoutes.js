@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
     try{
         const newTask = new Task(req.body);
         const svdTask = await newTask.save();
+        console.log(svdTask)
     }catch(err){
         console.log(err);
     }
