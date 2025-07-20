@@ -7,3 +7,8 @@
 .task-priority , .task-title{
    @apply  py-1;
 }
+
+.createTaskScrollbar{
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}

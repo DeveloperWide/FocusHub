@@ -17,20 +17,22 @@ const Task = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  console.log(data)
+
   const todoTasks = data.filter((task) => {
-    if (task.isCompleted === "todo") {
+    if (task.status === "todo") {
       return task;
     }
   });
 
   const inProgressTasks = data.filter((task) => {
-    if (task.isCompleted === "in_Progress") {
+    if (task.status === "in_Progress") {
       return task;
     }
   });
 
   const completedTasks = data.filter((task) => {
-    if (task.isCompleted === "done") {
+    if (task.status === "done") {
       return task;
     }
   });
