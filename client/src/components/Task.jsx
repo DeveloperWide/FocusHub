@@ -48,11 +48,9 @@ const Task = () => {
       <div className="flex justify-between px-5 py-3">
         <h2 className="text-2xl font-semibold">My Tasks</h2>
         <div className="btns flex justify-center items-center gap-3">
-          <button className="text-[14px] bg-blue-600 text-white font-semibold w-20 h-7 rounded">List</button>
-          <button className="text-[14px] font-semibold w-20 h-7 rounded">Board</button>
           <button
             onClick={() => setModalOpen(true)}
-            className="bg-blue-600 text-white font-semibold w-9 h-9 rounded text-center"
+            className="bg-blue-600 text-white font-semibold w-9 h-9  rounded-full cursor-pointer text-center"
           >
             <AddIcon sx={{ fontSize: "20px" }} />
           </button>

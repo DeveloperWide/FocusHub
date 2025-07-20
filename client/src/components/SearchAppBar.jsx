@@ -5,12 +5,12 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchContainer = styled(Box)(({ theme }) => ({
-  width: '270px',
+  width: '100%',
   display: 'flex',
   alignItems: 'center',
   border: "1px solid #0003",
   borderRadius: "5px",
-  marginBottom: "2px",
+  margin: "2px 30px 2px 10px",
   padding: theme.spacing(0, 2),
 }));
 
