@@ -26,6 +26,12 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
+    inProgress: {
+        type: Number,
+        min: 0,
+        max: 100,
+        required: true
+    },
     createdAt: { type: Date, default: Date.now},
 });
 

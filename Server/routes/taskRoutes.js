@@ -21,11 +21,29 @@ router.get("/", async (req, res) => {
 
 // Create Task
 router.post("/", async (req, res) => {
-    try{
-        const newTask = new Task(req.body);
+    let taskProgress;
+
+    if (req.body.status === "todo") {
+        taskProgress = 0
+    } else if (req.body.status === "in_Progress") {
+        taskProgress = 50
+    } else {
+        taskProgress = 100;
+    }
+
+    try {
+        const newTask = new Task({
+            ...req.body,
+            taskProgress
+        });
         const svdTask = await newTask.save();
-        console.log(svdTask)
-    }catch(err){
+        res.status(201).json({
+            success: true,
+            message: "Task created successfully",
+            data: svdTask
+        });
+
+    } catch (err) {
         console.log(err);
     }
 });
@@ -39,5 +57,35 @@ router.get("/:id", async (req, res) => {
         data: task
     })
 })
+
+// Update task
+router.patch("/:id", async (req, res) => {
+    const { id } = req.params;
+    const { inProgress } = req.body;
+
+    let status;
+    if (inProgress === 0) {
+        status = "todo";
+    } else if (inProgress === 100) {
+        status = "done";
+    } else {
+        status = "in_Progress";
+    }
+
+    try {
+        const updatedTask = await Task.findByIdAndUpdate(id, { ...req.body, status }, { new: true });
+        res.json({
+            success: true,
+            message: "Task updated successfully",
+            data: updatedTask
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update task"
+        });
+    }
+});
+
 
 module.exports = router;
