@@ -7,12 +7,15 @@ import Goal from "./components/Goal";
 import Time from "./components/Time";
 import Calendar from "./components/Calendar";
 import ShowTask from "./components/ShowTask";
+import Home from "./components/Home";
 
 
 const App = () => {
   return (
+    <>
     <Routes>
-      <Route path="/" element={<SidebarLayout />}>
+      <Route path="/" element={<Home />} />
+      <Route path="siderbar" element={<SidebarLayout />}>
         <Route path="dashboard" element={<Dashboard />}/>
         <Route path="tasks" element={<Task />}/>
         <Route path="tasks/:id" element={<ShowTask />}/>
@@ -21,6 +24,7 @@ const App = () => {
         <Route path="calendar" element={<Calendar />}/>
       </Route>
     </Routes>
+    </>
   )
 }
 
