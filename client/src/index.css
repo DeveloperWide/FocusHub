@@ -12,3 +12,7 @@
     scrollbar-width: none;
     scroll-behavior: smooth;
 }
+ /* glowing line effect */
+.line {
+  box-shadow: 0 0 2px rgba(108, 64, 152, 0.6), 0 0 2px rgba(113, 39, 186, 0.9);
+}
