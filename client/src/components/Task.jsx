@@ -17,6 +17,13 @@ const Task = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  const onSubmit = () => {
+    axios.get("/api/tasks/")
+      .then((res) => setData(res.data.data))
+      .catch((err) => console.log(err));
+    setModalOpen(false);
+  }
+
   console.log(data)
 
   const todoTasks = data.filter((task) => {
@@ -59,22 +66,32 @@ const Task = () => {
 
       <div className="px-5">
         <div className="tasks">
+          {todoTasks && todoTasks.length > 0 
+          &&
           <TaskSection title="To Do" >
             <TaskTable tasks={todoTasks} />
           </TaskSection>
+          }
 
-          <TaskSection title="In Progress" >
-            <TaskTable tasks={inProgressTasks} />
-          </TaskSection>
+          {inProgressTasks && inProgressTasks.length > 0
+            &&
+            <TaskSection title="In Progress" >
+              <TaskTable tasks={inProgressTasks} />
+            </TaskSection>
+          }
 
-          <TaskSection title="Done">
-            <TaskTable tasks={completedTasks} />
-          </TaskSection>
+          {completedTasks && completedTasks.length > 0 
+          &&
+            <TaskSection title="Done">
+              <TaskTable tasks={completedTasks} />
+            </TaskSection>
+          }
         </div>
       </div>
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
+        onSubmit={() => onSubmit()}
       />
     </div>
 

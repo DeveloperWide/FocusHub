@@ -21,20 +21,21 @@ router.get("/", async (req, res) => {
 
 // Create Task
 router.post("/", async (req, res) => {
-    let taskProgress;
+    let inProgress;
+    console.log(req.body);
 
     if (req.body.status === "todo") {
-        taskProgress = 0
+        inProgress = 0
     } else if (req.body.status === "in_Progress") {
-        taskProgress = 50
+        inProgress = 50
     } else {
-        taskProgress = 100;
+        inProgress = 100;
     }
 
     try {
         const newTask = new Task({
             ...req.body,
-            taskProgress
+            inProgress
         });
         const svdTask = await newTask.save();
         res.status(201).json({

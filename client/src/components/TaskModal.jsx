@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 
-const TaskModal = ({ isOpen, onClose }) => {
+const TaskModal = ({ isOpen, onClose, onSubmit }) => {
     const [data, setData] = useState({
         title: "",
         description: "",
@@ -16,13 +16,18 @@ const TaskModal = ({ isOpen, onClose }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("/api/tasks", data).then((res) => {
-            console.log(res);
-        }).catch((err) => {
-            console.log(err)
-        })
-        onClose();
+
+        axios.post("/api/tasks", data)
+            .then((res) => {
+                console.log(res);
+                // 🔥 CALL onSubmit from parent after successful task creation
+                onSubmit();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
+
 
     const onChangeHandler = (e) => {
         console.log(e.target.name)
@@ -92,14 +97,11 @@ const TaskModal = ({ isOpen, onClose }) => {
                                     placeholder="e.g., frontend, urgent, personal"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-slate-200 dark:text-black outline-none"
                                 />
-                               
+
                             </div>
 
                         </div>
                     </div>
- <p className="mt-1 text-xs text-amber-600 font-medium">
-                                    <span className="font-bold text-yellow-600">Note:</span> Separate tags with commas (e.g., design, bug, urgent)
-                                </p>
                     <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">
                         Add Task
                     </button>
