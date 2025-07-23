@@ -2,9 +2,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import Header from "../layouts/Header";
-import TaskSection from "./TaskSection";
-import TaskTable from "./TaskTable";
-import TaskModal from "./TaskModal";
+import TaskSection from "../components/TaskSection";
+import TaskTable from "../components/TaskTable";
+import TaskModal from "../components/TaskModal";
 
 
 const Task = () => {
@@ -43,10 +43,6 @@ const Task = () => {
       return task;
     }
   });
-
-  console.log(todoTasks);
-  console.log(inProgressTasks);
-  console.log(completedTasks);
 
 
   return (
