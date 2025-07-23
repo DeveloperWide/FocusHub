@@ -88,5 +88,12 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
+// Update Complete Task 
+router.put("/:id" , async (req ,res) => {
+    let {id} = req.params;
+    const task = await Task.findById(id);
+    console.log(task);
+    console.log(req.body)
+})
 
 module.exports = router;
