@@ -89,11 +89,43 @@ router.patch("/:id", async (req, res) => {
 });
 
 // Update Complete Task 
-router.put("/:id" , async (req ,res) => {
-    let {id} = req.params;
-    const task = await Task.findById(id);
-    console.log(task);
-    console.log(req.body)
+router.put("/:id", async (req, res) => {
+    try {
+        if (req.body.status === "todo") {
+            req.body.inProgress = 0
+        } else if (req.body.status === "in_Progress") {
+            req.body.inProgress = 50
+        } else {
+            req.body.inProgress = 100;
+        }
+
+        await Task.findByIdAndUpdate(req.params.id, { ...req.body });
+        res.status(200).json({
+            success: true,
+            message: "Task Updated Successfully",
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Task Updation Failed...!"
+        })
+    }
+})
+
+router.delete("/:id", async (req, res) => {
+    try{
+        let {id} = req.params;
+        await Task.findByIdAndDelete(id);
+        res.status(200).json({
+            success: true,
+            message: "Task Deleted Successfully"
+        })
+    }catch(err){
+        res.status(500).json({
+            success: true,
+            message: "Task Deletion Failed...!"
+        })
+    }
 })
 
 module.exports = router;
