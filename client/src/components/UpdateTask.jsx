@@ -22,6 +22,7 @@ const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.put(`/api/tasks/${id}`, data).then((res) => {
+            onSubmit();
             console.log(res)
         }).catch((err) => {
             console.log(err)

@@ -44,6 +44,14 @@ const ShowTask = () => {
       .catch((err) => console.log(err));
   };
 
+  const deleteTask = () => {
+    axios.delete(`/api/tasks/${id}`).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   return (
     <div className="min-h-screen px-4 md:px-20 py-10 bg-[#f4f6f8]">
       <div className="max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
@@ -111,7 +119,10 @@ const ShowTask = () => {
         </div>
         <div className="btns flex justify-end gap-4 items-center px-2">
           <button disabled={!data} className={`updateBtn ${!data ? "bg-green-100" : "bg-green-700"}`} onClick={() => setModalOpen(true)}>Update</button>
-          <button className='deleteBtn bg-red-700'>Delete</button>
+          
+          <a href="">
+            <button className='deleteBtn bg-red-700' onClick={deleteTask}>Delete</button>
+          </a>
         </div>
       </div>
       {data && <UpdateTask
