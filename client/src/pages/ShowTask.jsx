@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
 import LabelIcon from '@mui/icons-material/Label';
@@ -12,6 +12,7 @@ const ShowTask = () => {
   const [data, setData] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -44,10 +45,12 @@ const ShowTask = () => {
       .catch((err) => console.log(err));
   };
 
-  const deleteTask = () => {
+  const deleteTask = () => {    
     axios.delete(`/api/tasks/${id}`).then((res) => {
-      console.log(res)
+      console.log(`Task Deletion Successful`)
+      navigate("/tasks" , {state: {refresh: true}}) // redirect + pass refresh flag
     }).catch((err) => {
+      console.log(`Task Deletion Failed`)
       console.log(err)
     })
   }
@@ -119,10 +122,7 @@ const ShowTask = () => {
         </div>
         <div className="btns flex justify-end gap-4 items-center px-2">
           <button disabled={!data} className={`updateBtn ${!data ? "bg-green-100" : "bg-green-700"}`} onClick={() => setModalOpen(true)}>Update</button>
-          
-          <a href="">
-            <button className='deleteBtn bg-red-700' onClick={deleteTask}>Delete</button>
-          </a>
+          <button className='deleteBtn bg-red-700' onClick={deleteTask}>Delete</button>
         </div>
       </div>
       {data && <UpdateTask

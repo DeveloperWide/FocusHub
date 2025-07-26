@@ -1,19 +1,32 @@
+import axios from 'axios';
+import { useEffect } from 'react';
 import { useState } from 'react'
 
 const Goal = () => {
   let [inputValue, setInputValue] = useState("");
-  let [tasks, setTasks] = useState(["Sample Task"]);
+  let [goals, setGoals] = useState([{}]);
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
   }
 
-  
+  const fetchGoals = () => {
+    axios.get("/api/goals").then((res) => {
+      console.log(res.data.data)
+      setGoals(res.data.data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  useEffect(() => {
+    fetchGoals()
+  }, [])
 
   const addTask = () => {
     if (inputValue.trim() != "") {
-      setTasks(() => {
-        return [...tasks , inputValue]
+      setGoals(() => {
+        return [...goals , {title: inputValue }]
       })
       setInputValue(""); // Clear input after adding
     }
@@ -30,9 +43,9 @@ const Goal = () => {
       </div>
       <div className="tasks">
         <ul className='px-15 py-4'>
-          {tasks.map((task, idx) => {
+          {goals.map((task) => {
             return (
-            <li key={idx} className='text-lg py-2 list-decimal font-semibold italic'>{task}</li>
+            <li  key={`${task._id}`} className='text-lg py-2 list-decimal font-semibold italic'>{task.title}</li>
           )
           })}
         </ul>

@@ -5,45 +5,40 @@ import Header from "../layouts/Header";
 import TaskSection from "../components/TaskSection";
 import TaskTable from "../components/TaskTable";
 import TaskModal from "../components/TaskModal";
+import { useLocation } from "react-router-dom";
 
 
 const Task = () => {
   const [data, setData] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const location = useLocation();
 
-  useEffect(() => {
+  const fetchTasks = () => {
     axios.get("/api/tasks/")
       .then((res) => setData(res.data.data))
       .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchTasks();
+      // Clean the refresh state after using it to prevent infinite re-fetches
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    fetchTasks();
   }, []);
 
   const onSubmit = () => {
-    axios.get("/api/tasks/")
-      .then((res) => setData(res.data.data))
-      .catch((err) => console.log(err));
+    fetchTasks();
     setModalOpen(false);
-  }
+  };
 
-  console.log(data)
-
-  const todoTasks = data.filter((task) => {
-    if (task.status === "todo") {
-      return task;
-    }
-  });
-
-  const inProgressTasks = data.filter((task) => {
-    if (task.status === "in_Progress") {
-      return task;
-    }
-  });
-
-  const completedTasks = data.filter((task) => {
-    if (task.status === "done") {
-      return task;
-    }
-  });
-
+  const todoTasks = data.filter(task => task.status === "todo");
+  const inProgressTasks = data.filter(task => task.status === "in_Progress");
+  const completedTasks = data.filter(task => task.status === "done");
 
   return (
     <div>
@@ -62,11 +57,11 @@ const Task = () => {
 
       <div className="px-5">
         <div className="tasks">
-          {todoTasks && todoTasks.length > 0 
-          &&
-          <TaskSection title="To Do" >
-            <TaskTable tasks={todoTasks} />
-          </TaskSection>
+          {todoTasks && todoTasks.length > 0
+            &&
+            <TaskSection title="To Do" >
+              <TaskTable tasks={todoTasks} />
+            </TaskSection>
           }
 
           {inProgressTasks && inProgressTasks.length > 0
@@ -76,8 +71,8 @@ const Task = () => {
             </TaskSection>
           }
 
-          {completedTasks && completedTasks.length > 0 
-          &&
+          {completedTasks && completedTasks.length > 0
+            &&
             <TaskSection title="Done">
               <TaskTable tasks={completedTasks} />
             </TaskSection>
