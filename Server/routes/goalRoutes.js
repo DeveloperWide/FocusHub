@@ -1,15 +1,14 @@
 const express = require("express");
-const Goal = require("../models/Goal");
 const router = express.Router();
+const goalController = require("../controllers/goalController")
 
+// Get All Goals
+router.get("/", goalController.getGoals);
 
-router.get("/" , async(req, res) => {
-    let allGoals = await Goal.find();
-    res.status(200).json({
-        success: true,
-        message: "All Your Goals Here",
-        data: allGoals
-    })
-})
+// Create New Goal
+router.post("/", goalController.createGoal)
+
+// Delete Goal
+router.delete("/:id", goalController.deleteGoal)
 
 module.exports = router;

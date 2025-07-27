@@ -15,6 +15,7 @@ connectDb().then(() => {
 // Routes
 const taskRoutes = require("./routes/taskRoutes");
 const goalRoutes = require("./routes/goalRoutes");
+const authRoutes = require("./routes/authRoutes")
 
 
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use(cors({
 
 app.use("/api/tasks" , taskRoutes);
 app.use("/api/goals" , goalRoutes)
+app.use("/api/auth" , authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)

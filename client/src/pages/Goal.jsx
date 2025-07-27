@@ -1,13 +1,18 @@
 import axios from 'axios';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect } from 'react';
 import { useState } from 'react'
 
 const Goal = () => {
-  let [inputValue, setInputValue] = useState("");
+  let [goal, setGoal] = useState({
+    title: ""
+  });
   let [goals, setGoals] = useState([{}]);
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    setGoal(() => {
+      return { [e.target.name]: e.target.value }
+    });
   }
 
   const fetchGoals = () => {
@@ -23,30 +28,51 @@ const Goal = () => {
     fetchGoals()
   }, [])
 
+
   const addTask = () => {
-    if (inputValue.trim() != "") {
-      setGoals(() => {
-        return [...goals , {title: inputValue }]
+    if (goal.title.trim() != "") {
+      axios.post("/api/goals/", goal).then((res) => {
+        console.log(res);
+        setGoal(() => {
+          return { title: "" }
+        }); // Clear title after adding
+        fetchGoals();
+      }).catch((err) => {
+        console.log(err)
       })
-      setInputValue(""); // Clear input after adding
+
     }
-    }
- 
+  }
+
+  const deleteGoal = (goalId) => {
+    console.log(goalId)
+    axios.delete(`/api/goals/${goalId}/`).then((res) => {
+      console.log(res.data.message);
+      fetchGoals();
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   return (
     <div>
       <h1 className='text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl italic py-2 font-semibold'>Write Your <span className=' text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-orange-400'>Goals</span> here</h1>
       <div className='px-4 py-3 w-full  flex items-center justify-center'>
 
-        <input type="text" name="goal" placeholder='Enter Your Goal here...' id="goal" className='border border-gray-400 outline-none px-2 py-2 rounded w-full md:w-[90%] lg:w-[80%]text-lg font-semibold' value={inputValue} onChange={handleChange} />
+        <input type="text" name="title" placeholder='Enter Your Goal here...' id="title" className='border border-gray-400 outline-none px-2 py-2 rounded w-full md:w-[90%] lg:w-[80%]text-lg font-semibold' value={goal.title} onChange={handleChange} />
         <button onClick={addTask} className='px-5 py-2 bg-blue-700 hover:bg-blue-600 text-white font-semibold cursor-pointer ms-1 rounded'>Add</button>
       </div>
-      <div className="tasks">
+      <div className="goals">
         <ul className='px-15 py-4'>
-          {goals.map((task) => {
+          {goals.map((goal) => {
             return (
-            <li  key={`${task._id}`} className='text-lg py-2 list-decimal font-semibold italic'>{task.title}</li>
-          )
+               <div className='flex justify-between gap-5 sm:gap-8 md:gap-12 lg:gap-14 w-full items-center'>
+                <li key={`${goal._id}`} className='text-[15px] sm:text-lg py-2 list-decimal font-semibold italic'>{goal.title}</li>
+                <ClearIcon sx={{color: "#f00a" , fontSize: "19px" , cursor: "pointer"}} onClick={() => {
+                  deleteGoal(goal._id);
+                }}/>
+               </div>
+            )
           })}
         </ul>
       </div>
