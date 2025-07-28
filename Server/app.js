@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const cookieParser = require("cookie-parser")
 const { connectDb } = require("./config/db");
 const PORT = 8080;
 
@@ -19,6 +20,7 @@ const authRoutes = require("./routes/authRoutes")
 
 
 app.use(express.json());
+app.use(cookieParser())
 app.use(cors({
     origin: "http://localhost:5173/"
 }))
