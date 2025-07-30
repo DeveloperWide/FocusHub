@@ -28,5 +28,9 @@
 }
 
 .login-btn , .signup-btn{
-    @apply rounded-2xl font-bold w-[50%] h-full ;
+    @apply rounded-2xl text-center font-bold w-[50%] h-full;
+}
+
+#email , #password , #confirmPassword{
+  @apply border px-3 py-2 rounded-2xl border-gray-500 outline-none mb-3;
 }
