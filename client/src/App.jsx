@@ -7,18 +7,25 @@ import Goal from "./pages/Goal";
 import Time from "./pages/Time";
 import Calendar from "./pages/Calendar";
 import ShowTask from "./pages/ShowTask";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 
 const App = () => {
   return (
     <Routes>
+      <Route path="/" element={<Home />}>
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+      </Route>
       <Route path="/" element={<SidebarLayout />}>
-        <Route path="dashboard" element={<Dashboard />}/>
-        <Route path="tasks" element={<Task />}/>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="tasks" element={<Task />} />
         <Route path="tasks/:id" element={<ShowTask />} />
-        <Route path="goals" element={<Goal />}/>
-        <Route path="time" element={<Time />}/>
-        <Route path="calendar" element={<Calendar />}/>
+        <Route path="goals" element={<Goal />} />
+        <Route path="time" element={<Time />} />
+        <Route path="calendar" element={<Calendar />} />
       </Route>
     </Routes>
   )

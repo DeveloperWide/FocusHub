@@ -1,18 +1,32 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive&display=swap');
 
-.table-header{
-    @apply text-left text-gray-600 font-normal text-[16px] py-2;
+.table-header {
+  @apply text-left text-gray-600 font-normal text-[16px] py-2;
 }
 
-.task-priority , .task-title{
-   @apply  py-1;
+.task-priority,
+.task-title {
+  @apply py-1;
 }
 
-.createTaskScrollbar{
-    scrollbar-width: none;
-    scroll-behavior: smooth;
+.createTaskScrollbar {
+  scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
-.updateBtn , .deleteBtn{
-    @apply px-5 py-2 text-white font-semibold rounded cursor-pointer;
+.updateBtn,
+.deleteBtn {
+  @apply px-5 py-2 text-white font-semibold rounded cursor-pointer;
+}
+
+.font-cursive {
+  font-family: "Edu NSW ACT Cursive", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.login-btn , .signup-btn{
+    @apply rounded-2xl font-bold w-[50%] h-full ;
 }
