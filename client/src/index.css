@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive&display=swap');
 
 .table-header {
   @apply text-left text-gray-600 font-normal text-[16px] py-2;
@@ -27,10 +26,14 @@
   font-style: normal;
 }
 
+.signup-heading{
+  font-weight: 700;
+}
+
 .login-btn , .signup-btn{
     @apply rounded-2xl text-center font-bold w-[50%] h-full;
 }
 
-#email , #password , #confirmPassword{
+#email , #password , #name{
   @apply border px-3 py-2 rounded-2xl border-gray-500 outline-none mb-3;
 }

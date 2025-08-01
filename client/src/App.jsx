@@ -10,16 +10,20 @@ import ShowTask from "./pages/ShowTask";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
+import Landing from "./components/Landing";
 
 const App = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Home />}>
+      <Route index element={<Landing />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
       </Route>
-      <Route path="/" element={<SidebarLayout />}>
+
+      {/* Sidebar Layout Routes */}
+      <Route path="/app" element={<SidebarLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="tasks" element={<Task />} />
         <Route path="tasks/:id" element={<ShowTask />} />
@@ -31,4 +35,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

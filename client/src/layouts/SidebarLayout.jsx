@@ -42,11 +42,11 @@ const SidebarLayout = () => {
       {/* Top Navigation Items */}
       <ul className="mt-6 space-y-2 font-medium">
         {[
-          { label: "Dashboard", icon: <QueryStatsRoundedIcon />, href: "/dashboard" },
-          { label: "Tasks", icon: <AddTaskRoundedIcon />, href: "/tasks", badge: "Pro" },
-          { label: "Goals", icon: <OutlinedFlagRoundedIcon />, href: "/goals", badge: 3 },
-          { label: "Time", icon: <AccessAlarmsRoundedIcon />, href: "/time" },
-          { label: "Calendar", icon: <CalendarMonthRoundedIcon />, href: "/calendar" },
+          { label: "Dashboard", icon: <QueryStatsRoundedIcon />, href: "/app/dashboard" },
+          { label: "Tasks", icon: <AddTaskRoundedIcon />, href: "/app/tasks", badge: "Pro" },
+          { label: "Goals", icon: <OutlinedFlagRoundedIcon />, href: "/app/goals", badge: 3 },
+          { label: "Time", icon: <AccessAlarmsRoundedIcon />, href: "/app/time" },
+          { label: "Calendar", icon: <CalendarMonthRoundedIcon />, href: "/app/calendar" },
         ].map((item, idx) => (
           <li key={idx}>
             <a
