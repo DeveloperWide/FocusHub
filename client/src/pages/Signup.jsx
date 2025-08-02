@@ -10,15 +10,17 @@ const Signup = () => {
     password: ""
   });
 
-  const onChangeHandler = (e) =>{
+  const onChangeHandler = (e) => {
     setData(() => {
-      return {...data, [e.target.name]:e.target.value}
+      return { ...data, [e.target.name]: e.target.value }
     });
   }
 
-  const onSubmitHandler = () => {
-    axios.post("/api/auth/" , data).then((res) => {
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    axios.post("/api/auth/", data).then((res) => {
       console.log(res);
+      alert(res.data.message)
     }).catch((err) => {
       console.log(err)
     })
@@ -26,10 +28,12 @@ const Signup = () => {
 
   return (
     <div className='flex flex-col'>
-      <input type="text" name="name" id="name" value={data.name} onChange={onChangeHandler} placeholder="Your Name Here"/>
-      <input type="email" name="email" id="email" value={data.email} onChange={onChangeHandler} placeholder='Email Address' className='mt-3'/>
-      <input type="password" name="password" id="password" value={data.password} onChange={onChangeHandler} placeholder='Password'/>
-      <button className='w-full h-12 text-xl rounded-xl font-semibold text-white bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800'>Signup</button>
+      <form onSubmit={onSubmitHandler} className="flex flex-col">
+        <input type="text" name="name" id="name" value={data.name} onChange={onChangeHandler} placeholder="Your Name Here" />
+        <input type="email" name="email" id="email" value={data.email} onChange={onChangeHandler} placeholder='Email Address' className='mt-3' />
+        <input type="password" name="password" id="password" value={data.password} onChange={onChangeHandler} placeholder='Password' />
+        <button className='w-full h-12 text-xl rounded-xl font-semibold text-white bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800'>Signup</button>
+      </form>
       <p className="text-center text-black mt-2">Already Have a Account ? <Link to="/login" className="text-blue-500 cursor-pointer">Login here</Link></p>
     </div>
   )
