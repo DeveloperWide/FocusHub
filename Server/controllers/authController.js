@@ -6,24 +6,60 @@ const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
 
 exports.signup = async (req, res) => {
   try {
-    console.log(req.body)
     const { name, email, password } = req.body;
 
-
-    const existingUser = await User.findOne({ email: email });
-    console.log(existingUser)
+    const existingUser = await User.findOne({ email })
     if (existingUser) return res.status(400).json({
       message: "User Already Exist"
     });
 
     let user = new User({ name, email, password });
     let svdUser = await user.save();
-    console.log(svdUser);
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({
+      message: "User created successfully", token, user: {
+        id: svdUser._id,
+        name: svdUser.name,
+        email: svdUser.email
+      }
+    });
+
   } catch (err) {
     res.status(500).json({
       message: err.message
+    })
+  }
+}
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    let user = await User.findOne({ email });
+    if (!user) return res.status(400).json({
+      message: "Invalid credentials"
+    });
+
+    let isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({
+      message: "Invalid credentials"
+    });
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+
+    res.status(200).json({
+      message: "User Successfully login",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      }
+    })
+
+  } catch (er) {
+    res.status(500).json({
+      message: "Server Error Occurred"
     })
   }
 }

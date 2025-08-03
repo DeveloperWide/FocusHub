@@ -30,6 +30,7 @@ app.use("/api/tasks" , taskRoutes);
 app.use("/api/goals" , goalRoutes)
 app.use("/api/auth" , authRoutes)
 
+
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)
 })

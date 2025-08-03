@@ -35,5 +35,5 @@ const taskSchema = new Schema({
     createdAt: { type: Date, default: Date.now},
 });
 
-const Task = new model("Task", taskSchema);
+const Task = model("Task", taskSchema);
 module.exports = Task;
