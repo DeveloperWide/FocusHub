@@ -49,7 +49,7 @@ const TaskTable = ({ tasks }) => {
                     return (
                         <tr key={idx}>
                             <td className="task-title font-semibold text-[14px] px-5 py-2">
-                                <a href={`/tasks/${task._id}`}>{task.title}</a>
+                                <a href={`/app/tasks/${task._id}`}>{task.title}</a>
                             </td>
                             <td className="task-title font-semibold text-[13px] px-5 py-2 hidden md:table-cell">
                                 <CalendarMonthIcon sx={{paddingRight: "5px", color: "#3971cc"}}/>{task.dueDate}

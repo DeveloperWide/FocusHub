@@ -30,6 +30,14 @@
   font-weight: 700;
 }
 
+.update-profile {
+  font-weight: 600;
+}
+
+.profile-heading{
+  font-weight: 600;
+}
+
 .login-btn , .signup-btn{
     @apply rounded-2xl text-center font-bold w-[50%] h-full;
 }

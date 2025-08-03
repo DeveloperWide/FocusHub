@@ -48,7 +48,7 @@ const ShowTask = () => {
   const deleteTask = () => {    
     axios.delete(`/api/tasks/${id}`).then((res) => {
       console.log(`Task Deletion Successful`)
-      navigate("/tasks" , {state: {refresh: true}}) // redirect + pass refresh flag
+      navigate("/app/tasks" , {state: {refresh: true}}) // redirect + pass refresh flag
     }).catch((err) => {
       console.log(`Task Deletion Failed`)
       console.log(err)

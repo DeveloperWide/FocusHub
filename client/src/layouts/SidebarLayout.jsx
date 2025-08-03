@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import PersonIcon from '@mui/icons-material/Person';
 import OutlinedFlagRoundedIcon from '@mui/icons-material/OutlinedFlagRounded';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
@@ -47,6 +48,7 @@ const SidebarLayout = () => {
           { label: "Goals", icon: <OutlinedFlagRoundedIcon />, href: "/app/goals", badge: 3 },
           { label: "Time", icon: <AccessAlarmsRoundedIcon />, href: "/app/time" },
           { label: "Calendar", icon: <CalendarMonthRoundedIcon />, href: "/app/calendar" },
+          { label: "Profile", icon: <PersonIcon />, href: "/app/profile" },
         ].map((item, idx) => (
           <li key={idx}>
             <a
@@ -69,8 +71,8 @@ const SidebarLayout = () => {
     {/* Bottom Navigation Items */}
     <ul className="space-y-2 font-medium">
       {[
-        { label: "Settings", icon: <SettingsIcon />, href: "/settings" },
-        { label: "Log Out", icon: <LogoutIcon />, href: "/logout" },
+        { label: "Settings", icon: <SettingsIcon />, href: "/app/settings" },
+        { label: "Log Out", icon: <LogoutIcon />, href: "/app/logout" },
       ].map((item, idx) => (
         <li key={idx}>
           <a
