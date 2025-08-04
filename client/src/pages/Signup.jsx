@@ -27,8 +27,7 @@ const Signup = () => {
       navigate("/app/dashboard")
 
     }).catch((err) => {
-      console.log(err?.response?.data?.message);
-      alert(err?.response?.data?.message)
+      console.log(err)
     })
   }
 

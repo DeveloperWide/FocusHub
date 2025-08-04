@@ -1,25 +1,68 @@
-import React from 'react'
+import React, { useState } from 'react';
+import axios from "axios";
+import { getUser } from '../utils/auth';
 
 const Profile = () => {
+    const [preview, setPreview] = useState(null);
+    const [file, setFile] = useState(null);
+    const [data, setData] = useState({
+        name: "",
+        email: "",
+    });
+
+    const user = getUser();
+
+    const handleOnChange = (e) => {
+        setData(() => {
+            return { ...data, [e.target.name]: e.target.value }
+        })
+    }
+
+    const handleFileChange = (e) => {
+        const selected = e.target.files[0]
+        if (selected) {
+            setFile(selected);
+            setPreview(URL.createObjectURL(selected)); // ✅ Show preview
+        }
+    };
+
+    const handleDelete = () => {
+        setFile(null);
+        setPreview(null);
+    };
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        let formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("email", data.email);
+        if (file) formData.append('profileImage', file);
+
+        axios.put("/api/profile/update", formData).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
     return (
         <div className="flex flex-col w-full ">
-            <h1 className='text-6xl font-cursive profile-heading  self-start px-5 py-2'>Profile</h1>
             <div className="flex flex-col md:flex-row-reverse w-full justify-between">
-                 <div className="profile-card flex flex-col justify-center items-center w-[100%] sm:w-[50%] md:w-[30%] p-4">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSs42w7bN0-F5Dul_AhIss8Ibg7M1teHU7xlQ&s" className='h-50 w-50 rounded-full px-1 py-1' alt="Profile"/>
-                    <h2 className='text-2xl font-semibold'>Mahesh Babu</h2>
-                    <p className='text-gray-500'>maheshbabu@gmail.com</p>
+                <div className="profile-card flex flex-col justify-center items-center w-[100%] sm:w-[50%] md:w-[30%] p-4">
+                    <img src={`${user.profileImage.url}`} className='h-50 w-50 rounded-full px-1 py-1' alt="Profile" />
+                    <h2 className='text-2xl font-semibold'>{user.name}</h2>
+                    <p className='text-gray-500'>{user.email}</p>
                 </div>
                 <div className="update-profile-card w-[100%] sm:w-[50%] md:w-[70%]  p-4 bg-white m-5">
-                    <h3 className='text-3xl mb-4 text-gray-800 update-profile font-cursive'>Update Profile</h3>
-                    <form className="flex flex-col py-4 w-full text-sm text-slate-800">
+                    <h3 className='text-3xl mb-4 text-gray-800 update-profile'>Update Profile</h3>
+                    <form className="flex flex-col py-4 w-full text-sm text-slate-800" onSubmit={onSubmitHandler}>
                         <div className="px-4">
-                            <label htmlFor="name" className="font-medium">Full Name</label>
+                            <label htmlFor="name" className="font-medium">Name</label>
                             <div className="flex items-center mt-2 mb-4 h-10 pl-3 border border-slate-300 rounded-full focus-within:ring-2 focus-within:ring-indigo-400 transition-all overflow-hidden">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M18.311 16.406a9.64 9.64 0 0 0-4.748-4.158 5.938 5.938 0 1 0-7.125 0 9.64 9.64 0 0 0-4.749 4.158.937.937 0 1 0 1.623.938c1.416-2.447 3.916-3.906 6.688-3.906 2.773 0 5.273 1.46 6.689 3.906a.938.938 0 0 0 1.622-.938M5.938 7.5a4.063 4.063 0 1 1 8.125 0 4.063 4.063 0 0 1-8.125 0" fill="#475569" />
                                 </svg>
-                                <input type="text" className="h-full px-2 w-full outline-none bg-transparent" placeholder="Enter your full name" required />
+                                <input type="text" className="h-full px-2 w-full outline-none bg-transparent" name='name' value={data.name} onChange={handleOnChange} placeholder="Enter your full name" required />
                             </div>
 
                             <label htmlFor="email-address" className="font-medium mt-4">Email Address</label>
@@ -27,11 +70,89 @@ const Profile = () => {
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17.5 3.438h-15a.937.937 0 0 0-.937.937V15a1.563 1.563 0 0 0 1.562 1.563h13.75A1.563 1.563 0 0 0 18.438 15V4.375a.94.94 0 0 0-.938-.937m-2.41 1.874L10 9.979 4.91 5.313zM3.438 14.688v-8.18l5.928 5.434a.937.937 0 0 0 1.268 0l5.929-5.435v8.182z" fill="#475569" />
                                 </svg>
-                                <input type="email" className="h-full px-2 w-full outline-none bg-transparent" placeholder="Enter your email address" required />
+                                <input type="email" className="h-full px-2 w-full outline-none bg-transparent" name='email' value={data.email} onChange={handleOnChange} placeholder="Enter your email address" required />
                             </div>
 
-                            <label htmlFor="message" className="font-medium mt-4">Message</label>
-                            <textarea rows="4" className="w-full mt-2 p-2 bg-transparent border border-slate-300 rounded-lg resize-none outline-none focus:ring-2 focus-within:ring-indigo-400 transition-all" placeholder="Enter your message" required></textarea>
+                            <div className="flex flex-col gap-3">
+                                <label htmlFor="fileInput" className='font-semibold text-lg'>Upload Image</label>
+                                {/* Hidden file input */}
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    name='profileImage'
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+
+                                <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                                    <div
+                                        className="group flex justify-center items-center size-20 border-2 border-dotted border-gray-300 text-gray-400 rounded-full hover:bg-gray-50 cursor-pointer overflow-hidden"
+                                        onClick={() => document.getElementById("fileInput").click()}
+                                    >
+                                        {preview ? (
+                                            <img
+                                                src={preview}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover rounded-full"
+                                            />
+                                        ) : (
+                                            <svg
+                                                className="shrink-0 size-7"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+                                            </svg>
+                                        )}
+                                    </div>
+
+                                    <div className="grow flex items-center gap-x-2">
+                                        <button
+                                            type="button"
+                                            className="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700"
+                                            onClick={() => document.getElementById("fileInput").click()}
+                                        >
+                                            <svg
+                                                className="shrink-0 size-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" x2="12" y1="3" y2="15"></line>
+                                            </svg>
+                                            Upload photo
+                                        </button>
+
+                                        {preview && (
+                                            <button
+                                                type="button"
+                                                className="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white text-gray-500 shadow hover:bg-gray-50"
+                                                onClick={handleDelete}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
                             <button type="submit" className="flex items-center justify-center gap-1 mt-5 bg-indigo-500 hover:bg-indigo-600 text-white py-2.5 w-full rounded-full transition">
                                 Update Profile
@@ -42,7 +163,7 @@ const Profile = () => {
                         </div>
                     </form>
                 </div>
-               
+
             </div>
         </div>
     )

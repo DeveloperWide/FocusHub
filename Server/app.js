@@ -17,19 +17,20 @@ connectDb().then(() => {
 // Routes
 const taskRoutes = require("./routes/taskRoutes");
 const goalRoutes = require("./routes/goalRoutes");
-const authRoutes = require("./routes/authRoutes")
+const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 
 app.use(express.json());
 // app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:5173/"
+    origin: "http://localhost:5173"
 }))
 
 app.use("/api/tasks" , taskRoutes);
-app.use("/api/goals" , goalRoutes)
-app.use("/api/auth" , authRoutes)
-
+app.use("/api/goals" , goalRoutes);
+app.use("/api/auth" , authRoutes);
+app.use("/api/profile" , profileRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)

@@ -15,13 +15,15 @@ exports.signup = async (req, res) => {
 
     let user = new User({ name, email, password });
     let svdUser = await user.save();
+    console.log(svdUser)
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.status(201).json({
       message: "User created successfully", token, user: {
         id: svdUser._id,
         name: svdUser.name,
-        email: svdUser.email
+        email: svdUser.email,
+        profileImage: svdUser.profileImage
       }
     });
 
@@ -33,7 +35,9 @@ exports.signup = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
+  console.log(req.body)
   try {
+    
     const { email, password } = req.body;
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({
@@ -54,6 +58,7 @@ exports.login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        profileImage: user.profileImage
       }
     })
 

@@ -12,6 +12,16 @@ const userSchema = new Schema({
         required: true, 
         unique: true 
     },
+    profileImage: {
+        url: {
+            type: String,
+            default: "https://i.pinimg.com/1200x/cd/4b/d9/cd4bd9b0ea2807611ba3a67c331bff0b.jpg"
+        },
+        filename: {
+            type: String,
+            default: "image"
+        }
+    },
     password: { 
         type: String, 
         required: true, 
