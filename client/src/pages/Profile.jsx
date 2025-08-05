@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import { getUser } from '../utils/auth';
+import { getToken, getUser, saveUserData } from '../utils/auth';
 
 const Profile = () => {
     const [preview, setPreview] = useState(null);
@@ -11,7 +11,6 @@ const Profile = () => {
     });
 
     const user = getUser();
-
     const handleOnChange = (e) => {
         setData(() => {
             return { ...data, [e.target.name]: e.target.value }
@@ -33,13 +32,24 @@ const Profile = () => {
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
+        let token = getToken();
         let formData = new FormData();
         formData.append("name", data.name);
         formData.append("email", data.email);
         if (file) formData.append('profileImage', file);
+        axios.put("/api/profile/update", formData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            let updatedUser = res.data.user._doc;
+            console.log(updatedUser);
 
-        axios.put("/api/profile/update", formData).then((res) => {
-            console.log(res)
+            const oldToken = getToken();
+            console.log(oldToken);
+
+            saveUserData(oldToken, updatedUser);
+            window.location.reload()
         }).catch((err) => {
             console.log(err)
         })
@@ -47,16 +57,10 @@ const Profile = () => {
 
     return (
         <div className="flex flex-col w-full ">
-            <div className="flex flex-col md:flex-row-reverse w-full justify-between">
-                <div className="profile-card flex flex-col justify-center items-center w-[100%] sm:w-[50%] md:w-[30%] p-4">
-                    <img src={`${user.profileImage.url}`} className='h-50 w-50 rounded-full px-1 py-1' alt="Profile" />
-                    <h2 className='text-2xl font-semibold'>{user.name}</h2>
-                    <p className='text-gray-500'>{user.email}</p>
-                </div>
-                <div className="update-profile-card w-[100%] sm:w-[50%] md:w-[70%]  p-4 bg-white m-5">
-                    <h3 className='text-3xl mb-4 text-gray-800 update-profile'>Update Profile</h3>
-                    <form className="flex flex-col py-4 w-full text-sm text-slate-800" onSubmit={onSubmitHandler}>
-                        <div className="px-4">
+            <div className="flex flex-col w-full justify-center items-center px-5 py-10">
+                    <h3 className='text-3xl self-start mb-4 text-gray-800 update-profile'>Update Profile</h3>
+                    <form className="flex flex-col py-4 w-[300px] sm:w-[350px] md:w-[480px] lg:w-[650px] border rounded-2xl text-sm text-slate-800" onSubmit={onSubmitHandler}>
+                        <div className="px-4 h-full">
                             <label htmlFor="name" className="font-medium">Name</label>
                             <div className="flex items-center mt-2 mb-4 h-10 pl-3 border border-slate-300 rounded-full focus-within:ring-2 focus-within:ring-indigo-400 transition-all overflow-hidden">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -162,7 +166,6 @@ const Profile = () => {
                             </button>
                         </div>
                     </form>
-                </div>
 
             </div>
         </div>

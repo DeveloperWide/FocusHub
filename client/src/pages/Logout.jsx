@@ -1,9 +1,8 @@
 import React from 'react'
+import { logoutUser } from '../utils/auth'
 
 const Logout = () => {
-  return (
-    <div>Logout</div>
-  )
+  logoutUser()
 }
 
 export default Logout

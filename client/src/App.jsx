@@ -27,7 +27,14 @@ const App = () => {
       </Route>
 
       {/* Sidebar Layout Routes */}
-        <Route path="/app" element={<SidebarLayout />}>
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <SidebarLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="tasks" element={<Task />} />
           <Route path="tasks/:id" element={<ShowTask />} />
