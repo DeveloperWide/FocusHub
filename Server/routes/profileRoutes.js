@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const upload = multer({dest: "uploads/"})
-const profileController = require("../controllers/profileController");
+const { storage } = require("../cloudConfig");
+const upload = multer({ storage });
 
-router.put("/update", upload.single('profileImage'), profileController.updateProfile);
+const profileController = require("../controllers/profileController");
+const { authenticateUser } = require("../utils/middlewares");
+
+router.put("/update", authenticateUser, upload.single('profileImage'), profileController.updateProfile);
 
 module.exports = router;
