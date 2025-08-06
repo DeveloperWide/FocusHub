@@ -59,7 +59,7 @@ const Profile = () => {
         <div className="flex flex-col w-full ">
             <div className="flex flex-col w-full justify-center items-center px-5 py-10">
                     <h3 className='text-3xl self-start mb-4 text-gray-800 update-profile'>Update Profile</h3>
-                    <form className="flex flex-col py-4 w-[300px] sm:w-[350px] md:w-[480px] lg:w-[650px] border rounded-2xl text-sm text-slate-800" onSubmit={onSubmitHandler}>
+                    <form className="flex flex-col py-4 w-[300px] sm:w-[350px] md:w-[480px] lg:w-[650px] border border-[#3333] shadow-2xl/60 shadow-[#333] rounded-2xl text-sm text-slate-800" onSubmit={onSubmitHandler}>
                         <div className="px-4 h-full">
                             <label htmlFor="name" className="font-medium">Name</label>
                             <div className="flex items-center mt-2 mb-4 h-10 pl-3 border border-slate-300 rounded-full focus-within:ring-2 focus-within:ring-indigo-400 transition-all overflow-hidden">

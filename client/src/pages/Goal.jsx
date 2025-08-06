@@ -56,7 +56,7 @@ const Goal = () => {
 
   return (
     <div>
-      <h1 className='text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl italic py-2 font-semibold'>Write Your <span className=' text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-orange-400'>Goals</span> here</h1>
+      <h1 className='text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl italic py-2 font-semibold'>Write Your <span className=' text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-orange-300'>Goals</span> here</h1>
       <div className='px-4 py-3 w-full  flex items-center justify-center'>
 
         <input type="text" name="title" placeholder='Enter Your Goal here...' id="title" className='border border-gray-400 outline-none px-2 py-2 rounded w-full md:w-[90%] lg:w-[80%]text-lg font-semibold' value={goal.title} onChange={handleChange} />
