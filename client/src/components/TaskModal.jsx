@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
+import { getToken } from '../utils/auth';
 
 const TaskModal = ({ isOpen, onClose, onSubmit }) => {
     const [data, setData] = useState({
@@ -13,11 +14,17 @@ const TaskModal = ({ isOpen, onClose, onSubmit }) => {
     });
 
     if (!isOpen) return null;
-
+    const token = getToken();
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        axios.post("/api/tasks", data)
+            // headers:{
+            //     Authorization: `Bearer ${token}`,
+            // }
+        axios.post("/api/tasks", data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
             .then((res) => {
                 console.log(res);
                 // 🔥 CALL onSubmit from parent after successful task creation

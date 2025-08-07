@@ -12,7 +12,7 @@ const Dashboard = () => {
         <h1 className='text-2xl font-bold my-4 pe-3 border-r-2 border-[#3333] text-[#333a]'>Dashboard</h1>
         <UserInfo />
       </header>
-      <div className='flex items-center justify-evenly mt-5'>
+      <div className='flex flex-col lg:flex-row  md:flex-wrap  lg:items-center justify-evenly mt-5 mx-3 gap-y-1.5'>
         <InfoBox title="Tasks" value={20}/>
         <InfoBox title="Completed Task" value={15}/>
         <InfoBox title="Pending Tasks" value={3}/>

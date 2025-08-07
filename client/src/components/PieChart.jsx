@@ -85,9 +85,9 @@ const PieChart = () => {
 
 
   return (
-    <div className='flex m-20'>
-      <Chart options={pieOptions} series={pieSeries} type="donut" width="380" />
-      <Chart options={lineOptions} series={lineSeries} type="line" width="500" />
+    <div className='flex flex-col lg:flex-row gap-y-2 m-20'>
+      <Chart options={pieOptions} series={pieSeries} type="donut" width="100%" />
+      <Chart options={lineOptions} series={lineSeries} type="line" width="100%"  />
     </div>
   )
 
