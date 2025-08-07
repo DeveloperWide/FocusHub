@@ -1,12 +1,13 @@
 const express = require("express");
 const taskController = require("../controllers/taskController")
 const router = express.Router();
+const { authenticateUser } = require("../utils/middlewares");
 
 // Get all Tasks
 router.get("/", taskController.getTasks);
 
 // Create Task
-router.post("/", taskController.createTask);
+router.post("/", authenticateUser ,taskController.createTask);
 
 // Get Task
 router.get("/:id", taskController.showTask)

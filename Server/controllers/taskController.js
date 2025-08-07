@@ -19,6 +19,7 @@ module.exports.getTasks = async (req, res) => {
 module.exports.createTask = async (req, res) => {
     let inProgress;
     console.log(req.body);
+    console.log(req.user);
 
     if (req.body.status === "todo") {
         inProgress = 0
@@ -29,15 +30,15 @@ module.exports.createTask = async (req, res) => {
     }
 
     try {
-        const newTask = new Task({
-            ...req.body,
-            inProgress
-        });
-        const svdTask = await newTask.save();
+        // const newTask = new Task({
+        //     ...req.body,
+        //     inProgress
+        // });
+        // const svdTask = await newTask.save();
         res.status(201).json({
             success: true,
             message: "Task created successfully",
-            data: svdTask
+            // data: req.body
         });
 
     } catch (err) {
