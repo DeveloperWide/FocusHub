@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
 
 module.exports.authenticateUser = (req, res, next) => {
+  console.log("Middleware: Authenticating user...");
+  console.log("Request Headers:", req.headers);
   try {
     const authHeader = req.headers.authorization;
 

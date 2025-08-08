@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const {Schema , model} = mongoose;
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
-    name: { 
-        type: String, 
-        required: true 
+    name: {
+        type: String,
+        required: true
     },
-    email: { 
-        type: String, 
-        required: true, 
-        unique: true 
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
     profileImage: {
         url: {
@@ -22,10 +22,10 @@ const userSchema = new Schema({
             default: "image"
         }
     },
-    password: { 
-        type: String, 
-        required: true, 
-        minlength: 6 
+    password: {
+        type: String,
+        required: true,
+        minlength: 6
     },
 });
 
@@ -42,4 +42,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 const User = model('User', userSchema);
-module.exports =  User;
+module.exports = User;

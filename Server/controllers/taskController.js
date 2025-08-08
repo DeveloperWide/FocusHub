@@ -2,7 +2,7 @@ const Task = require("../models/Task");
 
 module.exports.getTasks = async (req, res) => {
     try {
-        const allTasks = await Task.find();
+        const allTasks = await Task.find({user: req.user.id});
         res.json({
             success: true,
             message: "All Your tasks here...",
@@ -18,8 +18,6 @@ module.exports.getTasks = async (req, res) => {
 
 module.exports.createTask = async (req, res) => {
     let inProgress;
-    console.log(req.body);
-    console.log(req.user);
 
     if (req.body.status === "todo") {
         inProgress = 0
@@ -30,15 +28,16 @@ module.exports.createTask = async (req, res) => {
     }
 
     try {
-        // const newTask = new Task({
-        //     ...req.body,
-        //     inProgress
-        // });
-        // const svdTask = await newTask.save();
+        const newTask = new Task({
+            ...req.body,
+            inProgress,
+            user: req.user.id
+        });
+        const svdTask = await newTask.save();
         res.status(201).json({
             success: true,
             message: "Task created successfully",
-            // data: req.body
+            data: svdTask
         });
 
     } catch (err) {

@@ -4,7 +4,7 @@ const router = express.Router();
 const { authenticateUser } = require("../utils/middlewares");
 
 // Get all Tasks
-router.get("/", taskController.getTasks);
+router.get("/", authenticateUser, taskController.getTasks);
 
 // Create Task
 router.post("/", authenticateUser ,taskController.createTask);

@@ -32,6 +32,11 @@ const taskSchema = new Schema({
         max: 100,
         required: true
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     createdAt: { type: Date, default: Date.now},
 });
 
