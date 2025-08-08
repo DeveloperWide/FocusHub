@@ -6,6 +6,7 @@ import TaskSection from "../components/TaskSection";
 import TaskTable from "../components/TaskTable";
 import TaskModal from "../components/TaskModal";
 import { useLocation } from "react-router-dom";
+import { getToken } from "../utils/auth";
 
 
 const Task = () => {
@@ -14,7 +15,11 @@ const Task = () => {
   const location = useLocation();
 
   const fetchTasks = () => {
-    axios.get("/api/tasks/")
+    axios.get("/api/tasks/", {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
       .then((res) => setData(res.data.data))
       .catch((err) => console.log(err));
   }

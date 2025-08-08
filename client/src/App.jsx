@@ -15,8 +15,10 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
+import { getToken } from "./utils/auth";
 
 const App = () => {
+  console.log(getToken());
   return (
     <Routes>
       {/* Public Routes */}
