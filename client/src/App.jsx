@@ -15,10 +15,9 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
-import { getToken } from "./utils/auth";
+import Quote from "./components/Quote";
 
 const App = () => {
-  console.log(getToken());
   return (
     <Routes>
       {/* Public Routes */}
@@ -46,6 +45,7 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
           <Route path="logout" element={<Logout />} />
+        <Route path="quote" element={<Quote />} />
         </Route>
     </Routes>
   )

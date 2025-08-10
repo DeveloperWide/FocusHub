@@ -23,7 +23,7 @@ const SidebarLayout = () => {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <aside
-  className={`fixed top-0 left-0 z-40 h-full ${SIDEBAR_WIDTH} 
+  className={`sidebar overflow-y-scroll fixed top-0 left-0 z-40 h-full ${SIDEBAR_WIDTH} 
     bg-black/40 dark:bg-[#000]
     backdrop-blur-lg border-r border-white/10 shadow-xl 
     transform transition-transform duration-500 ease-in-out

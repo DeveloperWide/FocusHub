@@ -10,7 +10,8 @@
   @apply py-1;
 }
 
-.createTaskScrollbar {
+
+.sidebar, .createTaskScrollbar{
   scrollbar-width: none;
   scroll-behavior: smooth;
 }

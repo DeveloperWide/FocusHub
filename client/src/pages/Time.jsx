@@ -11,8 +11,11 @@ const Time = () => {
     return () => clearInterval(intervalId);
   }, []);
   return (
-    <div className='h-full flex justify-center items-center'>
+    <div className='h-full flex flex-col justify-center items-center'>
       <h1 className='text-6xl sm:text-8xl font-semibold text-gray-700'>{currentTime.toLocaleTimeString()}</h1>
+      <div className='py-4'>
+        <i className="fa-solid fa-hourglass-end"></i>
+      </div>
     </div>
   )
 }

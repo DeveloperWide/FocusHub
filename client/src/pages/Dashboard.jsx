@@ -8,16 +8,16 @@ export default function Dashboard() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Welcome Header */}
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 mb-6">
         Welcome back, <span className="text-indigo-600">{user.name}</span> 👋
       </h1>
 
       {/* Top Grid - Profile & Focus Time */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         
         {/* Profile Card */}
         <div
-          className="profile relative flex flex-col justify-end rounded-xl overflow-hidden shadow-lg mx-4 border border-gray-300"
+          className="profile h-120 md:h-auto relative flex flex-col justify-end rounded-xl overflow-hidden shadow-lg mx-4 border border-gray-300"
           style={{
             backgroundImage: `url(${user.profileImage.url})`,
             backgroundSize: "cover",

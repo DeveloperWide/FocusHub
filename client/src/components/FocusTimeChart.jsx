@@ -28,7 +28,7 @@ const FocusTimeChart = () => {
             options={options}
             series={series}
             type="line"
-            width="250"
+            width="100%"
         />
     )
 }
