@@ -19,6 +19,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const quoteRoutes = require("./routes/quoteRoutes")
 
 
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use("/api/tasks" , taskRoutes);
 app.use("/api/goals" , goalRoutes);
 app.use("/api/auth" , authRoutes);
 app.use("/api/profile" , profileRoutes);
+app.use("/api/quote" , quoteRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)
