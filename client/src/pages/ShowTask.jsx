@@ -6,6 +6,7 @@ import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
 import LabelIcon from '@mui/icons-material/Label';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import UpdateTask from '../components/UpdateTask';
+import { getToken } from '../utils/auth';
 
 const ShowTask = () => {
   const { id } = useParams();
@@ -13,10 +14,14 @@ const ShowTask = () => {
   const [progress, setProgress] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+  const token = getToken();
 
   useEffect(() => {
     axios
-      .get(`/api/tasks/${id}`)
+      .get(`/api/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }})
       .then((res) => {
         setData(res.data?.data);
         setProgress(res.data?.data?.inProgress || 0);
@@ -29,7 +34,10 @@ const ShowTask = () => {
     setProgress(value);
 
     try {
-      await axios.patch(`/api/tasks/${id}`, { inProgress: value });
+      await axios.patch(`/api/tasks/${id}`, { inProgress: value } , {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }});
     } catch (error) {
       console.error("Update failed", error);
     }
@@ -37,8 +45,11 @@ const ShowTask = () => {
 
   const refetchTask = () => {
     axios
-      .get(`/api/tasks/${id}`)
-      .then((res) => {
+      .get(`/api/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }}
+    ).then((res) => {
         setData(res.data?.data);
         setProgress(res.data?.data?.inProgress || 0);
       })
@@ -46,7 +57,11 @@ const ShowTask = () => {
   };
 
   const deleteTask = () => {    
-    axios.delete(`/api/tasks/${id}`).then((res) => {
+    axios.delete(`/api/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then((res) => {
       console.log(`Task Deletion Successful`)
       navigate("/app/tasks" , {state: {refresh: true}}) // redirect + pass refresh flag
     }).catch((err) => {

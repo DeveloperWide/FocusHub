@@ -2,9 +2,10 @@ import axios, { isCancel } from 'axios';
 import React, { useEffect, useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useParams } from 'react-router-dom';
+import { getToken } from '../utils/auth';
 
 const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
-    let {id} = useParams()
+    let { id } = useParams()
     const [data, setData] = useState(() => ({
         ...task
     }));
@@ -21,7 +22,11 @@ const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`/api/tasks/${id}`, data).then((res) => {
+        axios.put(`/api/tasks/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        }).then((res) => {
             onSubmit();
             console.log(res)
         }).catch((err) => {
@@ -105,8 +110,8 @@ const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
                     </div>
                     <div className='flex justify-end'>
                         <button type="submit" className="w-[150px]  text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer">
-                        Save Changes
-                    </button>
+                            Save Changes
+                        </button>
                     </div>
                 </form>
             </div>

@@ -2,6 +2,7 @@ import React from "react";
 import FocusTimeChart from "../components/FocusTimeChart";
 import { getUser } from "../utils/auth";
 import PieChart from "../components/PieChart";
+import Quote from "../components/Quote";
 
 export default function Dashboard() {
   const user = getUser();
@@ -11,6 +12,8 @@ export default function Dashboard() {
       <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 mb-6">
         Welcome back, <span className="text-indigo-600">{user.name}</span> 👋
       </h1>
+      
+      <Quote />
 
       {/* Top Grid - Profile & Focus Time */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">

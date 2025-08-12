@@ -11,19 +11,23 @@ const Quote = () => {
             console.log(res.data.data);
             setQuote(res.data.data.quote);
             setAuthor(res.data.data.author);
-            console.log(author, quote)
         }).catch((err) => {
             console.log(err)
         })
     }, [])
     return (
-        <div className="quote flex  flex-col justify-center items-center">
-            <h1>Today's Quote</h1>
-            <div className="quote-box">
-                <h3>{quote}</h3>
-                <p>{author}</p>
-            </div>
-        </div>
+         <>
+            {quote && author && (
+                <div className="container flex w-full justify-center m-3">
+                    <div className="quote-container px-3 py-5 flex flex-col gap-0.5">
+                        <h3 className="quote text-xl px-2 py-1 capitalize text-gray-600 font-semibold">
+                            <i className="fa-solid fa-quote-left"></i> {quote} <i className="fa-solid fa-quote-right"></i>
+                        </h3>
+                        <p className="author self-end font-bold">-- {author}</p>
+                    </div>
+                </div>
+            )}
+        </>
     )
 }
 
