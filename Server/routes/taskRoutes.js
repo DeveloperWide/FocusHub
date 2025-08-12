@@ -10,14 +10,15 @@ router.get("/", authenticateUser, taskController.getTasks);
 router.post("/", authenticateUser ,taskController.createTask);
 
 // Get Task
-router.get("/:id", taskController.showTask)
+router.get("/:id", authenticateUser, taskController.showTask)
 
 // Update task
-router.patch("/:id", taskController.updateTask);
+router.patch("/:id",authenticateUser, taskController.updateTask);
 
 // Update Complete Task 
-router.put("/:id", taskController.updateTaskInProgress)
+router.put("/:id",authenticateUser, taskController.updateTaskInProgress)
 
-router.delete("/:id", taskController.deleteTask)
+// Delete Task
+router.delete("/:id",authenticateUser, taskController.deleteTask)
 
 module.exports = router;

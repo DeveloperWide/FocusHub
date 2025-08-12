@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-router.get("/", async (req, res) => {
-    const response = await fetch("https://api.quotable.io/quotes/random");
-    console.log(response)
-    const data = await response.json();
+router.get("/",  async (req, res) => {
+    const response = await fetch("https://api.quotable.io/quotes/random?tags=motivational | Inspirational | wisdom&maxLength=100");
+    const data = await response.json()
     const quote = {
         quote: data[0].content,
         author: data[0].author
     };
-    console.log(quote)
     res.status(200).json({
         success: true,
         message: "Quotes Successfully fetched...",
