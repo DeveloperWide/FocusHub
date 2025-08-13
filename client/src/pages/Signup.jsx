@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { saveUserData } from "../utils/auth";
+import { toast } from "react-toastify";
 
 
 const Signup = () => {
@@ -24,6 +25,7 @@ const Signup = () => {
 
       const { token, user } = res.data;
       saveUserData(token, user);
+      toast.success(res.data.message)
       navigate("/app/dashboard")
 
     }).catch((err) => {

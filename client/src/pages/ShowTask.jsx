@@ -7,6 +7,7 @@ import LabelIcon from '@mui/icons-material/Label';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import UpdateTask from '../components/UpdateTask';
 import { getToken } from '../utils/auth';
+import { toast } from 'react-toastify';
 
 const ShowTask = () => {
   const { id } = useParams();
@@ -63,6 +64,7 @@ const ShowTask = () => {
       }
     }).then((res) => {
       console.log(`Task Deletion Successful`)
+      toast.success(res.data.message);
       navigate("/app/tasks" , {state: {refresh: true}}) // redirect + pass refresh flag
     }).catch((err) => {
       console.log(`Task Deletion Failed`)

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { saveUserData } from '../utils/auth';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Login = () => {
     axios.post("/api/auth/login", data).then((res) => {
       const {token , user} = res.data;
       saveUserData(token, user);
+      toast.success(res.data.message)
       navigate("/app/dashboard")
     }).catch((err) => {
       console.log(err)

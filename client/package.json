@@ -21,6 +21,7 @@
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.3",
+    "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

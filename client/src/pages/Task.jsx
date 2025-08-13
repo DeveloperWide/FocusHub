@@ -7,6 +7,7 @@ import TaskTable from "../components/TaskTable";
 import TaskModal from "../components/TaskModal";
 import { useLocation } from "react-router-dom";
 import { getToken } from "../utils/auth";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const Task = () => {
@@ -20,8 +21,21 @@ const Task = () => {
         Authorization: `Bearer ${getToken()}`
       }
     })
-      .then((res) => setData(res.data.data))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        setData(res.data.data);
+        console.log(res.data.data)
+        if (res.data.data.length === 0) {
+          setModalOpen(true);
+          toast.info(`Create Any Task to See Tasks`)
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.data.message || "Something Went Wrong")
+        } else {
+          toast.error(err.message);
+        }
+      });
   }
 
   useEffect(() => {
@@ -48,6 +62,7 @@ const Task = () => {
   return (
     <div>
       <Header />
+      <ToastContainer />
       <div className="flex justify-between px-5 py-3">
         <h2 className="text-2xl font-semibold">My Tasks</h2>
         <div className="btns flex justify-center items-center gap-3">
@@ -61,29 +76,31 @@ const Task = () => {
       </div>
 
       <div className="px-5">
-        <div className="tasks">
-          {todoTasks && todoTasks.length > 0
-            &&
-            <TaskSection title="To Do" >
-              <TaskTable tasks={todoTasks} />
-            </TaskSection>
-          }
+        {data && data.length > 0 ? (
+          <div className="tasks">
+            {todoTasks?.length > 0 && (
+              <TaskSection title="To Do">
+                <TaskTable tasks={todoTasks} />
+              </TaskSection>
+            )}
 
-          {inProgressTasks && inProgressTasks.length > 0
-            &&
-            <TaskSection title="In Progress" >
-              <TaskTable tasks={inProgressTasks} />
-            </TaskSection>
-          }
+            {inProgressTasks?.length > 0 && (
+              <TaskSection title="In Progress">
+                <TaskTable tasks={inProgressTasks} />
+              </TaskSection>
+            )}
 
-          {completedTasks && completedTasks.length > 0
-            &&
-            <TaskSection title="Done">
-              <TaskTable tasks={completedTasks} />
-            </TaskSection>
-          }
-        </div>
+            {completedTasks?.length > 0 && (
+              <TaskSection title="Done">
+                <TaskTable tasks={completedTasks} />
+              </TaskSection>
+            )}
+          </div>
+        ) : (
+          <p className="flex justify-center items-center h-full w-full text-2xl font-semibold italic">No Task Added</p>
+        )}
       </div>
+
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

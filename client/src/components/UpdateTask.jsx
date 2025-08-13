@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useParams } from 'react-router-dom';
 import { getToken } from '../utils/auth';
+import { toast } from 'react-toastify';
 
 const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
     let { id } = useParams()
@@ -29,8 +30,13 @@ const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
         }).then((res) => {
             onSubmit();
             console.log(res)
+            toast.success(res.data.message);
         }).catch((err) => {
-            console.log(err)
+            if (err.response) {
+                toast.error(err.response.data.message || "Something Went Wrong")
+            } else {
+                toast.error("Network/Error:", err.message);
+            }
         })
     }
 

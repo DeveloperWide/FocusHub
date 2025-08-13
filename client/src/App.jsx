@@ -15,19 +15,21 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
-import Quote from "./components/Quote";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<Home />}>
-        <Route index element={<Landing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-      </Route>
+    <>
+    <ToastContainer />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home />}>
+          <Route index element={<Landing />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+        </Route>
 
-      {/* Sidebar Layout Routes */}
+        {/* Sidebar Layout Routes */}
         <Route
           path="/app"
           element={
@@ -46,7 +48,8 @@ const App = () => {
           <Route path="settings" element={<Settings />} />
           <Route path="logout" element={<Logout />} />
         </Route>
-    </Routes>
+      </Routes>
+    </>
   )
 }
 
