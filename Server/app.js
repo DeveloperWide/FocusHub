@@ -34,6 +34,11 @@ app.use("/api/auth" , authRoutes);
 app.use("/api/profile" , profileRoutes);
 app.use("/api/quote" , quoteRoutes);
 
+app.use((err, req, res, next) => {
+    const {status, message} = err;
+    console.log(status, message)
+}) 
+
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)
 })

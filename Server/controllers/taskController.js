@@ -1,11 +1,12 @@
 const Task = require("../models/Task");
 
 module.exports.getTasks = async (req, res) => {
+    
     try {
         const allTasks = await Task.find({user: req.user.id});
         res.json({
             success: true,
-            message: "All Your tasks here...",
+            message: "All Tasks Retrived...!",
             data: allTasks
         })
     } catch (err) {
@@ -41,7 +42,10 @@ module.exports.createTask = async (req, res) => {
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Server Error Occurred"
+        })
     }
 }
 
