@@ -16,6 +16,7 @@ const ShowTask = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const token = getToken();
+  console.log(token)
 
   useEffect(() => {
     axios
