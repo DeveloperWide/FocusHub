@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-// const cookieParser = require("cookie-parser")
 const { connectDb } = require("./config/db");
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
 const PORT = 8080;
+const errorHandler = require("./utils/errorHandler")
+const ExpressError = require("./utils/ExpressError")
 
 // Connect to Db
 connectDb().then(() => {
@@ -34,10 +36,12 @@ app.use("/api/auth" , authRoutes);
 app.use("/api/profile" , profileRoutes);
 app.use("/api/quote" , quoteRoutes);
 
-app.use((err, req, res, next) => {
-    const {status, message} = err;
-    console.log(status, message)
-}) 
+app.use((req, res, next) => {
+  next(new ExpressError(404, `Route ${req.originalUrl} not found`));
+});
+
+// Error Handling Middleware
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is listing on PORT 8080`)

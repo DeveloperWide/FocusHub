@@ -1,21 +1,21 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const wrapAsync = require("../utils/asyncWrapper");
+const ExpressError = require("../utils/ExpressError");
 
 const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
 
-exports.signup = async (req, res) => {
-  try {
+exports.signup = wrapAsync(
+  async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email })
-    if (existingUser) return res.status(400).json({
-      message: "User Already Exist"
-    });
+    if (existingUser) throw new ExpressError(400, "User Already Exists")
 
     let user = new User({ name, email, password });
     let svdUser = await user.save();
-    console.log(svdUser)
+    if(!svdUser) throw new ExpressError(500, "failed To Save User")
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.status(201).json({
@@ -28,30 +28,18 @@ exports.signup = async (req, res) => {
         profileImage: svdUser.profileImage
       }
     });
-
-  } catch (err) {
-    res.status(500).json({
-      message: err.message
-    })
   }
-}
+)
 
-exports.login = async (req, res) => {
-  console.log(req.body)
-  try {
+exports.login = wrapAsync(
+  async (req, res, next) => {
 
     const { email, password } = req.body;
     let user = await User.findOne({ email });
-    console.log(req.body, user)
-    if (!user) return res.status(400).json({
-      message: "Invalid credentials"
-    });
+    if (!user) throw new ExpressError(400, "Invalid credentials")
 
     let isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch)
-    if (!isMatch) return res.status(400).json({
-      message: "Invalid credentials"
-    });
+    if (!isMatch) throw new ExpressError(400, "Invalid credentials")
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
@@ -65,10 +53,5 @@ exports.login = async (req, res) => {
         profileImage: user.profileImage
       }
     })
-
-  } catch (er) {
-    res.status(500).json({
-      message: "Server Error Occurred"
-    })
   }
-}
+)
