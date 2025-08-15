@@ -13,14 +13,13 @@ import Signup from "./pages/Signup";
 import Landing from "./components/Landing";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />}>
@@ -45,7 +44,6 @@ const App = () => {
           <Route path="time" element={<Time />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
