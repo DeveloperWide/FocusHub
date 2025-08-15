@@ -34,7 +34,7 @@ exports.signup = wrapAsync(
 
 exports.login = wrapAsync(
   async (req, res, next) => {
-
+    console.log(req.body);
     const { email, password } = req.body;
     let user = await User.findOne({ email });
     if (!user) throw new ExpressError(400, "Invalid credentials")
