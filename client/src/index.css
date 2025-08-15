@@ -10,6 +10,9 @@
   @apply py-1;
 }
 
+.icon-box{
+  @apply cursor-pointer rounded-[50%] p-[10px];
+}
 
 .sidebar, .createTaskScrollbar{
   scrollbar-width: none;
