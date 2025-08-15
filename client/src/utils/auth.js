@@ -1,4 +1,5 @@
 export const saveUserData = (token, user) => {
+    console.log(token, user);
     localStorage.setItem("token", token),
     localStorage.setItem("user", JSON.stringify(user))
 }

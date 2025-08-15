@@ -22,6 +22,7 @@ const Login = () => {
     e.preventDefault();
     axios.post("/api/auth/login", data).then((res) => {
       const {token , user} = res.data;
+      console.log(res);
       saveUserData(token, user);
       toast.success(res.data.message)
       navigate("/app/dashboard")
