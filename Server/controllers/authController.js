@@ -7,8 +7,9 @@ const ExpressError = require("../utils/ExpressError");
 const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
 
 exports.signup = wrapAsync(
-  async (req, res) => {
+  async (req, res, next) => {
     const { name, email, password } = req.body;
+    console.log(req.body)
 
     const existingUser = await User.findOne({ email })
     if (existingUser) throw new ExpressError(400, "User Already Exists")
