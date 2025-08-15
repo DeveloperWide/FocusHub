@@ -11,7 +11,6 @@ connectDb().then(() => {
 })
 
 const initDb = async () => {
-    await Task.deleteMany({});
     const allTasks = await Task.insertMany(tasks);
     console.log(allTasks)
 }
