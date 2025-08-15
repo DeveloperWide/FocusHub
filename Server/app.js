@@ -27,7 +27,7 @@ const quoteRoutes = require("./routes/quoteRoutes")
 app.use(express.json());
 // app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:5173"
+    origin: "https://focushub-ygwq.onrender.com"
 }))
 
 app.use("/api/tasks" , taskRoutes);
