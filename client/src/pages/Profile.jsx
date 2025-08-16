@@ -3,6 +3,7 @@ import axios from "axios";
 import { getToken, getUser, saveUserData } from '../utils/auth';
 
 const Profile = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
     const [preview, setPreview] = useState(null);
     const [file, setFile] = useState(null);
     const [data, setData] = useState({
@@ -37,7 +38,7 @@ const Profile = () => {
         formData.append("name", data.name);
         formData.append("email", data.email);
         if (file) formData.append('profileImage', file);
-        axios.put("/api/profile/update", formData, {
+        axios.put(`${BASE_URL}/api/profile/update`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

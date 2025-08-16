@@ -10,6 +10,7 @@ import { getToken } from '../utils/auth';
 import { toast } from 'react-toastify';
 
 const ShowTask = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -20,7 +21,7 @@ const ShowTask = () => {
 
   useEffect(() => {
     axios
-      .get(`/api/tasks/${id}`, {
+      .get(`${BASE_URL}/api/tasks/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }})
@@ -36,7 +37,7 @@ const ShowTask = () => {
     setProgress(value);
 
     try {
-      await axios.patch(`/api/tasks/${id}`, { inProgress: value } , {
+      await axios.patch(`${BASE_URL}/api/tasks/${id}`, { inProgress: value } , {
       headers: {
         Authorization: `Bearer ${token}`
       }});
@@ -47,7 +48,7 @@ const ShowTask = () => {
 
   const refetchTask = () => {
     axios
-      .get(`/api/tasks/${id}`, {
+      .get(`${BASE_URL}/api/tasks/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }}
@@ -59,7 +60,7 @@ const ShowTask = () => {
   };
 
   const deleteTask = () => {    
-    axios.delete(`/api/tasks/${id}`, {
+    axios.delete(`${BASE_URL}/api/tasks/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

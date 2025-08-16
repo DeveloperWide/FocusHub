@@ -5,6 +5,7 @@ import { saveUserData } from '../utils/auth';
 import { toast } from 'react-toastify';
 
 const Login = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
   const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
@@ -20,7 +21,7 @@ const Login = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    axios.post("/api/auth/login", data).then((res) => {
+    axios.post(`${BASE_URL}/api/auth/login`, data).then((res) => {
       const {token , user} = res.data;
       console.log(res);
       saveUserData(token, user);

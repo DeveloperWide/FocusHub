@@ -30,14 +30,14 @@ app.use(cors({
     origin: "https://focushub-ygwq.onrender.com"
 }))
 
-app.use("/api/tasks" , taskRoutes);
-app.use("/api/goals" , goalRoutes);
-app.use("/api/auth" , authRoutes);
-app.use("/api/profile" , profileRoutes);
-app.use("/api/quote" , quoteRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/goals", goalRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/quote", quoteRoutes);
 
 app.use((req, res, next) => {
-  next(new ExpressError(404, `Route ${req.originalUrl} not found`));
+    next(new ExpressError(404, `Route ${req.originalUrl} not found`));
 });
 
 // Error Handling Middleware

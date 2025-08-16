@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react'
 
 const Goal = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
   let [goal, setGoal] = useState({
     title: ""
   });
@@ -16,7 +17,7 @@ const Goal = () => {
   }
 
   const fetchGoals = () => {
-    axios.get("/api/goals").then((res) => {
+    axios.get(`${BASE_URL}/api/goals`).then((res) => {
       console.log(res.data.data)
       setGoals(res.data.data)
     }).catch((err) => {
@@ -31,7 +32,7 @@ const Goal = () => {
 
   const addTask = () => {
     if (goal.title.trim() != "") {
-      axios.post("/api/goals/", goal).then((res) => {
+      axios.post(`${BASE_URL}/api/goals`, goal).then((res) => {
         console.log(res);
         setGoal(() => {
           return { title: "" }
@@ -46,7 +47,7 @@ const Goal = () => {
 
   const deleteGoal = (goalId) => {
     console.log(goalId)
-    axios.delete(`/api/goals/${goalId}/`).then((res) => {
+    axios.delete(`${BASE_URL}/api/goals/${goalId}`).then((res) => {
       console.log(res.data.message);
       fetchGoals();
     }).catch((err) => {

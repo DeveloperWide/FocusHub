@@ -5,6 +5,7 @@ import { getToken } from '../utils/auth';
 import { toast } from 'react-toastify';
 
 const TaskModal = ({ isOpen, onClose, onSubmit }) => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
     const [data, setData] = useState({
         title: "",
         description: "",
@@ -21,7 +22,7 @@ const TaskModal = ({ isOpen, onClose, onSubmit }) => {
         // headers:{
         //     Authorization: `Bearer ${token}`,
         // }
-        axios.post("/api/tasks", data, {
+        axios.post(`${BASE_URL}/api/tasks`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

@@ -5,9 +5,11 @@ import { useEffect } from "react";
 const Quote = () => {
     const [quote, setQuote] = useState(null);
     const [author, setAuthor] = useState(null);
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 
     useEffect(() => {
-        axios.get("/api/quote").then((res) => {
+        axios.get(`${BASE_URL}/api/quote`).then((res) => {
             console.log(res.data.data);
             setQuote(res.data.data.quote);
             setAuthor(res.data.data.author);

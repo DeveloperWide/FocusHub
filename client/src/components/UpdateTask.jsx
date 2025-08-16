@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 
 const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
     let { id } = useParams();
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
     // Keep original task for comparison
     const originalTaskRef = useRef(task);
@@ -36,7 +37,7 @@ const UpdateTask = ({ task, isOpen, onClose, onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`/api/tasks/${id}`, data, {
+        axios.put(`${BASE_URL}/api/tasks/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${getToken()}`
             }

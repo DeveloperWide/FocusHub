@@ -11,12 +11,13 @@ import { toast, ToastContainer } from "react-toastify";
 
 
 const Task = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
   const [data, setData] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const location = useLocation();
 
   const fetchTasks = () => {
-    axios.get("/api/tasks/", {
+    axios.get(`${BASE_URL}/api/tasks/`, {
       headers: {
         Authorization: `Bearer ${getToken()}`
       }
