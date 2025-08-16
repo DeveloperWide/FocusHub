@@ -37,14 +37,11 @@ exports.login = wrapAsync(
     console.log(req.body);
     const { email, password } = req.body;
     let user = await User.findOne({ email });
-    console.log(user)
     if (!user) throw new ExpressError(400, "Invalid credentials")
     let isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new ExpressError(400, "Invalid credentials")
-      console.log(isMatch)
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    console.log(token);
     res.status(200).json({
       message: `${user.name} Successfully login`,
       token,
