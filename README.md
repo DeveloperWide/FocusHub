@@ -13,10 +13,3 @@ A productivity app that helps you stay focused, track goals, and manage tasks di
 ## Tech Stack
 - React, TailwindCSS
 - Node.js, Express, MongoDB
-
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-
-
