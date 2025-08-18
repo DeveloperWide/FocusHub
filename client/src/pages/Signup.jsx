@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 const Signup = () => {
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  console.log(BASE_URL);
   const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",

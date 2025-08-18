@@ -49,7 +49,7 @@ const TaskModal = ({ isOpen, onClose, onSubmit }) => {
             return { ...taskObj, [e.target.name]: e.target.value }
         })
     }
-
+    console.log(data)
     return (
         <>
             <div className="fixed inset-0 bg-[#050404aa] flex items-center justify-center z-50">
