@@ -10,6 +10,15 @@
   @apply py-1;
 }
 
+.icon{
+  @apply text-white font-semibold px-3 py-2 rounded-xl cursor-pointer;
+  transition: 250ms ease;
+}
+
+.icon:hover{
+  transform: translateY(-3px)
+}
+
 .icon-box{
   @apply cursor-pointer rounded-[50%] p-[10px];
 }

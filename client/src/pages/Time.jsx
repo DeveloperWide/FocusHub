@@ -1,46 +1,42 @@
-import React, { useEffect, useState } from 'react'
-import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { TrendingUp } from "lucide-react"
-import BoltIcon from '@mui/icons-material/Bolt';
+import React, { useEffect, useState } from "react";
+import { Clock4, Hourglass, Logs, Zap, } from "lucide-react";
+import {Link} from "react-router-dom"
 
 const Time = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
+    const intervalId = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(intervalId);
   }, []);
+
   return (
-    <div className='h-full flex flex-col justify-center items-center'>
-      <h1 className='text-6xl sm:text-8xl font-bold text-gray-900'>{currentTime.toLocaleTimeString()}</h1>
-      <div className='py-5' style={{
-        display: "flex",
-        gap: "12px"
-      }}>
-        <div className='icon-box hover:bg-[rgba(37,99,235,0.15)]'>
-          <TrendingUp />
-        </div>
+    <div className="h-screen flex flex-col">
 
-        <div className='icon-box hover:bg-[rgba(249,116,22,0.28)]'>
-          <CalendarMonthIcon sx={{ color: "#F97316", fontSize: 28 }} titleAccess='Focus Hour Log'/>
-        </div>
-
-        <div className='icon-box hover:bg-[rgba(22,163,74,0.15)]'>
-          <TrendingUpIcon sx={{ color: "#16A34A", fontSize: 28 }} titleAccess='Productivity Streak'/>
-        </div>
-
-        <div className='icon-box hover:bg-[rgba(234,178,8,0.32)]'>
-          <BoltIcon sx={{ color: "#EAB308", fontSize: 28 }} titleAccess='Quick Start Timer'/>
+      {/* Timer */}
+      <div className="flex flex-col justify-center items-center flex-1">
+        <h1 className="text-6xl sm:text-8xl font-bold text-gray-900">
+          {currentTime.toLocaleTimeString()}
+        </h1>
+        {/* Buttons */}
+        <div className="icons flex py-5 gap-3">
+          <button className="icon bg-blue-400 hover:bg-blue-500" title="Focus Timer">
+             <Link to="/focus-timer"><Hourglass /></Link>
+            </button>
+          <button className="icon bg-gray-400 hover:bg-gray-500" title="Activity Logs">
+            <Link to="/activity-logs"><Logs /></Link>
+            </button>
+          <button className="icon bg-purple-400 hover:bg-purple-500" title="Pomodoro">
+            <Link to="/pomodoro-method"><Clock4 /></Link>
+            </button>
+          <button className="icon bg-yellow-400 hover:bg-yellow-500" title="Productivity Streak">
+            <Link to="productivity-streak"><Zap /></Link>
+            </button>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Time
+export default Time;

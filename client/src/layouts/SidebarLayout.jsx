@@ -5,9 +5,7 @@ import OutlinedFlagRoundedIcon from '@mui/icons-material/OutlinedFlagRounded';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
-import AccessAlarmsRoundedIcon from '@mui/icons-material/AccessAlarmsRounded';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import SettingsIcon from '@mui/icons-material/Settings';
+import AccessAlarmsRoundedIcon from '@mui/icons-material/AccessAlarmsRounded';``
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Outlet } from 'react-router-dom';
 import { getUser } from '../utils/auth';

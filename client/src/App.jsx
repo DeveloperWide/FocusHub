@@ -41,7 +41,12 @@ const App = () => {
           <Route path="tasks" element={<Task />} />
           <Route path="tasks/:id" element={<ShowTask />} />
           <Route path="goals" element={<Goal />} />
-          <Route path="time" element={<Time />} />
+          <Route path="time" element={<Time />}>
+            <Route path="focus-timer" element/>
+            <Route path="activity-logs" element/>
+            <Route path="pomodoro-method" element/>
+            <Route path="productivity-streak" element/>
+          </Route>
           <Route path="calendar" element={<Calendar />} />
           <Route path="profile" element={<Profile />} />
           <Route path="logout" element={<Logout />} />
