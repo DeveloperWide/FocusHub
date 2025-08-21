@@ -1,30 +1,58 @@
-import { useReducer, useState, useRef } from "react";
+import { useState } from "react";
 
 const TimeInput = ({ onChange, disabled }) => {
-    const [inputValue, setInputValue] = useState("");
-    const inputRef = useRef(null)
-    console.log(inputRef)
-    // console.log(inputRef.current.value)
-    const inputOnChangeHanlder = (e) => {
-        setInputValue(parseInt(e.target.value));
-    }
+  const [inputValue, setInputValue] = useState("");
 
-    return (
-        <div className="flex justify-center">
-            <input
-                type="number"
-                placeholder="Set Mins"
-                ref={inputRef}
-                value={inputValue}
-                className="w-28 p-3 rounded-xl text-center bg-white/10 backdrop-blur-sm border border-text text-text placeholder-text focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                onChange={inputOnChangeHanlder}
-            />
-            {parseInt(inputRef.current.value) >= 1 ? <button onClick={() => {
-                onChange(Number(inputValue))
-                setInputValue(null)
-            }} disabled={disabled} className={`mx-2 px-3 py-2 rounded font-semibold text-white ${disabled ? "bg-gray-700 cursor-not-allowed" : "bg-green-600 cursor-pointer"}`}>Update Time</button> : "Please Enter At least 1 Min" }
-        </div>
-    );
+  const inputOnChangeHandler = (e) => {
+    const val = e.target.value;
+    // Allow only numbers, prevent negatives
+    if (val === "" || /^[0-9]+$/.test(val)) {
+      setInputValue(val);
+    }
+  };
+
+  const handleUpdate = () => {
+    const num = Number(inputValue);
+    if (num >= 1) {
+      onChange(num);
+      setInputValue(""); // reset input
+    }
+  };
+
+  const isValid = inputValue && Number(inputValue) >= 1;
+
+  return (
+    <div className="flex justify-center items-center gap-3">
+      {/* Input */}
+      <input
+        type="number"
+        placeholder="Set Mins"
+        value={inputValue}
+        min="1"
+        className="w-32 p-3 rounded-xl text-center 
+                   bg-white/10 backdrop-blur-md 
+                   border border-gray-300 text-gray-400 font-semibold text-xl
+                   placeholder-gray-400 
+                   focus:outline-none focus:ring-2 focus:ring-blue-400 
+                   transition-all duration-300"
+        onChange={inputOnChangeHandler}
+        disabled={disabled}
+      />
+
+      {/* Button */}
+      <button
+        onClick={handleUpdate}
+        disabled={!isValid || disabled}
+        className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300
+          ${!isValid || disabled
+            ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+          }`}
+      >
+        Update
+      </button>
+    </div>
+  );
 };
 
 export default TimeInput;

@@ -24,7 +24,7 @@ export const useTimer = (initialMinutes = 25) => {
     }
   }, [time]);
 
-  const start = () => setIsRunning(true);
+
   const stop = () => {
     setIsRunning(false);
     if (timerRef.current) {
@@ -32,10 +32,14 @@ export const useTimer = (initialMinutes = 25) => {
       timerRef.current = null;
     }
   };
+
+  const start = () => isRunning ? stop() : setIsRunning(true);
+
   const reset = () => {
     stop();
     setTime(initialMinutes * 60);
   };
+  
   const setMinutes = (mins) => {
     stop();
     setTime(mins * 60);
