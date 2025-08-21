@@ -1,39 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { Clock4, Hourglass, Logs, Zap, } from "lucide-react";
-import {Link} from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Clock4, Hourglass, List, Flame } from "lucide-react"; // Logs replaced with List
+import { Link, useLocation } from "react-router-dom";
 
 const Time = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const intervalId = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(intervalId);
   }, []);
 
-  return (
-    <div className="h-screen flex flex-col">
+  // helper for active button styles
+  const isActive = (path) => location.pathname.endsWith(path);
 
+  return (
+    <div className="h-full flex flex-col justify-center">
       {/* Timer */}
-      <div className="flex flex-col justify-center items-center flex-1">
+      <div className="flex flex-col justify-center items-center py-6">
         <h1 className="text-6xl sm:text-8xl font-bold text-gray-900">
           {currentTime.toLocaleTimeString()}
+          &nbsp;
+          {currentTime.getHours() >= 12 ? "PM" : "AM"}
         </h1>
-        {/* Buttons */}
-        <div className="icons flex py-5 gap-3">
-          <button className="icon bg-blue-400 hover:bg-blue-500" title="Focus Timer">
-             <Link to="/focus-timer"><Hourglass /></Link>
-            </button>
-          <button className="icon bg-gray-400 hover:bg-gray-500" title="Activity Logs">
-            <Link to="/activity-logs"><Logs /></Link>
-            </button>
-          <button className="icon bg-purple-400 hover:bg-purple-500" title="Pomodoro">
-            <Link to="/pomodoro-method"><Clock4 /></Link>
-            </button>
-          <button className="icon bg-yellow-400 hover:bg-yellow-500" title="Productivity Streak">
-            <Link to="productivity-streak"><Zap /></Link>
-            </button>
-        </div>
+      </div>
+
+      {/* Navigation Icons */}
+      <div className="icons flex justify-center gap-4 py-5">
+        <Link
+          to="/app/focus-timer"
+          title="Focus Timer"
+          className={`icon p-3 rounded-xl text-white ${isActive("focus-timer") ? "bg-blue-800" : "bg-blue-400 hover:bg-blue-500"
+            }`}
+        >
+          <Hourglass />
+        </Link>
+
+        <Link
+          to="/app/activity-logs"
+          title="Activity Logs"
+          className={`icon p-3 rounded-xl text-white ${isActive("activity-logs") ? "bg-gray-600" : "bg-gray-400 hover:bg-gray-500"
+            }`}
+        >
+          <List />
+        </Link>
+
+        <Link
+          to="/app/pomodoro-method"
+          title="Pomodoro"
+          className={`icon p-3 rounded-xl text-white ${isActive("pomodoro-method") ? "bg-purple-600" : "bg-purple-400 hover:bg-purple-500"
+            }`}
+        >
+          <Clock4 />
+        </Link>
+
+        <Link
+          to="/app/productivity-streak"
+          title="Productivity Streak"
+          className={`icon p-3 rounded-xl text-white ${isActive("productivity-streak") ? "bg-yellow-600" : "bg-yellow-400 hover:bg-yellow-500"
+            }`}
+        >
+          <Flame />
+        </Link>
       </div>
     </div>
   );
