@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import ringtone from "../assets/ringtone.mp3";
 
 export const useTimer = (initialMinutes = 25) => {
@@ -6,7 +7,8 @@ export const useTimer = (initialMinutes = 25) => {
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
   const audioRef = useRef(null);
-  const isCompletedTimerRef = useRef(false)
+  const initialTimeRef = useRef(initialMinutes * 60) // remember session length
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // STOP Timer at 0 
   // Store intial Time ref
@@ -18,10 +20,6 @@ export const useTimer = (initialMinutes = 25) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
             setIsRunning(false);
-            if(!isCompletedTimerRef.current){
-              isCompletedTimerRef.current = true;
-              console.log(isCompletedTimerRef)
-            }
             // Play Ringtone
             playAudio();
 
@@ -63,19 +61,28 @@ export const useTimer = (initialMinutes = 25) => {
     stopAudio();
   };
 
-
+  const sendFocusData = (minutes) => {
+    console.log(minutes)
+    axios.post(`${BASE_URL}/api/focus/`,).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   const start = () => isRunning ? stop() : setIsRunning(true);
 
   const reset = () => {
     stop();
     setTime(initialMinutes * 60);
+    initialTimeRef.current = initialMinutes * 60;
   };
 
   const setMinutes = (mins) => {
     stop();
     setTime(mins * 60);
+    initialTimeRef.current = mins * 60;
   };
 
-  return { time, isRunning, start, stop, reset, setMinutes , isCompletedTimerRef };
+  return { time, isRunning, start, stop, reset, setMinutes  };
 };
