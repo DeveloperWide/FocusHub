@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { updateTimer } from "../utils/helper";
 
 const TimeInput = ({ onChange, disabled }) => {
   const [inputValue, setInputValue] = useState("");
@@ -10,14 +11,15 @@ const TimeInput = ({ onChange, disabled }) => {
       setInputValue(val);
     }
   };
-
+  const num = Number(inputValue);
+  
   const handleUpdate = () => {
-    const num = Number(inputValue);
-    if (num >= 1) {
-      onChange(num);
-      setInputValue(""); // reset input
-    }
+    updateTimer(num, onChange, setInputValue)
   };
+
+  const onKeyDownHandler = (e) => {
+    if(e.key === "Enter") updateTimer(num, onChange, setInputValue)
+  }
 
   const isValid = inputValue && Number(inputValue) >= 1;
 
@@ -29,6 +31,7 @@ const TimeInput = ({ onChange, disabled }) => {
         placeholder="Set Mins"
         value={inputValue}
         min="1"
+        onKeyDown={onKeyDownHandler}
         className="w-32 p-3 rounded-xl text-center 
                    bg-white/10 backdrop-blur-md 
                    border border-gray-300 text-gray-400 font-semibold text-xl

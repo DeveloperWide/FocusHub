@@ -1,41 +1,76 @@
 import { useState } from "react";
+import { checkInputValue } from "../utils/helper";
 
 const TimerDisplay = ({ time }) => {
   const formatTime = (seconds) => {
     const abs = Math.abs(seconds);
-    const mins = String(Math.floor(abs / 60)).padStart(2, "0");
-    const secs = String(abs % 60).padStart(2, "0");
-    return `${seconds < 0 ? "-" : ""}${mins}:${secs}`;
+    const hrs = Math.floor(abs / 3600);
+    const mins = Math.floor((abs % 3600) / 60);
+    const secs = abs % 60;
+
+    return hrs > 0
+      ? `${seconds < 0 ? "-" : ""}${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
+      : `${seconds < 0 ? "-" : ""}${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
-  const [task, setTask] = useState("Task Title here");
-  const onChangeHandler = (e) => {
-    setTask(e.target.value)
-  }
+
+  const [task, setTask] = useState("");
+  const [inputValue, setInputValue] = useState("");
+
+  const onChangeHandler = (e) => setInputValue(e.target.value);
+
+  const onKeyDownHandler = (e) => {
+    if (e.key === "Enter") checkInputValue(inputValue, setTask, setInputValue);
+  };
+
+  const addTask = () => checkInputValue(inputValue, setTask, setInputValue);
 
   return (
-      <div className="rounded-xl p-4 mb-4 text-center overflow-hidden">
-        <div className="task">
-          <input
-            type="text"
-            name="task"
-            id="task"
-            value={task}
-            onChange={onChangeHandler}
-            placeholder="Enter Task Title Here"
-            className="w-70 p-3 rounded-xl text-center 
-                   bg-white/10 backdrop-blur-md 
-                   border border-gray-300 text-gray-700 capitalize text-xl
-                   placeholder-gray-400 
-                   focus:outline-none focus:ring-2 focus:ring-blue-400 
-                   transition-all duration-300"
-          />
-          <button className="px-4 ms-1 py-2 rounded-lg font-semibold transition-all duration-300 bg-green-600 hover:bg-green-700 text-white cursor-pointer">Add</button>
-        </div>
-        <h2 className="taskTitle text-center py-5 px-3">{task}</h2>
-        <div className="text-8xl sm:text-9xl font-bold text-gray-900 tracking-wider">
-          {formatTime(time)}
-        </div>
+    <div className="text-center">
+      {/* Task Input */}
+      <div className="flex items-center justify-center gap-2">
+        <input
+          type="text"
+          name="task"
+          id="task"
+          value={inputValue}
+          autoComplete="off"
+          onKeyDown={onKeyDownHandler}
+          onChange={onChangeHandler}
+          placeholder="Enter your focus task..."
+          className="w-64 sm:w-80 p-3 rounded-xl text-center 
+                     bg-gray-50/80 text-gray-800 placeholder-gray-400 text-lg
+                     border border-gray-300 
+                     focus:outline-none focus:ring-2 focus:ring-indigo-400 
+                     transition-all duration-300 shadow-sm"
+        />
+        <button
+          onClick={addTask}
+          className="px-5 py-2 rounded-xl font-semibold 
+                     bg-gradient-to-r from-green-500 to-emerald-600 
+                     hover:from-green-600 hover:to-emerald-700 
+                     text-white shadow-md hover:shadow-lg cursor-pointer
+                     transition-all duration-300"
+        >
+          Add
+        </button>
       </div>
+
+      {/* Task Title */}
+      {task && (
+        <h2 className="taskTitle text-center mt-6 mb-4 text-2xl sm:text-3xl capitalize font-semibold text-gray-500 drop-shadow">
+          {task}
+        </h2>
+      )}
+
+      {/* Timer */}
+      <div
+        className="text-6xl mb-8 mt-4 sm:text-8xl md:text-9xl font-extrabold 
+                   tracking-wider 
+                   text-gray-900"
+      >
+        {formatTime(time)}
+      </div>
+    </div>
   );
 };
 
