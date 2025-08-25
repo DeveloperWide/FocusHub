@@ -61,3 +61,25 @@
 #email , #password , #name{
   @apply border px-3 py-2 rounded-2xl border-gray-500 outline-none mb-3;
 }
+
+
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+tbody tr:nth-child(even) {
+  background-color: #d9dee3ae; /* light gray */
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* white */
+}

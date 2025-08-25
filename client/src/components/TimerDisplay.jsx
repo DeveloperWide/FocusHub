@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { checkInputValue } from "../utils/helper";
+import { useContext } from "react";
+import { TaskContext } from "../context/TaskContext";
 
 const TimerDisplay = ({ time }) => {
+  const {task, setTask} = useContext(TaskContext)
   const formatTime = (seconds) => {
     const abs = Math.abs(seconds);
     const hrs = Math.floor(abs / 3600);
@@ -13,10 +16,10 @@ const TimerDisplay = ({ time }) => {
       : `${seconds < 0 ? "-" : ""}${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
-  const [task, setTask] = useState("");
   const [inputValue, setInputValue] = useState("");
-
-  const onChangeHandler = (e) => setInputValue(e.target.value);
+  const onChangeHandler = (e) => {
+    setInputValue(e.target.value);
+  };
 
   const onKeyDownHandler = (e) => {
     if (e.key === "Enter") checkInputValue(inputValue, setTask, setInputValue);
@@ -45,11 +48,11 @@ const TimerDisplay = ({ time }) => {
         />
         <button
           onClick={addTask}
-          className="px-5 py-2 rounded-xl font-semibold 
+          className={`px-5 py-2 rounded-xl font-semibold 
                      bg-gradient-to-r from-green-500 to-emerald-600 
                      hover:from-green-600 hover:to-emerald-700 
                      text-white shadow-md hover:shadow-lg cursor-pointer
-                     transition-all duration-300"
+                     transition-all duration-300`}
         >
           Add
         </button>

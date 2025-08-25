@@ -3,6 +3,7 @@ export const checkInputValue = (inputVal, setTask, setInputValue) => {
         setTask(inputVal);
         setInputValue("")
     } else {
+        isValue = false;
         toast.info("Write Task Name")
     }
 }

@@ -1,7 +1,6 @@
 const {connectDb} = require("../config/db");
-const Goal = require("../models/Goal");
-const Task = require("../models/Task");
-const tasks = require("./data");
+const Focus = require("../models/Focus");
+const activities = require("./data");
 
 connectDb().then(() => {
     console.log(`Connected To DB`);
@@ -11,8 +10,8 @@ connectDb().then(() => {
 })
 
 const initDb = async () => {
-    const allTasks = await Task.insertMany(tasks);
-    console.log(allTasks)
+    const allActivities = await Focus.insertMany(activities);
+    console.log(allActivities)
 }
 
 initDb();

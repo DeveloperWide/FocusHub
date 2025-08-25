@@ -8,7 +8,7 @@ const focusSchema = new Schema({
     },
     
     taskDuration: {
-        type: String,
+        type: Number,
         required: true
     }
 });

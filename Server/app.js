@@ -21,6 +21,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const focusRoutes = require("./routes/focusRoutes")
 
 app.use(express.json());
 
@@ -39,6 +40,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/focus", focusRoutes)
 
 // 404 Route Handler
 app.use((req, res, next) => {

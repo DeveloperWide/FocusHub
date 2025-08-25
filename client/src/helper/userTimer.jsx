@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 import ringtone from "../assets/ringtone.mp3";
+import { TaskContext } from "../context/TaskContext";
 
 export const useTimer = (initialMinutes = 25) => {
+  const {task, setTask} = useContext(TaskContext)
   const [time, setTime] = useState(initialMinutes * 60);
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
@@ -22,6 +24,8 @@ export const useTimer = (initialMinutes = 25) => {
             setIsRunning(false);
             // Play Ringtone
             playAudio();
+
+            sendFocusData(initialTimeRef.current)
 
             return 0;
           }
@@ -62,9 +66,9 @@ export const useTimer = (initialMinutes = 25) => {
   };
 
   const sendFocusData = (minutes) => {
-    console.log(minutes)
-    axios.post(`${BASE_URL}/api/focus/`,).then((res) => {
-      console.log(res)
+    console.log(minutes / 60)
+    axios.post(`${BASE_URL}/api/focus/`, {task: task , taskDuration : minutes/60}).then((res) => {
+      console.log(res);
     }).catch((err) => {
       console.log(err)
     })
