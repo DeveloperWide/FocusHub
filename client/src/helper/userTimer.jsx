@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 import ringtone from "../assets/ringtone.mp3";
 import { TaskContext } from "../context/TaskContext";
+import {getToken} from "../utils/auth"
 
 export const useTimer = (initialMinutes = 25) => {
   const {task, setTask} = useContext(TaskContext)
@@ -67,7 +68,11 @@ export const useTimer = (initialMinutes = 25) => {
 
   const sendFocusData = (minutes) => {
     console.log(minutes / 60)
-    axios.post(`${BASE_URL}/api/focus/`, {task: task , taskDuration : minutes/60}).then((res) => {
+    axios.post(`${BASE_URL}/api/focus/`, {task: task , taskDuration : minutes/60}, {
+       headers:{
+        Authorization: `Bearer ${getToken()}`
+       }
+    }).then((res) => {
       console.log(res);
     }).catch((err) => {
       console.log(err)

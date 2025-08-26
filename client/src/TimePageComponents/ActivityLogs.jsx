@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { getToken } from "../utils/auth";
 
 const ActivityLogs = () => {
   const [data, setData] = useState([]);
@@ -7,7 +8,11 @@ const ActivityLogs = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/focus/focus-tasks`)
+      .get(`${BASE_URL}/api/focus/focus-tasks`, {
+        headers: {
+          Authorization:`Bearer ${getToken()}`
+        }
+      })
       .then((res) => {
         setData(res.data.data || []);
       })

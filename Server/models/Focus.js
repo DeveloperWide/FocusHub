@@ -10,7 +10,14 @@ const focusSchema = new Schema({
     taskDuration: {
         type: Number,
         required: true
+    },
+
+    user:{
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }
+}, {
+    timestamps: true
 });
 
 const Focus = model("Focus" , focusSchema);
