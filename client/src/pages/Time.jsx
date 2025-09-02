@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 const Time = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const location = useLocation();
-  const isDisabled = true;
 
   useEffect(() => {
     const intervalId = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -41,7 +40,7 @@ const Time = () => {
           to="/app/productivity-streak"
           title="Productivity Streak"
           className={`icon p-3 rounded-xl text-white ${isActive("productivity-streak") ? "bg-yellow-600" : "bg-yellow-400 hover:bg-yellow-500"
-            } ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}
+            }`}
         >
           <Flame />
         </Link>
@@ -53,17 +52,6 @@ const Time = () => {
             }`}
         >
           <List />
-        </Link>
-
-        <Link
-          to="/app/pomodoro-method"
-          title="Pomodoro"
-          className={`icon p-3 rounded-xl text-white ${isActive("pomodoro-method")
-              ? "bg-purple-600"
-              : "bg-purple-400 hover:bg-purple-500"
-            } ${isDisabled ? "hidden" : ""}`}
-        >
-          <Clock4 />
         </Link>
 
 
