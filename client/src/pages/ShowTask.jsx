@@ -10,10 +10,9 @@ import { getToken } from '../utils/auth';
 import { toast } from 'react-toastify';
 
 const ShowTask = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const [progress, setProgress] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const token = getToken();
@@ -32,19 +31,6 @@ const ShowTask = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
-  const handleProgressChange = async (e) => {
-    const value = Number(e.target.value);
-    setProgress(value);
-
-    try {
-      await axios.patch(`${BASE_URL}/api/tasks/${id}`, { inProgress: value } , {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }});
-    } catch (error) {
-      console.error("Update failed", error);
-    }
-  };
 
   const refetchTask = () => {
     axios
@@ -103,43 +89,8 @@ const ShowTask = () => {
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="relative my-10">
-          <label htmlFor="task-range" className="block font-semibold text-[17px] mb-2">
-            Task Progress: <span className="text-blue-700 font-bold">{progress}%</span>
-          </label>
-          <input
-            id="task-range"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={progress}
-            onChange={handleProgressChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
-
-          {/* Large Screens: 0, 25, 75, 100 */}
-          <div className="hidden md:flex justify-between text-sm mt-2 px-1">
-            <span className="text-gray-500">Todo</span>
-            <span className="text-yellow-500 hidden lg:inline-block">In Progress (25%)</span>
-            <span className="text-yellow-500 hidden lg:inline-block">In Progress (75%)</span>
-            <span className="text-green-600">Done</span>
-          </div>
-
-          {/* Medium Screens Only: 50% */}
-          <div className="flex md:hidden justify-center text-sm mt-2">
-            <span className="text-yellow-600 font-semibold">50%</span>
-          </div>
-
-          {/* Small Screens: 0% 50% 100% */}
-          <div className="flex justify-between text-xs mt-2 md:hidden">
-            <span className="text-gray-500">0%</span>
-            <span className="text-gray-500">50%</span>
-            <span className="text-gray-500">100%</span>
-          </div>
-        </div>
-        <div className="btns flex justify-end gap-4 items-center px-2">
+        
+        <div className="btns flex justify-end gap-4 items-center px-2 py-4 pt-8">
           <button disabled={!data} className={`updateBtn ${!data ? "bg-green-100" : "bg-green-700"}`} onClick={() => setModalOpen(true)}>Update</button>
           <button className='deleteBtn bg-red-700' onClick={deleteTask}>Delete</button>
         </div>
