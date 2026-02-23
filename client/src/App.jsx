@@ -1,4 +1,4 @@
-import "./App.css"
+import "./App.css";
 import SidebarLayout from "./layouts/SidebarLayout";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
@@ -18,7 +18,7 @@ import { ToastContainer } from "react-toastify";
 import FocusTimer from "./TimePageComponents/FocusTimer";
 import ActivityLogs from "./TimePageComponents/ActivityLogs";
 import Pomodoro from "./TimePageComponents/Pomodoro";
-import ProductivityStreak from "./TimePageComponents/ProductivityStreak"
+import ProductivityStreak from "./TimePageComponents/ProductivityStreak";
 
 const App = () => {
   return (
@@ -47,7 +47,7 @@ const App = () => {
           <Route path="goals" element={<Goal />} />
           <Route path="time" element={<Time />} />
           <Route path="calendar" element={<Calendar />} />
-          <Route path="profile" element={<Profile />} />
+          {/* <Route path="profile" element={<Profile />} /> */}
           <Route path="focus-timer" element={<FocusTimer />} />
           <Route path="activity-logs" element={<ActivityLogs />} />
           <Route path="pomodoro-method" element={<Pomodoro />} />
@@ -56,7 +56,7 @@ const App = () => {
         </Route>
       </Routes>
     </>
-  )
-}
+  );
+};
 
 export default App;
