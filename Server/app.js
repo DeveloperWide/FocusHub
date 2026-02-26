@@ -21,15 +21,16 @@ const taskRoutes = require("./routes/taskRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
-const focusRoutes = require("./routes/focusRoutes")
+const focusRoutes = require("./routes/focusRoutes");
 
 app.use(express.json());
 
 // Dynamic CORS based on environment
 const corsOptions = {
-  origin: process.env.NODE_ENV === "production"
-    ? "https://focushub-ygwq.onrender.com"  // Production deployed URL
-    : "http://localhost:5173",             // Local development URL
+  origin:
+    process.env.NODE_ENV === "production"
+      ? "https://focushub-ygwq.onrender.com" // Production deployed URL
+      : "http://localhost:5173", // Local development URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
@@ -40,7 +41,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
-app.use("/api/focus", focusRoutes)
+app.use("/api/focus", focusRoutes);
 
 // 404 Route Handler
 app.use((req, res, next) => {
