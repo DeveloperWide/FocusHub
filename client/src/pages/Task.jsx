@@ -6,19 +6,68 @@ import { Link } from "react-router-dom";
 
 const Task = () => {
   // simple state holding tasks as strings
+  const [task, setTask] = useState({
+    title: "",
+    priority: "high",
+  });
+
   const [tasks, setTasks] = useState([]);
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
+
+  const priorityCount = {
+    high: tasks.filter((t) => t.priority == "high").length,
+    medium: tasks.filter((t) => t.priority == "medium").length,
+    low: tasks.filter((t) => t.priority == "low").length,
+  };
+
+  const onChangeHandler = (e) => {
+    setTask((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
 
   const handleAdd = () => {
-    const trimmed = input.trim();
+    console.log(task.title);
+    const trimmed = task.title.trim();
+
     if (!trimmed) {
       toast.info("Please enter a task");
       return;
     }
-    setTasks((prev) => [...prev, trimmed]);
-    setInput("");
+
+    if (
+      (task.priority == "high" && priorityCount.high >= 1) ||
+      (task.priority == "medium" && priorityCount.medium >= 2) ||
+      (task.priority == "low" && priorityCount.low >= 3)
+    ) {
+      toast.warning(
+        `You reached the task limit for priority ${task.priority}.`,
+      );
+      return;
+    }
+
+    const newTask = {
+      id: Date.now(),
+      title: trimmed,
+      priority: task.priority,
+    };
+
+    setTasks((prev) => [...prev, newTask]);
+    setTask({
+      title: "",
+      priority: "high",
+    });
   };
 
+  const priorityOrder = {
+    high: 1,
+    medium: 2,
+    low: 3,
+  };
+
+  const sortedTasks = [...tasks].sort(
+    (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
+  );
   return (
     <div>
       <ToastContainer />
@@ -30,8 +79,9 @@ const Task = () => {
             autoFocus={true}
             className="outline-none flex-1"
             placeholder="New task..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={task.title}
+            name="title"
+            onChange={onChangeHandler}
             slotProps={{
               input: {
                 startAdornment: (
@@ -43,6 +93,34 @@ const Task = () => {
               if (e.key === "Enter") handleAdd();
             }}
           />
+          <select
+            name="priority"
+            className="ml-auto border-none outline-none rounded px-1"
+            value={task.priority}
+            onChange={onChangeHandler}
+          >
+            <option
+              value="high"
+              disabled={priorityCount.high >= 1}
+              name="priority"
+            >
+              High
+            </option>
+            <option
+              value="medium"
+              disabled={priorityCount.medium >= 2}
+              name="priority"
+            >
+              Medium
+            </option>
+            <option
+              value="low"
+              disabled={priorityCount.low >= 2}
+              name="priority"
+            >
+              Low
+            </option>
+          </select>
           <button
             onClick={handleAdd}
             className="border rounded bg-[#2474d5] hover:bg-[#3f7ec7] text-white font-semibold cursor-pointer px-3 py-1.5"
@@ -63,36 +141,19 @@ const Task = () => {
       </p>
 
       <div className="px-5 mt-4">
-        {tasks.length > 0 ? (
+        {sortedTasks.length > 0 ? (
           <ul className="space-y-2">
-            {tasks.map((t, idx) => (
+            {sortedTasks.map((t) => (
               <li
-                key={idx}
-                className="border p-2 rounded bg-gray-50 flex items-center gap-2"
+                key={t.id}
+                className={`border p-2 rounded bg-gray-50 flex items-center gap-2 ${t.priority === "high" ? "border-red-500" : ""} ${t.priority === "medium" ? "border-green-500" : ""} ${t.priority === "low" ? "border-blue-500" : ""}`}
               >
                 <input
                   type="checkbox"
-                  name={`task-${idx}`}
-                  id={`task-${idx}`}
+                  name={`task-${t.id}`}
+                  id={`task-${t.id}`}
                 />
-                <label htmlFor={`task-${idx}`}>{t}</label>
-                <select
-                  name="task"
-                  className="ml-auto border-none outline-none rounded px-1"
-                >
-                  <option value="Priority" name="task" selected>
-                    Priority
-                  </option>
-                  <option value="Very Important" name="task">
-                    Very Important
-                  </option>
-                  <option value="Important" name="task">
-                    Important
-                  </option>
-                  <option value="Not Important" name="task">
-                    Not Important
-                  </option>
-                </select>
+                <label htmlFor={`task-${t.id}`}>{t.title}</label>
               </li>
             ))}
           </ul>
@@ -102,40 +163,6 @@ const Task = () => {
           </p>
         )}
       </div>
-
-      {/* <div className="px-5">
-        {data && data.length > 0 ? (
-          <div className="tasks">
-            {todoTasks?.length > 0 && (
-              <TaskSection title="To Do">
-                <TaskTable tasks={todoTasks} />
-              </TaskSection>
-            )}
-
-            {inProgressTasks?.length > 0 && (
-              <TaskSection title="In Progress">
-                <TaskTable tasks={inProgressTasks} />
-              </TaskSection>
-            )}
-
-            {completedTasks?.length > 0 && (
-              <TaskSection title="Done">
-                <TaskTable tasks={completedTasks} />
-              </TaskSection>
-            )}
-          </div>
-        ) : (
-          <p className="flex justify-center items-center h-full w-full text-2xl font-semibold italic">
-            No Task Added
-          </p>
-        )}
-      </div>
-
-      <TaskModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={() => onSubmit()}
-      />*/}
     </div>
   );
 };
