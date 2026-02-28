@@ -1,6 +1,6 @@
 const Task = require("../models/Task");
-const wrapAsync = require("../utils/asyncWrapper")
-const ExpressError = require("../utils/ExpressError")
+const wrapAsync = require("../utils/asyncWrapper");
+const ExpressError = require("../utils/ExpressError");
 
 module.exports.getTasks = wrapAsync(async (req, res, next) => {
   const allTasks = await Task.find({ user: req.user.id });
@@ -10,24 +10,24 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
   res.json({
     success: true,
     message: "All Tasks Retrieved...!",
-    data: allTasks
+    data: allTasks,
   });
 });
 
 module.exports.createTask = wrapAsync(async (req, res, next) => {
-  let inProgress;
-  if (req.body.status === "todo") {
-    inProgress = 0;
-  } else if (req.body.status === "in_Progress") {
-    inProgress = 50;
-  } else {
-    inProgress = 100;
+  const { title, priority } = req.body;
+
+  if (!title || !priority) {
+    return res.status(400).json({
+      message: "All fields are required",
+    });
   }
+
+  console.log(" Task Request Body : ", req.body);
 
   const newTask = new Task({
     ...req.body,
-    inProgress,
-    user: req.user.id
+    user: req.user.id,
   });
 
   const svdTask = await newTask.save();
@@ -36,7 +36,7 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
   res.status(201).json({
     success: true,
     message: "Task created successfully",
-    data: svdTask
+    data: svdTask,
   });
 });
 
@@ -47,27 +47,17 @@ module.exports.showTask = wrapAsync(async (req, res, next) => {
   res.json({
     success: true,
     message: "Your Task",
-    data: task
+    data: task,
   });
 });
 
-module.exports.updateTask = wrapAsync(async (req, res, next) => {
+/* module.exports.updateTask = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { inProgress } = req.body;
-
-  let status;
-  if (inProgress === 0) {
-    status = "todo";
-  } else if (inProgress === 100) {
-    status = "done";
-  } else {
-    status = "in_Progress";
-  }
 
   const updatedTask = await Task.findByIdAndUpdate(
     id,
-    { ...req.body, status },
-    { new: true }
+    { ...req.body },
+    { new: true },
   );
 
   if (!updatedTask) throw new ExpressError(404, "Task not found");
@@ -75,7 +65,7 @@ module.exports.updateTask = wrapAsync(async (req, res, next) => {
   res.json({
     success: true,
     message: "Task updated successfully",
-    data: updatedTask
+    data: updatedTask,
   });
 });
 
@@ -93,7 +83,7 @@ module.exports.updateTaskInProgress = wrapAsync(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Task Updated Successfully"
+    message: "Task Updated Successfully",
   });
 });
 
@@ -105,6 +95,7 @@ module.exports.deleteTask = wrapAsync(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Task Deleted Successfully"
+    message: "Task Deleted Successfully",
   });
 });
+ */
