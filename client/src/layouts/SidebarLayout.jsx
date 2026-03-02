@@ -32,8 +32,8 @@ const SidebarLayout = () => {
           {/* Top Header */}
           <div>
             <div className="flex justify-between items-center px-4">
-              <h2 className="text-3xl font-bold text-white drop-shadow-md flex items-center gap-1">
-                FocusHub <BarChartRoundedIcon className="text-blue-300" />
+              <h2 className="text-3xl font-bold text-green-600 drop-shadow-md flex items-center gap-1">
+                FocusHub <BarChartRoundedIcon className="text-green-600" />
               </h2>
               <button
                 onClick={toggleSidebar}
@@ -89,10 +89,10 @@ const SidebarLayout = () => {
                   <a
                     href={item.href}
                     className="flex items-center p-2 text-white rounded-lg 
-                hover:bg-white/20 hover:backdrop-blur-md transition-all duration-300 ease-in-out 
+                hover:bg-green-300/20 hover:backdrop-blur-md transition-all duration-300 ease-in-out 
                 hover:shadow-md hover:scale-[1.02]"
                   >
-                    <span className="text-blue-300">{item.icon}</span>
+                    <span className="text-green-600">{item.icon}</span>
                     <span className="ml-3">{item.label}</span>
                     {item.badge && (
                       <span className="ml-auto px-2 text-sm font-medium bg-blue-500/30 text-white rounded-full backdrop-blur-sm">
