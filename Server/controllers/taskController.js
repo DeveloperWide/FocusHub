@@ -1,6 +1,7 @@
 const Task = require("../models/Task");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
+const Goal = require("../models/Goal");
 
 module.exports.getTasks = wrapAsync(async (req, res, next) => {
   const allTasks = await Task.find({ user: req.user.id });
@@ -15,28 +16,38 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.createTask = wrapAsync(async (req, res, next) => {
-  const { title, priority } = req.body;
+  const { title, tag, priority } = req.body;
 
-  if (!title || !priority) {
+  if (!title || !tag || !priority) {
     return res.status(400).json({
       message: "All fields are required",
     });
   }
 
-  console.log(" Task Request Body : ", req.body);
+  let newTask;
+  if (req.body.tag === "task") {
+    newTask = new Task({
+      ...req.body,
+      user: req.user.id,
+    });
+  } else {
+    const goals = await Goal.find();
+    const goal = goals.find((g) => g.tag === req.body.tag);
 
-  const newTask = new Task({
-    ...req.body,
-    user: req.user.id,
-  });
+    console.log(goal);
+  }
+  // const newTask = new Task({
+  //   ...req.body,
+  //   user: req.user.id,
+  // });
 
-  const svdTask = await newTask.save();
-  if (!svdTask) throw new ExpressError(500, "Failed to create task");
+  // const svdTask = await newTask.save();
+  // if (!svdTask) throw new ExpressError(500, "Failed to create task");
 
   res.status(201).json({
     success: true,
     message: "Task created successfully",
-    data: svdTask,
+    // data: svdTask,
   });
 });
 
