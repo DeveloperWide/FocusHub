@@ -1,18 +1,38 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
+// import InputAdornment from "@mui/material/InputAdornment";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
 
 const Task = () => {
-  // simple state holding tasks as strings
+  const BASE_URL = import.meta.env.VITE_API_URL;
+  const [goals, setGoals] = useState([]);
   const [task, setTask] = useState({
     title: "",
     priority: "high",
+    tag: "task",
   });
 
   const [tasks, setTasks] = useState([]);
   // const [input, setInput] = useState("");
+
+  const fetchGoals = () => {
+    axios
+      .get(`${BASE_URL}/api/goals`)
+      .then((res) => {
+        console.log(res.data.data);
+        setGoals(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err?.response?.data?.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchGoals();
+  }, []);
 
   const priorityCount = {
     high: tasks.filter((t) => t.priority == "high").length,
@@ -50,12 +70,14 @@ const Task = () => {
       id: Date.now(),
       title: trimmed,
       priority: task.priority,
+      tag: task.tag,
     };
 
     setTasks((prev) => [...prev, newTask]);
     setTask({
       title: "",
       priority: "high",
+      tag: "task",
     });
   };
 
@@ -73,26 +95,31 @@ const Task = () => {
       <ToastContainer />
       {tasks.length < 5 && (
         <div className="header flex gap-2 w-[97%] justify-center items-center">
-          <TextField
-            id="task-input"
-            sx={{ m: 1 }}
-            autoFocus={true}
-            className="outline-none flex-1"
-            placeholder="New task..."
-            value={task.title}
-            name="title"
-            onChange={onChangeHandler}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">Task :</InputAdornment>
-                ),
-              },
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") handleAdd();
-            }}
-          />
+          <div className="flex w-full mx-2 my-2 rounded px-2">
+            <select
+              name="tag"
+              className="ml-auto border border-gray-300 text-gray-500 font-semibold my-2 mx-1 outline-none rounded px-2 capitalize"
+              value={task.tag}
+              onChange={onChangeHandler}
+            >
+              <option value="task" name="tag">
+                Task
+              </option>
+
+              {goals.length > 0 &&
+                goals.map((g) => <option key={g._id}>{g.tag}</option>)}
+            </select>
+            <TextField
+              id="task-input"
+              sx={{ m: 1 }}
+              autoFocus={true}
+              className="outline-none flex-1"
+              placeholder="New task..."
+              value={task.title}
+              name="title"
+              onChange={onChangeHandler}
+            />
+          </div>
           <select
             name="priority"
             className="ml-auto border-none outline-none rounded px-1"
