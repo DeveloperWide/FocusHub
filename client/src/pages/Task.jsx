@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
+import { axiosInstance } from "../utils/axiosInstance";
 
 const Task = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -67,13 +68,22 @@ const Task = () => {
     }
 
     const newTask = {
-      id: Date.now(),
       title: trimmed,
       priority: task.priority,
       tag: task.tag,
     };
 
-    setTasks((prev) => [...prev, newTask]);
+    // setTasks((prev) => [...prev, newTask]);
+
+    axiosInstance
+      .post(`/tasks`, newTask)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
     setTask({
       title: "",
       priority: "high",

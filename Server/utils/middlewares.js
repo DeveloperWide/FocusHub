@@ -6,7 +6,9 @@ module.exports.authenticateUser = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Authentication failed: No token provided." });
+      return res
+        .status(401)
+        .json({ message: "Authentication failed: No token provided." });
     }
 
     const token = authHeader.split(" ")[1];
@@ -17,6 +19,8 @@ module.exports.authenticateUser = (req, res, next) => {
 
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Authentication failed: Invalid or expired token." });
+    return res
+      .status(401)
+      .json({ message: "Authentication failed: Invalid or expired token." });
   }
 };
