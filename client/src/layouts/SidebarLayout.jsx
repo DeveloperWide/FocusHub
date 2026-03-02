@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
-import PersonIcon from "@mui/icons-material/Person";
 import OutlinedFlagRoundedIcon from "@mui/icons-material/OutlinedFlagRounded";
 import AddTaskRoundedIcon from "@mui/icons-material/AddTaskRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
@@ -15,7 +14,6 @@ const SIDEBAR_WIDTH = "w-64"; // 16rem
 
 const SidebarLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const user = getUser();
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
@@ -42,19 +40,6 @@ const SidebarLayout = () => {
                 <ClearRoundedIcon sx={{ fontSize: 30 }} />
               </button>
             </div>
-
-            {/* Profile Section */}
-            {/*  <div className="profile-card flex flex-col justify-center items-center w-full mt-4 pb-4 border-b border-white/20">
-              <img
-                src={`${user.profileImage.url}`}
-                className="rounded-full h-28 w-28 border-2 border-white/30 shadow-lg hover:scale-105 transition-transform duration-300"
-                alt="Profile"
-              />
-              <h2 className="text-xl font-semibold text-white mt-2">
-                {user.name}
-              </h2>
-              <p className="text-gray-300 text-sm">{user.email}</p>
-            </div> */}
 
             <hr className="w-full h-0.5 bg-white/20" />
 
@@ -83,7 +68,6 @@ const SidebarLayout = () => {
                   icon: <AccessAlarmsRoundedIcon />,
                   href: "/app/time",
                 },
-                // { label: "Profile", icon: <PersonIcon />, href: "/app/profile" },
               ].map((item, idx) => (
                 <li key={idx} className="px-4">
                   <a
