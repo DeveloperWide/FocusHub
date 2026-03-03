@@ -17,8 +17,9 @@ router.patch("/:id",authenticateUser, taskController.updateTask);
 
 // Update Complete Task 
 router.put("/:id",authenticateUser, taskController.updateTaskInProgress)
+ */
 
 // Delete Task
-router.delete("/:id",authenticateUser, taskController.deleteTask) */
+router.delete("/:id", authenticateUser, taskController.deleteTask);
 
 module.exports = router;
