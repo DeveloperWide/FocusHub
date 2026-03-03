@@ -1,14 +1,12 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-// import InputAdornment from "@mui/material/InputAdornment";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { useEffect } from "react";
-import { axiosInstance } from "../utils/axiosInstance";
+import { createTask, getTasks } from "../services/tasks";
+import { getGoals } from "../services/goals";
 
 const Task = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
   const [goals, setGoals] = useState([]);
   const [task, setTask] = useState({
     title: "",
@@ -17,23 +15,26 @@ const Task = () => {
   });
 
   const [tasks, setTasks] = useState([]);
-  // const [input, setInput] = useState("");
 
   const fetchGoals = () => {
-    axios
-      .get(`${BASE_URL}/api/goals`)
+    getGoals()
       .then((res) => {
-        console.log(res.data.data);
-        setGoals(res.data.data);
+        console.log(res.data);
+        setGoals(res.data);
       })
       .catch((err) => {
-        console.log(err?.response?.data?.message);
+        console.log(err);
       });
   };
 
   useEffect(() => {
+    getTasks().then((res) => {
+      setTasks(res.data);
+    });
     fetchGoals();
   }, []);
+
+  console.log(tasks);
 
   const priorityCount = {
     high: tasks.filter((t) => t.priority == "high").length,
@@ -75,14 +76,9 @@ const Task = () => {
 
     // setTasks((prev) => [...prev, newTask]);
 
-    axiosInstance
-      .post(`/tasks`, newTask)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    createTask(newTask).then((res) => {
+      console.log(res);
+    });
 
     setTask({
       title: "",

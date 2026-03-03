@@ -1,13 +1,13 @@
-import axios from "axios";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
+import { addGoal, getGoals, deleteGoal } from "../services/goals.js";
+
+// TASK : WORK ON ERRORS IN tryCatch
 
 const Goal = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
-
   let [goal, setGoal] = useState({
     title: "", //
     tag: "",
@@ -21,15 +21,14 @@ const Goal = () => {
     });
   };
 
-  const fetchGoals = () => {
-    axios
-      .get(`${BASE_URL}/api/goals`)
+  const fetchGoals = async () => {
+    getGoals()
       .then((res) => {
-        console.log(res.data.data);
-        setGoals(res.data.data);
+        console.log(res.data);
+        setGoals(res.data);
       })
       .catch((err) => {
-        console.log(err?.response?.data?.message);
+        console.log(err);
       });
   };
 
@@ -38,15 +37,15 @@ const Goal = () => {
   }, []);
 
   const addTask = () => {
-    console.log("Adding task...");
-    axios
-      .post(`${BASE_URL}/api/goals`, goal)
+    addGoal(goal)
       .then((res) => {
         console.log(res);
+        toast.success(res.message);
 
+        // Clear title and tag input after adding
         setGoal(() => {
           return { title: "", tag: "" };
-        }); // Clear title & tag after adding
+        });
 
         fetchGoals();
       })
@@ -57,12 +56,12 @@ const Goal = () => {
       });
   };
 
-  const deleteGoal = (goalId) => {
+  const removeGoal = (goalId) => {
     console.log(goalId);
-    axios
-      .delete(`${BASE_URL}/api/goals/${goalId}`)
+    deleteGoal(goalId)
       .then((res) => {
-        console.log(res.data.message);
+        console.log(res.message);
+        toast.success(res.message);
         fetchGoals();
       })
       .catch((err) => {
@@ -179,7 +178,7 @@ const Goal = () => {
                   </div>
 
                   <button
-                    onClick={() => deleteGoal(goal._id)}
+                    onClick={() => removeGoal(goal._id)}
                     className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 rounded-lg transition-all"
                   >
                     <ClearIcon

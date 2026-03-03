@@ -97,7 +97,7 @@ module.exports.updateTaskInProgress = wrapAsync(async (req, res, next) => {
     message: "Task Updated Successfully",
   });
 });
-
+ */
 module.exports.deleteTask = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
   const deleted = await Task.findByIdAndDelete(id);
@@ -109,4 +109,3 @@ module.exports.deleteTask = wrapAsync(async (req, res, next) => {
     message: "Task Deleted Successfully",
   });
 });
- */
