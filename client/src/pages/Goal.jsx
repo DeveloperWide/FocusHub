@@ -3,7 +3,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
-import { addGoal, getGoals, deleteGoal } from "../services/goals.js";
+import { addGoal, deleteGoal } from "../services/goals.js";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchGoals } from "../features/goals/goalThunk.js";
+import {
+  selectGoalError,
+  selectGoalLoading,
+  selectGoals,
+} from "../features/goals/goalSelector.js";
 
 // TASK : WORK ON ERRORS IN tryCatch
 
@@ -12,8 +19,12 @@ const Goal = () => {
     title: "", //
     tag: "",
   });
+  const dispatch = useDispatch();
 
-  let [goals, setGoals] = useState([]);
+  const goals = useSelector(selectGoals);
+  console.log("Goals :", goals);
+  const loading = useSelector(selectGoalLoading);
+  const error = useSelector(selectGoalError);
 
   const onChangeHandler = (e) => {
     setGoal((prev) => {
@@ -21,20 +32,9 @@ const Goal = () => {
     });
   };
 
-  const fetchGoals = async () => {
-    getGoals()
-      .then((res) => {
-        console.log(res.data);
-        setGoals(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
-    fetchGoals();
-  }, []);
+    dispatch(fetchGoals());
+  }, [dispatch]);
 
   const addTask = () => {
     addGoal(goal)
@@ -68,6 +68,10 @@ const Goal = () => {
         console.log(err);
       });
   };
+
+  if (loading) return <p>Loading Goals...</p>;
+
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="min-h-screen py-12 px-4">

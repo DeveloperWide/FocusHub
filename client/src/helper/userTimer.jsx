@@ -1,19 +1,21 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ringtone from "../assets/ringtone.mp3";
-import { TaskContext } from "../context/TaskContext";
-import {getToken} from "../utils/auth"
+import { getToken } from "../utils/auth";
 
 export const useTimer = (initialMinutes = 25) => {
-  const {task, setTask} = useContext(TaskContext)
+  // const {task, setTask} = useContext(TaskContext)
+  // TODO: Replace this with Actual task
+  const [task, setTask] = useState("4 Hour Deep Work");
+
   const [time, setTime] = useState(initialMinutes * 60);
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
   const audioRef = useRef(null);
-  const initialTimeRef = useRef(initialMinutes * 60) // remember session length
+  const initialTimeRef = useRef(initialMinutes * 60); // remember session length
   const BASE_URL = import.meta.env.VITE_API_URL;
 
-  // STOP Timer at 0 
+  // STOP Timer at 0
   // Store intial Time ref
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export const useTimer = (initialMinutes = 25) => {
             // Play Ringtone
             playAudio();
 
-            sendFocusData(initialTimeRef.current)
+            sendFocusData(initialTimeRef.current);
 
             return 0;
           }
@@ -40,18 +42,17 @@ export const useTimer = (initialMinutes = 25) => {
     };
   }, [isRunning]);
 
-
   const playAudio = () => {
-    stopAudio()
+    stopAudio();
     audioRef.current = new Audio(ringtone);
-    console.log(audioRef)
+    console.log(audioRef);
     audioRef.current.loop = true;
     audioRef.current.play().catch((err) => console.log("Sound error:", err));
-  }
+  };
 
   const stopAudio = () => {
     if (audioRef.current) {
-      audioRef.current.pause();   // stop playback
+      audioRef.current.pause(); // stop playback
       audioRef.current.currentTime = 0; // reset position
       audioRef.current = null;
     }
@@ -67,19 +68,26 @@ export const useTimer = (initialMinutes = 25) => {
   };
 
   const sendFocusData = (minutes) => {
-    console.log(minutes / 60)
-    axios.post(`${BASE_URL}/api/focus/`, {task: task , taskDuration : minutes/60}, {
-       headers:{
-        Authorization: `Bearer ${getToken()}`
-       }
-    }).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+    console.log(minutes / 60);
+    axios
+      .post(
+        `${BASE_URL}/api/focus/`,
+        { task: task, taskDuration: minutes / 60 },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  const start = () => isRunning ? stop() : setIsRunning(true);
+  const start = () => (isRunning ? stop() : setIsRunning(true));
 
   const reset = () => {
     stop();
@@ -93,5 +101,5 @@ export const useTimer = (initialMinutes = 25) => {
     initialTimeRef.current = mins * 60;
   };
 
-  return { time, isRunning, start, stop, reset, setMinutes  };
+  return { time, isRunning, start, stop, reset, setMinutes };
 };
