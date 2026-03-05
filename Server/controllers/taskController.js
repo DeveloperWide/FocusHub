@@ -79,7 +79,7 @@ module.exports.showTask = wrapAsync(async (req, res, next) => {
     data: updatedTask,
   });
 });
-
+*/
 module.exports.updateTaskInProgress = wrapAsync(async (req, res, next) => {
   if (req.body.status === "todo") {
     req.body.inProgress = 0;
@@ -97,7 +97,7 @@ module.exports.updateTaskInProgress = wrapAsync(async (req, res, next) => {
     message: "Task Updated Successfully",
   });
 });
- */
+
 module.exports.deleteTask = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
   const deleted = await Task.findByIdAndDelete(id);

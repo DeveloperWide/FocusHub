@@ -1,9 +1,10 @@
 import { Play, Pause, StopCircle } from "lucide-react";
-import { useContext } from "react";
-import { TaskContext } from "../context/TaskContext";
+// import { useContext } from "react";
 
 const TimerControls = ({ isRunning, onStart, onReset }) => {
-  const { task } = useContext(TaskContext);
+  // const { task } = useContext(TaskContext);
+  // TODO :  replace This with Actual Task
+  const task = "4 Hour Deep Work";
   const hasTask = task.trim() !== "";
 
   return (
@@ -36,9 +37,11 @@ const TimerControls = ({ isRunning, onStart, onReset }) => {
           onClick={onStart}
           disabled={!hasTask}
           className={`
-            ${isRunning
-              ? "bg-gray-500/80 hover:bg-gray-600/80"
-              : "bg-emerald-500/80 hover:bg-emerald-600/80"}
+            ${
+              isRunning
+                ? "bg-gray-500/80 hover:bg-gray-600/80"
+                : "bg-emerald-500/80 hover:bg-emerald-600/80"
+            }
             ${!hasTask && "cursor-not-allowed bg-gray-700 opacity-50 hover:bg-gray-700 hover:opacity-50"}
             backdrop-blur-sm text-white py-2 px-3 rounded-xl flex items-center gap-2 
             transition-all duration-300 shadow-lg border border-white/20

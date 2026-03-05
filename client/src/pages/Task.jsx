@@ -3,38 +3,35 @@ import TextField from "@mui/material/TextField";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { createTask, getTasks } from "../services/tasks";
-import { getGoals } from "../services/goals";
+import { createTask } from "../services/tasks";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTasks } from "../features/tasks/taskThunk";
+import {
+  selectTaskError,
+  selectTaskLoading,
+  selectTasks,
+} from "../features/tasks/taskSelector";
+import { selectGoals } from "../features/goals/goalSelector";
+import { fetchGoals } from "../features/goals/goalThunk";
 
 const Task = () => {
-  const [goals, setGoals] = useState([]);
   const [task, setTask] = useState({
     title: "",
     priority: "high",
     tag: "task",
   });
 
-  const [tasks, setTasks] = useState([]);
+  const dispatch = useDispatch();
+  const goals = useSelector(selectGoals);
 
-  const fetchGoals = () => {
-    getGoals()
-      .then((res) => {
-        console.log(res.data);
-        setGoals(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const tasks = useSelector(selectTasks);
+  const loading = useSelector(selectTaskLoading);
+  const error = useSelector(selectTaskError);
 
   useEffect(() => {
-    getTasks().then((res) => {
-      setTasks(res.data);
-    });
-    fetchGoals();
-  }, []);
-
-  console.log(tasks);
+    dispatch(fetchTasks());
+    dispatch(fetchGoals());
+  }, [dispatch]);
 
   const priorityCount = {
     high: tasks.filter((t) => t.priority == "high").length,
@@ -96,6 +93,11 @@ const Task = () => {
   const sortedTasks = [...tasks].sort(
     (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
   );
+
+  if (loading) return <p>Loading Tasks...</p>;
+
+  if (error) return <p>{error}</p>;
+
   return (
     <div>
       <ToastContainer />

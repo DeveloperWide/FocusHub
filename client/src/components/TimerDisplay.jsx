@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { checkInputValue } from "../utils/helper";
-import { useContext } from "react";
-import { TaskContext } from "../context/TaskContext";
+// import { useContext } from "react";
+// import { TaskContext } from "../context/TaskContext";
 
 const TimerDisplay = ({ time }) => {
-  const {task, setTask} = useContext(TaskContext)
+  // const { task, setTask } = useContext(TaskContext);
+  // TODO: Replace this with Actual task
+  const [task, setTask] = useState("4 Hour Deep Work");
+
   const formatTime = (seconds) => {
     const abs = Math.abs(seconds);
     const hrs = Math.floor(abs / 3600);
