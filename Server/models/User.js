@@ -2,18 +2,31 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { Schema, model } = mongoose;
 
-const userSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
+  {
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id; // convert _id -> id
+        delete ret._id; // remove _id
+        delete ret.__v; // remove version key
+        delete ret.password;
+        return ret;
+      },
+    },
   },
-});
+);
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {
