@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const { validate } = require("./Goal");
 const { model, Schema } = mongoose;
 
+// TODO: send _id as id in client
+
 const taskSchema = new Schema(
   {
     type: {
@@ -49,7 +51,17 @@ const taskSchema = new Schema(
       },
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id; // convert _id -> id
+        delete ret._id; // remove _id
+        delete ret.__v; // remove version key
+        return ret;
+      },
+    },
+  },
 );
 
 const Task = model("Task", taskSchema);

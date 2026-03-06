@@ -10,8 +10,20 @@ const goalSchema = new Schema(
 
     tag: { type: String, required: true },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id; // convert _id -> id
+        delete ret._id; // remove _id
+        delete ret.__v; // remove version key
+        return ret;
+      },
+    },
+  },
 );
+
+goalSchema.set("toJSON", value);
 
 const Goal = model("Goal", goalSchema);
 module.exports = Goal;
