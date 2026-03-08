@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { saveUserData } from "../utils/auth";
 import { toast } from "react-toastify";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -11,10 +9,23 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import { signupUser } from "../features/auth/authThunk";
+import { selectAuthLoading } from "../features/auth/authSelector";
 
 const Signup = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const loading = useSelector(selectAuthLoading);
+
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    repeatPassword: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -25,14 +36,6 @@ const Signup = () => {
     event.preventDefault();
   };
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-  const navigate = useNavigate();
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-    repeatPassword: "",
-  });
-
   const onChangeHandler = (e) => {
     setData(() => {
       return { ...data, [e.target.name]: e.target.value };
@@ -41,17 +44,15 @@ const Signup = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    axios
-      .post(`${BASE_URL}/auth/signup`, data)
-      .then((res) => {
-        const { token, user } = res.data;
-        saveUserData(token, user);
-        toast.success(res.data.message);
+
+    dispatch(signupUser(data))
+      .unwrap()
+      .then(() => {
+        toast.success("Successfully Sign in");
         navigate("/app/dashboard");
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.message || "Something Went Wrong");
+        toast.error(err || "Signup Failed");
       });
   };
 
@@ -125,8 +126,11 @@ const Signup = () => {
             label="Repeat Password"
           />
         </FormControl>
-        <button className="w-full h-12 text-xl rounded-xl font-semibold text-white bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800">
-          Signup
+        <button
+          className={`w-full h-12 text-xl rounded-xl font-semibold text-white bg-gradient-to-r ${loading ? "cursor-alias" : "cursor-pointer"} from-blue-600 to-blue-800`}
+          disabled={loading}
+        >
+          {loading ? "Singing up..." : "Signup"}
         </button>
       </form>
       <p className="text-center text-black mt-2">
