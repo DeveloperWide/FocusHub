@@ -3,7 +3,7 @@ const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 
 module.exports.getGoals = wrapAsync(async (req, res, next) => {
-  let allGoals = await Goal.find();
+  let allGoals = await Goal.find({ user: req.user.id });
 
   res.status(200).json({
     success: true,
@@ -14,8 +14,10 @@ module.exports.getGoals = wrapAsync(async (req, res, next) => {
 
 module.exports.createGoal = wrapAsync(async (req, res, next) => {
   const { title, tag } = req.body;
-  const allGoals = await Goal.find();
-  if (allGoals.length === 3) {
+  console.log(req.user);
+  const goals = await Goal.find({ user: req.user.id });
+
+  if (goals.length > 2) {
     throw new ExpressError(406, "Only 3 Goals Are Accepted");
   }
 
@@ -25,9 +27,11 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
     });
   }
 
+  // Todo: Implement trim() in frontend
   const newGoal = new Goal({
     title,
-    tag: tag.trim(),
+    tag,
+    user: req.user.id,
   });
 
   const svdGoal = await newGoal.save();

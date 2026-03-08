@@ -27,10 +27,7 @@ app.use(express.json());
 
 // Dynamic CORS based on environment
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? "https://focushub.co.in" // Production deployed URL
-      : "http://localhost:5173", // Local development URL
+  origin: process.env.CLIENT_URL,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 

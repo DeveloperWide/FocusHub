@@ -1,7 +1,5 @@
-import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { saveUserData } from "../utils/auth";
 import { toast } from "react-toastify";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -11,17 +9,22 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../features/auth/authThunk";
+import { selectAuthLoading } from "../features/auth/authSelector";
 
 const Login = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const loading = useSelector(selectAuthLoading);
+
   const [data, setData] = useState({
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -41,19 +44,14 @@ const Login = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    axios
-      .post(`${BASE_URL}/auth/login`, data)
-      .then((res) => {
-        const { token, user } = res.data;
-        console.log(res);
-        saveUserData(token, user);
-        toast.success(res.data.message);
+    dispatch(loginUser(data))
+      .unwrap()
+      .then(() => {
+        toast.success("Successfully logged In");
         navigate("/app/dashboard");
       })
       .catch((err) => {
-        console.log(err.response.data.message);
-
-        toast.error(err.response.data.message || "Something Went Wrong");
+        toast.error(err || "Failed to Signup");
       });
   };
 
@@ -104,8 +102,11 @@ const Login = () => {
           <p className="text-blue-500 capitalize ms-2 my-0.5 cursor-pointer">
             Forgot password?
           </p>
-          <button className="w-full my-2 px-3 py-2 cursor-pointer bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl font-semibold text-xl text-white">
-            Login
+          <button
+            className={`w-full my-2 px-3 py-2  bg-gradient-to-r ${loading ? "cursor-alias" : "cursor-pointer"} from-blue-600 to-blue-800 rounded-2xl font-semibold text-xl text-white`}
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Login"}
           </button>
         </form>
         <p className="text-center text-black mt-2">

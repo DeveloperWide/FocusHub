@@ -4,7 +4,7 @@ const User = require("../models/User");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 
-const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.signup = wrapAsync(async (req, res, next) => {
   const { email, password, repeatPassword } = req.body;
