@@ -29,7 +29,7 @@ app.use(express.json());
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? "https://focushub-ygwq.onrender.com" // Production deployed URL
+      ? "https://focus-hub-wine.vercel.app" // Production deployed URL
       : "http://localhost:5173", // Local development URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
