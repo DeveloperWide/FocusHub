@@ -16,8 +16,19 @@ import { ToastContainer } from "react-toastify";
 import FocusTimer from "./TimePageComponents/FocusTimer";
 import ActivityLogs from "./TimePageComponents/ActivityLogs";
 import ProductivityStreak from "./TimePageComponents/ProductivityStreak";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchGoals } from "./features/goals/goalThunk";
+import { fetchTasks } from "./features/tasks/taskThunk";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchGoals());
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
   return (
     <>
       <ToastContainer />

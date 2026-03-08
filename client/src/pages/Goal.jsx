@@ -1,18 +1,18 @@
 import ClearIcon from "@mui/icons-material/Clear";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
-import { addGoal, deleteGoal } from "../services/goals.js";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchGoals } from "../features/goals/goalThunk.js";
+import {
+  createGoal,
+  deleteGoal,
+  fetchGoals,
+} from "../features/goals/goalThunk.js";
 import {
   selectGoalError,
   selectGoalLoading,
   selectGoals,
 } from "../features/goals/goalSelector.js";
-
-// TASK : WORK ON ERRORS IN tryCatch
 
 const Goal = () => {
   let [goal, setGoal] = useState({
@@ -22,7 +22,6 @@ const Goal = () => {
   const dispatch = useDispatch();
 
   const goals = useSelector(selectGoals);
-  console.log("Goals :", goals);
   const loading = useSelector(selectGoalLoading);
   const error = useSelector(selectGoalError);
 
@@ -36,36 +35,31 @@ const Goal = () => {
     dispatch(fetchGoals());
   }, [dispatch]);
 
-  const addTask = () => {
-    addGoal(goal)
-      .then((res) => {
-        console.log(res);
-        toast.success(res.message);
+  const addGoalHandler = () => {
+    if (!goal.title.trim() || !goal.tag.trim()) {
+      toast.error("Both fields are Required");
+      return;
+    }
 
-        // Clear title and tag input after adding
+    dispatch(createGoal(goal))
+      .unwrap()
+      .then(() => {
+        toast.success("Goal Created");
         setGoal(() => {
           return { title: "", tag: "" };
         });
-
-        fetchGoals();
       })
-      .catch((err) => {
-        console.log(err);
-        console.log(err?.response?.data?.message);
-        toast.error(err?.response?.data?.message);
-      });
+      .catch(() => toast.error("Failed"));
   };
 
-  const removeGoal = (goalId) => {
-    console.log(goalId);
-    deleteGoal(goalId)
-      .then((res) => {
-        console.log(res.message);
-        toast.success(res.message);
-        fetchGoals();
+  const deleteGoalHandler = (goalId) => {
+    dispatch(deleteGoal(goalId))
+      .unwrap()
+      .then(() => {
+        toast.success("Deleted Successfully");
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        toast.error("Failed to Delete");
       });
   };
 
@@ -140,7 +134,7 @@ const Goal = () => {
               </div>
 
               <button
-                onClick={addTask}
+                onClick={addGoalHandler}
                 disabled={!goal.title.trim() || !goal.tag.trim()}
                 className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest transition-all
                 ${
@@ -166,7 +160,7 @@ const Goal = () => {
             ) : (
               goals.map((goal) => (
                 <div
-                  key={goal._id}
+                  key={goal.id}
                   className="group relative flex items-center justify-between  bg-gray-200 p-4 rounded-2xl border border-gray-200 hover:bg-gray-300 transition-all"
                 >
                   <div className="flex items-center gap-4">
@@ -182,7 +176,7 @@ const Goal = () => {
                   </div>
 
                   <button
-                    onClick={() => removeGoal(goal._id)}
+                    onClick={() => deleteGoalHandler(goal.id)}
                     className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 rounded-lg transition-all"
                   >
                     <ClearIcon

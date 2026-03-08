@@ -13,8 +13,8 @@ export const getTasks = async () => {
 // CREATE TASK
 export const createTask = async (taskData) => {
   try {
-    const { data } = await axiosInstance.post("/tasks", taskData);
-    return data;
+    const res = await axiosInstance.post("/tasks", taskData);
+    return res.data.data;
   } catch (err) {
     throw err.response?.data || err.message;
   }

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGoals } from "./goalThunk.js";
+import { createGoal, deleteGoal, fetchGoals } from "./goalThunk.js";
 
 const initialState = {
   items: [],
@@ -10,12 +10,8 @@ const initialState = {
 export const goalSlice = createSlice({
   name: "goal",
   initialState,
-  reducers: {
-    addGoal: () => {},
-    updateGoal: () => {},
-    removeGoal: () => {},
-  },
   extraReducers: (builder) => {
+    // Fetch Goals
     builder
       .addCase(fetchGoals.pending, (state) => {
         state.loading = true;
@@ -26,9 +22,20 @@ export const goalSlice = createSlice({
       })
       .addCase(fetchGoals.rejected, (state) => {
         state.error = "Failed to fetch Goals";
+      })
+
+      // Create Goal
+      .addCase(createGoal.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+
+      // Delete Goal
+
+      .addCase(deleteGoal.fulfilled, (state, action) => {
+        state.items = state.items.filter((g) => g.id !== action.payload);
       });
   },
 });
 
-export const { addGoal, updateGoal, removeGoal } = goalSlice.actions;
+// export const { addGoal, updateGoal, removeGoal } = goalSlice.actions;
 export default goalSlice.reducer;

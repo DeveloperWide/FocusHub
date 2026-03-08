@@ -2,23 +2,26 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { createTask } from "../services/tasks";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks } from "../features/tasks/taskThunk";
 import {
   selectTaskError,
   selectTaskLoading,
   selectTasks,
 } from "../features/tasks/taskSelector";
 import { selectGoals } from "../features/goals/goalSelector";
-import { fetchGoals } from "../features/goals/goalThunk";
+import { createTask } from "../features/tasks/taskThunk";
+
+const priorityOrder = {
+  high: 1,
+  medium: 2,
+  low: 3,
+};
 
 const Task = () => {
   const [task, setTask] = useState({
     title: "",
     priority: "high",
-    tag: "task",
+    type: "task",
   });
 
   const dispatch = useDispatch();
@@ -28,16 +31,17 @@ const Task = () => {
   const loading = useSelector(selectTaskLoading);
   const error = useSelector(selectTaskError);
 
-  useEffect(() => {
-    dispatch(fetchTasks());
-    dispatch(fetchGoals());
-  }, [dispatch]);
-
   const priorityCount = {
     high: tasks.filter((t) => t.priority == "high").length,
     medium: tasks.filter((t) => t.priority == "medium").length,
     low: tasks.filter((t) => t.priority == "low").length,
   };
+  //  Todo : Write the priorityCount Obj in Optimized way
+  /* const priorityCount = tasks.reduce((acc, task) => acc[task.priority]++, {
+    high: 0,
+    medium: 0,
+    low: 0,
+  }); */
 
   const onChangeHandler = (e) => {
     setTask((prev) => {
@@ -46,7 +50,7 @@ const Task = () => {
   };
 
   const handleAdd = () => {
-    console.log(task.title);
+    console.log(task);
     const trimmed = task.title.trim();
 
     if (!trimmed) {
@@ -68,26 +72,22 @@ const Task = () => {
     const newTask = {
       title: trimmed,
       priority: task.priority,
-      tag: task.tag,
+      type: task.type,
     };
 
-    // setTasks((prev) => [...prev, newTask]);
-
-    createTask(newTask).then((res) => {
-      console.log(res);
-    });
-
-    setTask({
-      title: "",
-      priority: "high",
-      tag: "task",
-    });
-  };
-
-  const priorityOrder = {
-    high: 1,
-    medium: 2,
-    low: 3,
+    dispatch(createTask(newTask))
+      .unwrap()
+      .then(() => {
+        toast.success("Task Created Successfully");
+        setTask({
+          title: "",
+          priority: "high",
+          type: "task",
+        });
+      })
+      .catch(() => {
+        toast.error("Failed to Create Task");
+      });
   };
 
   const sortedTasks = [...tasks].sort(
@@ -105,17 +105,17 @@ const Task = () => {
         <div className="header flex gap-2 w-[97%] justify-center items-center">
           <div className="flex w-full mx-2 my-2 rounded px-2">
             <select
-              name="tag"
+              name="type"
               className="ml-auto border border-gray-300 text-gray-500 font-semibold my-2 mx-1 outline-none rounded px-2 capitalize"
-              value={task.tag}
+              value={task.type}
               onChange={onChangeHandler}
             >
-              <option value="task" name="tag">
+              <option value="task" name="type">
                 Task
               </option>
 
               {goals.length > 0 &&
-                goals.map((g) => <option key={g._id}>{g.tag}</option>)}
+                goals.map((g) => <option key={g.id}>{g.tag}</option>)}
             </select>
             <TextField
               id="task-input"

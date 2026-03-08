@@ -8,7 +8,7 @@ export const createGoalAPI = (data) => {
   return axiosInstance.post("/goals", data);
 };
 
-// TODO: add it later if needed
+// TODO: add it later if needed && also add AsyncThunk for Update
 
 /* export const updateGoalAPI = (taskId, data) => {
   return axiosInstance.put(`/goals/${taskId}`, data);
