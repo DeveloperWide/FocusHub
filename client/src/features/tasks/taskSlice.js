@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchTasks } from "./taskThunk";
+import { createTask, deleteTask, fetchTasks, updateTask } from "./taskThunk";
 
 const initialState = {
   items: [],
@@ -10,14 +10,8 @@ const initialState = {
 export const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {
-    addTask: (state, action) => {
-      state.items = state.items.push(action.payload);
-    },
-    updateTask: () => {},
-    removeTask: () => {},
-  },
   extraReducers: (builder) => {
+    // Fetch Tasks
     builder
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;
@@ -28,9 +22,25 @@ export const taskSlice = createSlice({
       })
       .addCase(fetchTasks.rejected, (state) => {
         state.error = "Failed to fetch Tasks";
+      })
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const index = state.items.findIndex((t) => t.id === action.payload.id); // if not found = -1
+
+        if (index != -1) {
+          state.items[index] = action.payload;
+        }
+      })
+
+      // Delete Task
+
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.items = state.items.filter((t) => t.id !== action.payload.id);
       });
   },
 });
 
-export const { addTask, updateTask, removeTask } = taskSlice.actions;
+// export const { addTask, removeTask } = taskSlice.actions;
 export default taskSlice.reducer;
