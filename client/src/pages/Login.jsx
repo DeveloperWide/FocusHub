@@ -13,7 +13,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
 
 const Login = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
   const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
@@ -42,7 +42,7 @@ const Login = () => {
   const onSubmitHandler = (e) => {
     e.preventDefault();
     axios
-      .post(`${BASE_URL}/api/auth/login`, data)
+      .post(`${BASE_URL}/auth/login`, data)
       .then((res) => {
         const { token, user } = res.data;
         console.log(res);

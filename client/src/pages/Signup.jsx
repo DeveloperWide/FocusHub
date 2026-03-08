@@ -42,7 +42,7 @@ const Signup = () => {
   const onSubmitHandler = (e) => {
     e.preventDefault();
     axios
-      .post(`${BASE_URL}/api/auth/signup`, data)
+      .post(`${BASE_URL}/auth/signup`, data)
       .then((res) => {
         const { token, user } = res.data;
         saveUserData(token, user);
