@@ -27,7 +27,7 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
 
   const newGoal = new Goal({
     title,
-    tag,
+    tag: tag.trim(),
   });
 
   const svdGoal = await newGoal.save();
