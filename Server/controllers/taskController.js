@@ -16,38 +16,44 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.createTask = wrapAsync(async (req, res, next) => {
-  const { title, tag, priority } = req.body;
+  const { title, type, priority } = req.body;
 
-  if (!title || !tag || !priority) {
+  if (!title || !type || !priority) {
     return res.status(400).json({
       message: "All fields are required",
     });
   }
 
   let newTask;
-  if (req.body.tag === "task") {
+  if (req.body.type === "task") {
     newTask = new Task({
       ...req.body,
+      type: "day-task",
       user: req.user.id,
     });
   } else {
     const goals = await Goal.find();
-    const goal = goals.find((g) => g.tag === req.body.tag);
+    const goal = goals.find((g) => g.tag === req.body.type);
 
-    console.log(goal);
+    if (!goal)
+      return res
+        .status(400)
+        .json({ message: "Pass Valid Type Value for Task" });
+
+    newTask = new Task({
+      ...req.body,
+      type: "goal-linked",
+      user: req.user.id,
+      goal: goal._id,
+    });
   }
-  // const newTask = new Task({
-  //   ...req.body,
-  //   user: req.user.id,
-  // });
-
-  // const svdTask = await newTask.save();
-  // if (!svdTask) throw new ExpressError(500, "Failed to create task");
+  const svdTask = await newTask.save();
+  if (!svdTask) throw new ExpressError(500, "Failed to create task");
 
   res.status(201).json({
     success: true,
     message: "Task created successfully",
-    // data: svdTask,
+    data: svdTask,
   });
 });
 

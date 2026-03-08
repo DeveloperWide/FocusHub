@@ -23,7 +23,5 @@ const goalSchema = new Schema(
   },
 );
 
-goalSchema.set("toJSON", value);
-
 const Goal = model("Goal", goalSchema);
 module.exports = Goal;

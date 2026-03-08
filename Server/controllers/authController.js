@@ -26,10 +26,7 @@ exports.signup = wrapAsync(async (req, res, next) => {
   res.status(201).json({
     message: `User created successfully`,
     token,
-    user: {
-      id: svdUser._id,
-      email: svdUser.email,
-    },
+    user: svdUser,
   });
 });
 
@@ -46,9 +43,6 @@ exports.login = wrapAsync(async (req, res, next) => {
   res.status(200).json({
     message: `Successfully logged in.`,
     token,
-    user: {
-      id: user._id,
-      email: user.email,
-    },
+    user,
   });
 });
