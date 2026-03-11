@@ -16,6 +16,7 @@
     "@mui/material": "^7.2.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.1.11",
+    "@vercel/analytics": "^2.0.0",
     "apexcharts": "^5.3.2",
     "axios": "^1.10.0",
     "lucide-react": "^0.540.0",
