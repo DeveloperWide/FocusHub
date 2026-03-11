@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const { validate } = require("./Goal");
 const { model, Schema } = mongoose;
 
-// TODO: send _id as id in client
-
 const taskSchema = new Schema(
   {
     type: {

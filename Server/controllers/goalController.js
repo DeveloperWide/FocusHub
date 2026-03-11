@@ -45,6 +45,36 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
   });
 });
 
+// Update Goal Controller
+
+module.exports.updateGoal = wrapAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { title, tag } = req.body;
+
+  if (!title || !tag) {
+    return res.status(400).json({
+      message: "All fields are required",
+    });
+  }
+
+  const updatedGoal = await Goal.findByIdAndUpdate(
+    id,
+    { title, tag },
+    { new: true },
+  );
+
+  if (!updatedGoal) {
+    return res.status(404).json({
+      message: "Goal NOT Found",
+    });
+  }
+
+  return res.status(200).json({
+    message: "Goal Successfully Updated",
+    updatedGoal,
+  });
+});
+
 module.exports.deleteGoal = wrapAsync(async (req, res, next) => {
   const goalToBeDeleted = await Goal.findByIdAndDelete(req.params.id);
 

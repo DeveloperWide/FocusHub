@@ -8,6 +8,8 @@ const goalSchema = new Schema(
       required: true,
     },
 
+    // Add Completed and Giveup field
+
     tag: { type: String, required: true },
     user: {
       type: Schema.Types.ObjectId,
