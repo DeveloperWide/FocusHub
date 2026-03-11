@@ -9,6 +9,9 @@ router.get("/", authenticateUser, goalController.getGoals);
 // Create New Goal
 router.post("/", authenticateUser, goalController.createGoal);
 
+// Update Goal
+router.put("/:id", authenticateUser, goalController.updateGoal);
+
 // Delete Goal
 router.delete("/:id", authenticateUser, goalController.deleteGoal);
 

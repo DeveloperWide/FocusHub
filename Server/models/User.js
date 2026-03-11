@@ -2,20 +2,53 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { Schema, model } = mongoose;
 
+const reservedUsernames = [
+  "admin",
+  "support",
+  "api",
+  "login",
+  "signup",
+  "dashboard",
+  "root",
+];
+
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
+
     email: {
       type: String,
       required: true,
       unique: true,
     },
+
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 20,
+      match: /^[a-zA-Z0-9_]+$/,
+      validate: {
+        validator: function (v) {
+          return !reservedUsernames.includes(v);
+        },
+        message: "Username not allowed",
+      },
+    },
+
     password: {
       type: String,
       required: true,
-      minlength: 6,
     },
   },
   {
+    timestamps: true,
     toJSON: {
       transform: function (doc, ret) {
         ret.id = ret._id; // convert _id -> id
