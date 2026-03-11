@@ -27,14 +27,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-
   const onChangeHandler = (e) => {
     setData({
       ...data,
@@ -56,18 +48,54 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <div>
-        <form onSubmit={onSubmitHandler} className="flex flex-col gap-y-3">
-          <TextField
-            required
-            type="email"
-            name="email"
-            id="email outlined-required"
-            label="Email"
-            value={data.email}
+    <>
+      <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+        <TextField
+          required
+          type="email"
+          name="email"
+          label="Email"
+          value={data.email}
+          onChange={onChangeHandler}
+          fullWidth
+        />
+
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel>Password</InputLabel>
+
+          <OutlinedInput
+            type={showPassword ? "text" : "password"}
+            value={data.password}
+            name="password"
             onChange={onChangeHandler}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
           />
+        </FormControl>
+
+        <p className="text-sm text-blue-500 cursor-pointer">Forgot password?</p>
+
+        <button
+          disabled={loading}
+          className="h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-gray-500 mt-4">
+        Not a member?
+        <Link to="/signup" className="text-blue-600 ml-1 font-medium">
+          Signup
+        </Link>
+      </p>
+    </>
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">
               Password

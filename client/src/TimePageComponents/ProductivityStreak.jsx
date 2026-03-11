@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import { useState, useEffect } from "react";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import axios from "axios";
-import { getLast7Days } from '../utils/helper';
+import { getLast7Days } from "../utils/helper";
 import { getToken } from "../utils/auth";
 
 const ProductivityStreak = () => {
@@ -44,35 +44,40 @@ const ProductivityStreak = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/focus/focus-tasks`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`
-      }
-    }).then((res) => {
-      const tasks = res.data.data;
+    axios
+      .get(`${BASE_URL}/api/focus/focus-tasks`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      })
+      .then((res) => {
+        const tasks = res.data.data;
 
-      // Extract all dates where tasks were created
-      const dates = new Set(
-        tasks.map(task =>
-          new Date(task.createdAt).toISOString().split("T")[0]
-        )
-      );
+        // Extract all dates where tasks were created
+        const dates = new Set(
+          tasks.map(
+            (task) => new Date(task.createdAt).toISOString().split("T")[0],
+          ),
+        );
 
-      setCompletedDays(dates);
+        setCompletedDays(dates);
 
-      // 🔹 Calculate streak right after setting completedDays
-      const currentStreak = calculateStreak(dates);
-      setStreak(currentStreak);
-    }).catch((err) => {
-      console.log(err);
-    });
+        // 🔹 Calculate streak right after setting completedDays
+        const currentStreak = calculateStreak(dates);
+        setStreak(currentStreak);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
-    <div className='h-full w-full flex-col flex justify-center items-center'>
-      <LocalFireDepartmentRoundedIcon sx={{ color: "#ff9501", fontSize: "200px" }} />
-      <p className='text-xl font-bold text-gray-500'>{streak}-Day Streak!</p>
-      
+    <div className="h-full w-full flex-col flex justify-center items-center">
+      <LocalFireDepartmentRoundedIcon
+        sx={{ color: "#ff9501", fontSize: "200px" }}
+      />
+      <p className="text-xl font-bold text-gray-500">{streak}-Day Streak!</p>
+
       <div className="flex gap-3 justify-center mt-4">
         {week.map((day, idx) => {
           const isCompleted = completedDays.has(day.date);
@@ -82,13 +87,17 @@ const ProductivityStreak = () => {
               className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold 
                 ${isCompleted ? "bg-green-500 text-white" : "bg-gray-300 text-gray-700"}`}
             >
-              {isCompleted ? <CheckCircleOutlineRoundedIcon sx={{fontSize: "50px"}} /> : day.label}
+              {isCompleted ? (
+                <CheckCircleOutlineRoundedIcon sx={{ fontSize: "50px" }} />
+              ) : (
+                day.label
+              )}
             </div>
           );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ProductivityStreak;

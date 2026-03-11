@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FormControl from "@mui/material/FormControl";
@@ -12,35 +12,68 @@ import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../features/auth/authThunk";
 import { selectAuthLoading } from "../features/auth/authSelector";
+import { axiosInstance } from "../utils/axiosInstance";
 
 const Signup = () => {
+  const [suggestions, setSuggestions] = useState([]);
+  const [available, setAvailable] = useState(null);
+  const [usernameLoading, setUsernameLoading] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const loading = useSelector(selectAuthLoading);
 
   const [data, setData] = useState({
+    name: "",
+    username: "",
     email: "",
     password: "",
-    repeatPassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-
   const onChangeHandler = (e) => {
     setData(() => {
       return { ...data, [e.target.name]: e.target.value };
     });
   };
+
+  useEffect(() => {
+    if (!data.username || data.username.length < 5) {
+      setAvailable(null);
+      setSuggestions([]);
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        setUsernameLoading(true);
+        const res = await axiosInstance.get(
+          `/auth/u/check-username/${data.username}`,
+        );
+        console.log(res);
+
+        setAvailable(res.data.available);
+
+        if (!res.data.available) {
+          const suggestionRes = await axiosInstance.get(
+            `/auth/u/suggest/${data.username}`,
+          );
+
+          setSuggestions(suggestionRes.data.suggestions);
+        } else {
+          setSuggestions([]);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setUsernameLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [data.username]);
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -57,39 +90,87 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      <form onSubmit={onSubmitHandler} className="flex flex-col gap-y-3">
+    <div>
+      <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+        <TextField
+          required
+          type="text"
+          name="name"
+          label="Full Name"
+          value={data.name}
+          onChange={onChangeHandler}
+          fullWidth
+        />
+
+        <div>
+          <TextField
+            required
+            type="text"
+            name="username"
+            label="Username"
+            value={data.username}
+            onChange={onChangeHandler}
+            fullWidth
+          />
+
+          <p className="text-xs text-gray-400 mt-1">
+            focushub.co.in/u/{data.username || "username"}
+          </p>
+
+          {usernameLoading && (
+            <p className="text-sm text-gray-500">Checking username...</p>
+          )}
+
+          {available === true && (
+            <p className="text-sm text-green-600">✓ Username available</p>
+          )}
+
+          {available === false && (
+            <p className="text-sm text-red-500">Username already taken</p>
+          )}
+
+          {suggestions.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {suggestions.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() =>
+                    setData((prev) => ({
+                      ...prev,
+                      username: name,
+                    }))
+                  }
+                  className="px-3 py-1 text-xs bg-gray-100 rounded-full hover:bg-gray-200"
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <TextField
           required
           type="email"
           name="email"
-          id="email outlined-required"
           label="Email"
           value={data.email}
           onChange={onChangeHandler}
+          fullWidth
         />
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Password
-          </InputLabel>
+
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel>Password</InputLabel>
+
           <OutlinedInput
-            required
-            id="outlined-adornment-password"
             type={showPassword ? "text" : "password"}
             value={data.password}
-            onChange={onChangeHandler}
             name="password"
+            onChange={onChangeHandler}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton
-                  aria-label={
-                    showPassword ? "hide the password" : "display the password"
-                  }
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
+                <IconButton onClick={handleClickShowPassword}>
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -97,48 +178,14 @@ const Signup = () => {
             label="Password"
           />
         </FormControl>
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Repeat Password
-          </InputLabel>
-          <OutlinedInput
-            required
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            value={data.repeatPassword}
-            onChange={onChangeHandler}
-            name="repeatPassword"
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label={
-                    showPassword ? "hide the password" : "display the password"
-                  }
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Repeat Password"
-          />
-        </FormControl>
+
         <button
-          className={`w-full h-12 text-xl rounded-xl font-semibold text-white bg-gradient-to-r ${loading ? "cursor-alias" : "cursor-pointer"} from-blue-600 to-blue-800`}
-          disabled={loading}
+          disabled={loading || available === false}
+          className="h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition"
         >
-          {loading ? "Singing up..." : "Signup"}
+          {loading ? "Signing up..." : "Create Account"}
         </button>
       </form>
-      <p className="text-center text-black mt-2">
-        Already Have a Account ?{" "}
-        <Link to="/login" className="text-blue-500 cursor-pointer">
-          Login here
-        </Link>
-      </p>
     </div>
   );
 };

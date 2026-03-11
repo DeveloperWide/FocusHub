@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGoal, deleteGoal, fetchGoals } from "./goalThunk.js";
+import { createGoal, deleteGoal, fetchGoals, updateGoal } from "./goalThunk.js";
 
 const initialState = {
   items: [],
@@ -29,13 +29,21 @@ export const goalSlice = createSlice({
         state.items.push(action.payload);
       })
 
-      // Delete Goal
+      // Update Goal
+      .addCase(updateGoal.fulfilled, (state, action) => {
+        const index = state.items.findIndex((g) => g.id === action.payload.id);
 
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+
+      // Delete Goal
       .addCase(deleteGoal.fulfilled, (state, action) => {
         state.items = state.items.filter((g) => g.id !== action.payload);
       });
   },
 });
-
+export const { updateGoalLocal } = goalSlice.actions;
 // export const { addGoal, updateGoal, removeGoal } = goalSlice.actions;
 export default goalSlice.reducer;
