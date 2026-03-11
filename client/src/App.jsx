@@ -5,11 +5,10 @@ import Dashboard from "./pages/Dashboard";
 import Task from "./pages/Task";
 import Goal from "./pages/Goal";
 import Time from "./pages/Time";
-import ShowTask from "./pages/ShowTask";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Landing from "./components/Landing";
+import Landing from "./components/Auth/Landing";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Logout from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
@@ -51,7 +50,6 @@ const App = () => {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="tasks" element={<Task />} />
-          <Route path="tasks/:id" element={<ShowTask />} />
           <Route path="goals" element={<Goal />} />
           <Route path="time" element={<Time />} />
           <Route path="focus-timer" element={<FocusTimer />} />

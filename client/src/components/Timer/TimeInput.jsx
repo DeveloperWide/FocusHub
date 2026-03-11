@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateTimer } from "../utils/helper";
+import { updateTimer } from "../../utils/helper";
 
 const TimeInput = ({ onChange, disabled }) => {
   const [inputValue, setInputValue] = useState("");
@@ -12,14 +12,14 @@ const TimeInput = ({ onChange, disabled }) => {
     }
   };
   const num = Number(inputValue);
-  
+
   const handleUpdate = () => {
-    updateTimer(num, onChange, setInputValue)
+    updateTimer(num, onChange, setInputValue);
   };
 
   const onKeyDownHandler = (e) => {
-    if(e.key === "Enter") updateTimer(num, onChange, setInputValue)
-  }
+    if (e.key === "Enter") updateTimer(num, onChange, setInputValue);
+  };
 
   const isValid = inputValue && Number(inputValue) >= 1;
 
@@ -47,9 +47,10 @@ const TimeInput = ({ onChange, disabled }) => {
         onClick={handleUpdate}
         disabled={!isValid || disabled}
         className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300
-          ${!isValid || disabled
-            ? "bg-gray-600 text-gray-300 cursor-not-allowed"
-            : "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+          ${
+            !isValid || disabled
+              ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
           }`}
       >
         Update

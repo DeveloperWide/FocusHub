@@ -27,14 +27,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-
   const onChangeHandler = (e) => {
     setData({
       ...data,
@@ -56,67 +48,54 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <div>
-        <form onSubmit={onSubmitHandler} className="flex flex-col gap-y-3">
-          <TextField
-            required
-            type="email"
-            name="email"
-            id="email outlined-required"
-            label="Email"
-            value={data.email}
+    <>
+      <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
+        <TextField
+          required
+          type="email"
+          name="email"
+          label="Email"
+          value={data.email}
+          onChange={onChangeHandler}
+          fullWidth
+        />
+
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel>Password</InputLabel>
+
+          <OutlinedInput
+            type={showPassword ? "text" : "password"}
+            value={data.password}
+            name="password"
             onChange={onChangeHandler}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
           />
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
-            <OutlinedInput
-              required
-              id="outlined-adornment-password"
-              type={showPassword ? "text" : "password"}
-              value={data.password}
-              onChange={onChangeHandler}
-              name="password"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={
-                      showPassword
-                        ? "hide the password"
-                        : "display the password"
-                    }
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    onMouseUp={handleMouseUpPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
-          <p className="text-blue-500 capitalize ms-2 my-0.5 cursor-pointer">
-            Forgot password?
-          </p>
-          <button
-            className={`w-full my-2 px-3 py-2  bg-gradient-to-r ${loading ? "cursor-alias" : "cursor-pointer"} from-blue-600 to-blue-800 rounded-2xl font-semibold text-xl text-white`}
-            disabled={loading}
-          >
-            {loading ? "Signing in..." : "Login"}
-          </button>
-        </form>
-        <p className="text-center text-black mt-2">
-          Not a member?{" "}
-          <Link to={"/signup"} className="text-blue-500 cursor-pointer">
-            Signup now
-          </Link>
-        </p>
-      </div>
-    </div>
+        </FormControl>
+
+        <p className="text-sm text-blue-500 cursor-pointer">Forgot password?</p>
+
+        <button
+          disabled={loading}
+          className="h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-gray-500 mt-4">
+        Not a member?
+        <Link to="/signup" className="text-blue-600 ml-1 font-medium">
+          Signup
+        </Link>
+      </p>
+    </>
   );
 };
 

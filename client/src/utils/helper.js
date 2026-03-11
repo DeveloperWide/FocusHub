@@ -1,9 +1,11 @@
+import { toast } from "react-toastify";
+
 export const checkInputValue = (inputVal, setTask, setInputValue) => {
   if (inputVal != "" && inputVal.length > 0) {
     setTask(inputVal);
     setInputValue("");
   } else {
-    isValue = false;
+    // isValue = false;
     toast.info("Write Task Name");
   }
 };

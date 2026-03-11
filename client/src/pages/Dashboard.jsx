@@ -1,8 +1,8 @@
 import React from "react";
-import FocusTimeChart from "../components/FocusTimeChart";
+import FocusTimeChart from "../components/Dashboard/FocusTimeChart";
 import { getUser } from "../utils/auth";
-import PieChart from "../components/PieChart";
-import Quote from "../components/Quote";
+import PieChart from "../components/Dashboard/PieChart";
+import Quote from "../components/Dashboard/Quote";
 
 export default function Dashboard() {
   const user = getUser();

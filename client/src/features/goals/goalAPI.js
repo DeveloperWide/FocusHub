@@ -8,11 +8,9 @@ export const createGoalAPI = (data) => {
   return axiosInstance.post("/goals", data);
 };
 
-// TODO: add it later if needed && also add AsyncThunk for Update
-
-/* export const updateGoalAPI = (taskId, data) => {
-  return axiosInstance.put(`/goals/${taskId}`, data);
-}; */
+export const updateGoalAPI = (goalId, data) => {
+  return axiosInstance.put(`/goals/${goalId}`, data);
+};
 
 export const deleteGoalAPI = (goalId) => {
   return axiosInstance.delete(`/goals/${goalId}`);

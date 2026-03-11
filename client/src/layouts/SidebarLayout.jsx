@@ -8,7 +8,7 @@ import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
 ``;
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Outlet } from "react-router-dom";
-import { ActivityIcon } from "lucide-react";
+import { ActivityIcon, Crown, UserIcon } from "lucide-react";
 
 const SIDEBAR_WIDTH = "w-64"; // 16rem
 
@@ -68,11 +68,16 @@ const SidebarLayout = () => {
                   icon: <AccessAlarmsRoundedIcon />,
                   href: "/app/time",
                 },
-                {
-                  label: "Activity",
-                  icon: <ActivityIcon />,
-                  href: "/app/activity",
+                /* {
+                  label: "Profile",
+                  icon: <UserIcon />,
+                  href: "/app/profile",
                 },
+                {
+                  label: "Leaderboard",
+                  icon: <Crown />,
+                  href: "/app/leaderboard",
+                }, */
               ].map((item, idx) => (
                 <li key={idx} className="px-4">
                   <a

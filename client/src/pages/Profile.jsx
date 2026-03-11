@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { getToken, getUser, saveUserData } from "../utils/auth";
+import { getToken, saveUserData } from "../utils/auth";
 
 const Profile = () => {
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
@@ -11,7 +11,6 @@ const Profile = () => {
     email: "",
   });
 
-  const user = getUser();
   const handleOnChange = (e) => {
     setData(() => {
       return { ...data, [e.target.name]: e.target.value };
