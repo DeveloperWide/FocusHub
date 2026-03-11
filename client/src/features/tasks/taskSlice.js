@@ -37,7 +37,7 @@ export const taskSlice = createSlice({
       // Delete Task
 
       .addCase(deleteTask.fulfilled, (state, action) => {
-        state.items = state.items.filter((t) => t.id !== action.payload.id);
+        state.items = state.items.filter((t) => t.id !== action.payload);
       });
   },
 });

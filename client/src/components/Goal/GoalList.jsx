@@ -31,9 +31,9 @@ const GoalList = ({ deleteGoalHandler, setEditingGoal }) => {
               </div>
             </div>
             <Buttons
-              goal={goal}
+              obj={goal}
               deleteHandler={deleteGoalHandler}
-              setEditingGoal={setEditingGoal}
+              setEditing={setEditingGoal}
             />
           </div>
         ))

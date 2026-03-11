@@ -16,43 +16,41 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.createTask = wrapAsync(async (req, res, next) => {
-  const { title, type, priority } = req.body;
+  const { title, priority, type } = req.body;
+  console.log("req.body : ", req.body);
 
-  if (!title || !type || !priority) {
+  if (!title || !priority || !type) {
     return res.status(400).json({
       message: "All fields are required",
     });
   }
 
-  let newTask;
-  if (req.body.type === "task") {
-    newTask = new Task({
-      ...req.body,
-      type: "day-task",
-      user: req.user.id,
-    });
-  } else {
-    const goals = await Goal.find();
-    const goal = goals.find((g) => g.tag === req.body.type);
-
-    if (!goal)
-      return res
-        .status(400)
-        .json({ message: "Pass Valid Type Value for Task" });
-
-    newTask = new Task({
-      ...req.body,
-      type: "goal-linked",
-      user: req.user.id,
-      goal: goal._id,
-    });
+  let goal = null;
+  if (type !== "task") {
+    const goalDoc = await Goal.findOne({ tag: type });
+    console.log("goalDoc : ", goalDoc);
+    if (!goalDoc) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid task type",
+      });
+    }
+    goal = goalDoc._id;
   }
-  const svdTask = await newTask.save();
-  if (!svdTask) throw new ExpressError(500, "Failed to create task");
 
-  res.status(201).json({
+  const newTask = new Task({
+    title,
+    priority,
+    type,
+    goal,
+    user: req.user.id,
+  });
+
+  const svdTask = await newTask.save();
+  console.log("Saved Task : ", svdTask);
+  res.json({
     success: true,
-    message: "Task created successfully",
+    message: "Task Created Successfully",
     data: svdTask,
   });
 });
@@ -68,47 +66,52 @@ module.exports.showTask = wrapAsync(async (req, res, next) => {
   });
 });
 
-/* module.exports.updateTask = wrapAsync(async (req, res, next) => {
+module.exports.updateTask = wrapAsync(async (req, res) => {
   const { id } = req.params;
+  const { title, priority, type } = req.body;
+
+  const task = await Task.findById(id);
+  if (!task) throw new ExpressError(404, "Task not found");
+
+  let goal = null;
+
+  if (type !== "task") {
+    const goalDoc = await Goal.findOne({ tag: type });
+    if (!goalDoc) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid task type",
+      });
+    }
+    goal = goalDoc._id;
+  }
 
   const updatedTask = await Task.findByIdAndUpdate(
     id,
-    { ...req.body },
+    {
+      title,
+      priority,
+      type,
+      goal,
+      user: req.user.id,
+    },
     { new: true },
   );
 
-  if (!updatedTask) throw new ExpressError(404, "Task not found");
+  console.log("updated Task : ", updatedTask);
 
   res.json({
     success: true,
-    message: "Task updated successfully",
-    data: updatedTask,
-  });
-});
-*/
-module.exports.updateTaskInProgress = wrapAsync(async (req, res, next) => {
-  if (req.body.status === "todo") {
-    req.body.inProgress = 0;
-  } else if (req.body.status === "in_Progress") {
-    req.body.inProgress = 50;
-  } else {
-    req.body.inProgress = 100;
-  }
-
-  const updated = await Task.findByIdAndUpdate(req.params.id, { ...req.body });
-  if (!updated) throw new ExpressError(404, "Task not found");
-
-  res.status(200).json({
-    success: true,
     message: "Task Updated Successfully",
+    data: updatedTask,
   });
 });
 
 module.exports.deleteTask = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
-  const deleted = await Task.findByIdAndDelete(id);
+  const deletedTask = await Task.findByIdAndDelete(id);
 
-  if (!deleted) throw new ExpressError(404, "Task not found");
+  if (!deletedTask) throw new ExpressError(404, "Task not found");
 
   res.status(200).json({
     success: true,

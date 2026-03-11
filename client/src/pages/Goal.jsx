@@ -33,7 +33,12 @@ const Goal = () => {
       return;
     }
 
-    dispatch(createGoal(goal))
+    const data = {
+      title: goal.title.trim(),
+      tag: goal.tag.trim(),
+    };
+
+    dispatch(createGoal(data))
       .unwrap()
       .then(() => {
         toast.success("Goal Created");
@@ -93,7 +98,6 @@ const Goal = () => {
           {/* Goals List */}
           <GoalList
             setEditingGoal={setEditingGoal}
-            updateGoalHandler={updateGoalHandler}
             deleteGoalHandler={deleteGoalHandler}
           />
         </div>
