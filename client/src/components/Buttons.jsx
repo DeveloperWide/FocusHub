@@ -1,20 +1,24 @@
-import { PencilLine } from "lucide-react";
+import { Check, PencilLine } from "lucide-react";
 import ClearIcon from "@mui/icons-material/Clear";
 
-const Buttons = ({ goal, deleteHandler, setEditingGoal }) => {
+// Obj -> task || goal
+// setEditing -> setEditingGoal || setEditingTask
+
+const Buttons = ({ obj, deleteHandler, setEditing }) => {
   return (
     <div className="flex justify-center items-center">
-      {/* Click => show input fields with value(title, tag) of this goal */}
-      {/* onClick => editMode(!true) */}
+      <button className="opacity-0 group-hover:opacity-100 p-2 text-green-500 hover:text-green-600 hover:bg-green-500/30 rounded-lg transition-all duration-200 hover:cursor-pointer">
+        <Check />
+      </button>
       <button
-        onClick={() => setEditingGoal(goal)}
-        className="opacity-0 group-hover:opacity-100 p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg transition-all duration-200"
+        onClick={() => setEditing(obj)}
+        className="opacity-0 group-hover:opacity-100 p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-500/30 rounded-lg transition-all duration-200 hover:cursor-pointer"
       >
         <PencilLine size={18} />
       </button>
 
       <button
-        onClick={() => deleteHandler(goal.id)}
+        onClick={() => deleteHandler(obj.id)}
         className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 rounded-lg transition-all"
       >
         <ClearIcon

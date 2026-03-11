@@ -9,15 +9,11 @@ router.get("/", authenticateUser, taskController.getTasks);
 // Create Task
 router.post("/", authenticateUser, taskController.createTask);
 
-// Get Task
-router.get("/:id", authenticateUser, taskController.showTask);
-
-/* // Update task
-router.patch("/:id",authenticateUser, taskController.updateTask);
- */
+// // Get Task
+// router.get("/:id", authenticateUser, taskController.showTask);
 
 // Update Complete Task
-router.put("/:id", authenticateUser, taskController.updateTaskInProgress);
+router.put("/:id", authenticateUser, taskController.updateTask);
 
 // Delete Task
 router.delete("/:id", authenticateUser, taskController.deleteTask);

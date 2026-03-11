@@ -6,7 +6,7 @@ const taskSchema = new Schema(
   {
     type: {
       type: String,
-      enum: ["day-task", "goal-linked"],
+      default: "task",
     },
 
     title: {
@@ -30,10 +30,10 @@ const taskSchema = new Schema(
       ref: "Goal",
       validate: {
         validator: function (value) {
-          if (this.type == "day-task") {
+          if (this.type == "task") {
             return value == null;
           }
-          if (this.type == "goal-linked") {
+          if (this.type !== "task") {
             return value != null;
           }
 
