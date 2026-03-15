@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { selectGoals } from "../../features/goals";
 import Buttons from "../Buttons";
+import GoalSkeleton from "../../skeletons/GoalSkeleton";
 
 const GoalList = ({ deleteGoalHandler, setEditingGoal }) => {
   const goals = useSelector(selectGoals);

@@ -19,6 +19,12 @@ const taskSchema = new Schema(
       enum: ["high", "medium", "low"],
     },
 
+    tag: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",

@@ -1,22 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import ringtone from "../assets/ringtone.mp3";
-import { getToken } from "../utils/auth";
+// import { axiosInstance } from "../utils/axiosInstance";
 
 export const useTimer = (initialMinutes = 25) => {
-  // const {task, setTask} = useContext(TaskContext)
-  // TODO: Replace this with Actual task
-  const [task, setTask] = useState("4 Hour Deep Work");
-
   const [time, setTime] = useState(initialMinutes * 60);
   const [isRunning, setIsRunning] = useState(false);
+
   const timerRef = useRef(null);
   const audioRef = useRef(null);
-  const initialTimeRef = useRef(initialMinutes * 60); // remember session length
-  const BASE_URL = import.meta.env.VITE_API_URL;
 
-  // STOP Timer at 0
-  // Store intial Time ref
+  const initialTimeRef = useRef(initialMinutes * 60); // remember session length
 
   useEffect(() => {
     if (isRunning) {
@@ -28,7 +21,7 @@ export const useTimer = (initialMinutes = 25) => {
             // Play Ringtone
             playAudio();
 
-            sendFocusData(initialTimeRef.current);
+            // sendFocusData(initialTimeRef.current);
 
             return 0;
           }
@@ -67,25 +60,17 @@ export const useTimer = (initialMinutes = 25) => {
     stopAudio();
   };
 
-  const sendFocusData = (minutes) => {
-    console.log(minutes / 60);
-    axios
-      .post(
-        `${BASE_URL}/api/focus/`,
-        { task: task, taskDuration: minutes / 60 },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        },
-      )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const sendFocusData = (minutes) => {
+  //   console.log(minutes / 60);
+  //   axiosInstance
+  //     .post("/api/focus/", { task: task, })
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   const start = () => (isRunning ? stop() : setIsRunning(true));
 

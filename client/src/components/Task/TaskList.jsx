@@ -1,9 +1,19 @@
+import TaskSkeleton from "../../skeletons/TaskSkeleton";
 import Buttons from "../Buttons";
 
-const TaskList = ({ sortedTasks, deleteTaskHandler, setEditingTask }) => {
+const TaskList = ({
+  loading,
+  sortedTasks,
+  deleteTaskHandler,
+  setEditingTask,
+}) => {
   return (
     <div className="max-w-3xl mx-auto mt-6 px-4">
-      {sortedTasks.length > 0 ? (
+      {loading ? (
+        Array(4)
+          .fill(0)
+          .map((_, i) => <TaskSkeleton key={i} />)
+      ) : sortedTasks.length > 0 ? (
         <div>
           {sortedTasks.map((t) => (
             <div
@@ -16,6 +26,7 @@ const TaskList = ({ sortedTasks, deleteTaskHandler, setEditingTask }) => {
                     : "border-l-green-300 hover:border-l-green-400"
               }`}
             >
+              {" "}
               <div className="flex items-center gap-4">
                 <div
                   className={`h-2 w-2 rounded-full ${
@@ -26,15 +37,22 @@ const TaskList = ({ sortedTasks, deleteTaskHandler, setEditingTask }) => {
                         : "bg-green-500"
                   }`}
                 />
-
-                <div>
+                <div className="flex flex-col">
                   <span className="block text-xs font-semibold uppercase tracking-wider text-gray-400">
                     {t.type}
                   </span>
 
-                  <span className="text-gray-800 font-medium capitalize">
-                    {t.title}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-800 font-medium capitalize">
+                      {t.title}
+                    </span>
+
+                    {t.tag && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                        #{t.tag}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <Buttons

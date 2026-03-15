@@ -24,6 +24,7 @@
     "react": "^19.1.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.1.0",
+    "react-loading-skeleton": "^3.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
     "react-toastify": "^11.0.5",

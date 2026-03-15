@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import TaskInput from "../components/Task/TaskInput";
 import TaskList from "../components/Task/TaskList";
 import {
-  selectTaskError,
   selectTaskLoading,
   selectTasks,
   createTask,
@@ -26,19 +25,14 @@ const Task = () => {
 
   const tasks = useSelector(selectTasks);
   const loading = useSelector(selectTaskLoading);
-  const error = useSelector(selectTaskError);
 
-  const priorityCount = {
-    high: tasks.filter((t) => t.priority == "high").length,
-    medium: tasks.filter((t) => t.priority == "medium").length,
-    low: tasks.filter((t) => t.priority == "low").length,
-  };
-  //  Todo : Write the priorityCount Obj in Optimized way
-  /* const priorityCount = tasks.reduce((acc, task) => acc[task.priority]++, {
-    high: 0,
-    medium: 0,
-    low: 0,
-  }); */
+  const priorityCount = tasks.reduce(
+    (acc, task) => {
+      acc[task.priority]++;
+      return acc;
+    },
+    { high: 0, medium: 0, low: 0 },
+  );
 
   const addTaskHandler = (task, setTask) => {
     console.log(task);
@@ -64,6 +58,7 @@ const Task = () => {
       title: trimmed,
       priority: task.priority,
       type: task.type,
+      tag: task.tag,
     };
 
     console.log(newTask);
@@ -76,6 +71,7 @@ const Task = () => {
           title: "",
           priority: "high",
           type: "task",
+          tag: "",
         });
       })
       .catch(() => {
@@ -109,10 +105,6 @@ const Task = () => {
     (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
   );
 
-  if (loading) return <p>Loading Tasks...</p>;
-
-  if (error) return <p>{error}</p>;
-
   return (
     <div>
       <ToastContainer />
@@ -133,6 +125,7 @@ const Task = () => {
         </Link>
       </p>
       <TaskList
+        loading={loading}
         sortedTasks={sortedTasks}
         deleteTaskHandler={deleteTaskHandler}
         setEditingTask={setEditingTask}

@@ -1,6 +1,7 @@
 import "./App.css";
 import SidebarLayout from "./layouts/SidebarLayout";
 import { Route, Routes } from "react-router-dom";
+import "react-loading-skeleton/dist/skeleton.css";
 import Dashboard from "./pages/Dashboard";
 import Task from "./pages/Task";
 import Goal from "./pages/Goal";
@@ -12,13 +13,13 @@ import Landing from "./components/Auth/Landing";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Logout from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
-import FocusTimer from "./TimePageComponents/FocusTimer";
 import ActivityLogs from "./TimePageComponents/ActivityLogs";
 import ProductivityStreak from "./TimePageComponents/ProductivityStreak";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchGoals } from "./features/goals/goalThunk";
 import { fetchTasks } from "./features/tasks/taskThunk";
+import FocusTimer from "./pages/FocusTimer";
 
 const App = () => {
   const dispatch = useDispatch();
