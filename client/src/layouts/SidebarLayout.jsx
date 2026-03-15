@@ -7,8 +7,14 @@ import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
 ``;
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Outlet } from "react-router-dom";
-import { ActivityIcon, Crown, UserIcon } from "lucide-react";
+import { Link, Outlet } from "react-router-dom";
+import {
+  ActivityIcon,
+  Crown,
+  FocusIcon,
+  Hourglass,
+  UserIcon,
+} from "lucide-react";
 
 const SIDEBAR_WIDTH = "w-64"; // 16rem
 
@@ -68,6 +74,11 @@ const SidebarLayout = () => {
                   icon: <AccessAlarmsRoundedIcon />,
                   href: "/app/time",
                 },
+                {
+                  label: "Focus Timer",
+                  icon: <Hourglass />,
+                  href: "/app/focus-timer",
+                },
                 /* {
                   label: "Profile",
                   icon: <UserIcon />,
@@ -80,8 +91,8 @@ const SidebarLayout = () => {
                 }, */
               ].map((item, idx) => (
                 <li key={idx} className="px-4">
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="flex items-center p-2 text-white rounded-lg 
                 hover:bg-green-300/20 hover:backdrop-blur-md transition-all duration-300 ease-in-out 
                 hover:shadow-md hover:scale-[1.02]"
@@ -93,7 +104,7 @@ const SidebarLayout = () => {
                         {item.badge}
                       </span>
                     )}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

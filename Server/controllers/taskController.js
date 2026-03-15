@@ -16,10 +16,10 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.createTask = wrapAsync(async (req, res, next) => {
-  const { title, priority, type } = req.body;
+  const { title, priority, type, tag } = req.body;
   console.log("req.body : ", req.body);
 
-  if (!title || !priority || !type) {
+  if (!title || !priority || !type || !tag) {
     return res.status(400).json({
       message: "All fields are required",
     });
@@ -43,6 +43,7 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
     priority,
     type,
     goal,
+    tag,
     user: req.user.id,
   });
 
@@ -68,7 +69,7 @@ module.exports.showTask = wrapAsync(async (req, res, next) => {
 
 module.exports.updateTask = wrapAsync(async (req, res) => {
   const { id } = req.params;
-  const { title, priority, type } = req.body;
+  const { title, priority, type, tag } = req.body;
 
   const task = await Task.findById(id);
   if (!task) throw new ExpressError(404, "Task not found");
@@ -93,6 +94,7 @@ module.exports.updateTask = wrapAsync(async (req, res) => {
       priority,
       type,
       goal,
+      tag,
       user: req.user.id,
     },
     { new: true },

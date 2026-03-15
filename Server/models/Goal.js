@@ -8,9 +8,13 @@ const goalSchema = new Schema(
       required: true,
     },
 
-    // Add Completed and Giveup field
+    // Add Completed, Giveup  & days field
+    tag: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
-    tag: { type: String, required: true },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",

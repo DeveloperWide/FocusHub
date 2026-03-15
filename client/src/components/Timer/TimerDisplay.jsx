@@ -1,80 +1,57 @@
-import { useState } from "react";
-import { checkInputValue } from "../../utils/helper";
-// import { useContext } from "react";
-// import { TaskContext } from "../context/TaskContext";
+import { useSelector } from "react-redux";
+import { formatTime } from "../../utils/timerUtils";
 
-const TimerDisplay = ({ time }) => {
-  // const { task, setTask } = useContext(TaskContext);
-  // TODO: Replace this with Actual task
-  const [task, setTask] = useState("4 Hour Deep Work");
-
-  const formatTime = (seconds) => {
-    const abs = Math.abs(seconds);
-    const hrs = Math.floor(abs / 3600);
-    const mins = Math.floor((abs % 3600) / 60);
-    const secs = abs % 60;
-
-    return hrs > 0
-      ? `${seconds < 0 ? "-" : ""}${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
-      : `${seconds < 0 ? "-" : ""}${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-  };
-
-  const [inputValue, setInputValue] = useState("");
-  const onChangeHandler = (e) => {
-    setInputValue(e.target.value);
-  };
-
-  const onKeyDownHandler = (e) => {
-    if (e.key === "Enter") checkInputValue(inputValue, setTask, setInputValue);
-  };
-
-  const addTask = () => checkInputValue(inputValue, setTask, setInputValue);
+const TimerDisplay = () => {
+  const { timeLeft, session, status } = useSelector((s) => s.focus);
 
   return (
-    <div className="text-center">
-      {/* Task Input */}
-      <div className="flex items-center justify-center gap-2">
-        <input
-          type="text"
-          name="task"
-          id="task"
-          value={inputValue}
-          autoComplete="off"
-          onKeyDown={onKeyDownHandler}
-          onChange={onChangeHandler}
-          placeholder="Enter your focus task..."
-          className="w-64 sm:w-80 p-3 rounded-xl text-center 
-                     bg-gray-50/80 text-gray-800 placeholder-gray-400 text-lg
-                     border border-gray-300 
-                     focus:outline-none focus:ring-2 focus:ring-indigo-400 
-                     transition-all duration-300 shadow-sm"
-        />
-        <button
-          onClick={addTask}
-          className={`px-5 py-2 rounded-xl font-semibold 
-                     bg-gradient-to-r from-green-500 to-emerald-600 
-                     hover:from-green-600 hover:to-emerald-700 
-                     text-white shadow-md hover:shadow-lg cursor-pointer
-                     transition-all duration-300`}
-        >
-          Add
-        </button>
-      </div>
+    <div className="flex flex-col items-center justify-center text-center">
+      {/* Focus Title */}
+      <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">
+        Current Focus
+      </p>
 
-      {/* Task Title */}
-      {task && (
-        <h2 className="taskTitle text-center mt-6 mb-4 text-2xl sm:text-3xl capitalize font-semibold text-gray-500 drop-shadow">
-          {task}
-        </h2>
-      )}
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 capitalize">
+        {session?.title || "Focus Session"}
+      </h2>
 
-      {/* Timer */}
+      {/* Timer Container */}
       <div
-        className="text-6xl mb-8 mt-4 sm:text-8xl md:text-9xl font-extrabold 
-                   tracking-wider 
-                   text-gray-900"
+        className={`
+        mt-8 px-10 py-8 rounded-3xl 
+        bg-white/70 backdrop-blur-md
+        shadow-[0_20px_60px_rgba(0,0,0,0.1)]
+        border border-gray-200
+        flex flex-col items-center
+        `}
       >
-        {formatTime(time)}
+        {/* Timer */}
+        <div
+          className={`
+          text-7xl sm:text-8xl md:text-9xl 
+          font-extrabold tracking-widest
+          font-mono text-gray-900
+          transition-all duration-500
+          ${status === "running" ? "animate-pulse" : ""}
+          `}
+        >
+          {formatTime(timeLeft)}
+        </div>
+
+        {/* Status */}
+        <div className="mt-4 flex items-center gap-2 text-sm font-medium">
+          <span
+            className={`w-2 h-2 rounded-full ${
+              status === "running"
+                ? "bg-green-500"
+                : status === "paused"
+                  ? "bg-yellow-500"
+                  : "bg-gray-400"
+            }`}
+          ></span>
+
+          <span className="capitalize text-gray-500">{status}</span>
+        </div>
       </div>
     </div>
   );

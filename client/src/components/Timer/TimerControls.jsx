@@ -1,64 +1,56 @@
-import { Play, Pause, StopCircle } from "lucide-react";
-// import { useContext } from "react";
+import { Play, Pause, TimerReset } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  pauseSession,
+  resetSession,
+  resumeSession,
+} from "../../features/focus/focusSlice";
 
-const TimerControls = ({ isRunning, onStart, onReset }) => {
-  // const { task } = useContext(TaskContext);
-  // TODO :  replace This with Actual Task
-  const task = "4 Hour Deep Work";
-  const hasTask = task.trim() !== "";
+const TimerControls = () => {
+  const dispatch = useDispatch();
+  const { status } = useSelector((s) => s.focus);
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4">
-      {/* Note Message */}
-      {!hasTask && (
-        <div
-          className="flex items-center p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-gray-800 dark:text-yellow-300 dark:border-yellow-800"
-          role="alert"
-        >
-          <svg
-            className="shrink-0 inline w-4 h-4 me-3"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
+    <div className="flex flex-col items-center gap-6">
+      <div className="flex items-center gap-4">
+        {status === "running" && (
+          <button
+            onClick={() => dispatch(pauseSession())}
+            className="group flex items-center gap-2 px-6 py-3 rounded-full
+            bg-yellow-400 hover:bg-yellow-500 text-black font-semibold
+            shadow-lg hover:shadow-xl transition-all duration-300
+            hover:scale-105 active:scale-95"
           >
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-          </svg>
-          <div>
-            <span className="font-medium">Note!</span> Add Task Name Before You
-            Continue The Timer
-          </div>
-        </div>
-      )}
+            <Pause className="w-5 h-5 transition-transform group-hover:scale-110" />
+            Pause
+          </button>
+        )}
 
-      {/* Buttons */}
-      <div className="flex justify-center gap-4">
-        <button
-          onClick={onStart}
-          disabled={!hasTask}
-          className={`
-            ${
-              isRunning
-                ? "bg-gray-500/80 hover:bg-gray-600/80"
-                : "bg-emerald-500/80 hover:bg-emerald-600/80"
-            }
-            ${!hasTask && "cursor-not-allowed bg-gray-700 opacity-50 hover:bg-gray-700 hover:opacity-50"}
-            backdrop-blur-sm text-white py-2 px-3 rounded-xl flex items-center gap-2 
-            transition-all duration-300 shadow-lg border border-white/20
-          `}
-        >
-          {isRunning ? (
-            <Pause className="w-5 h-5" />
-          ) : (
-            <Play className="w-5 h-5" />
-          )}
-        </button>
+        {status === "paused" && (
+          <button
+            onClick={() => dispatch(resumeSession())}
+            className="group flex items-center gap-2 px-6 py-3 rounded-full
+            bg-green-500 hover:bg-green-600 text-white font-semibold
+            shadow-lg hover:shadow-xl transition-all duration-300
+            hover:scale-105 active:scale-95"
+          >
+            <Play className="w-5 h-5 transition-transform group-hover:scale-110" />
+            Resume
+          </button>
+        )}
 
         <button
-          onClick={onReset}
-          className="bg-rose-500/80 hover:bg-rose-600/80 backdrop-blur-sm text-white py-2 px-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-lg border border-white/20"
+          onClick={() => {
+            dispatch(resetSession());
+            window.location.reload();
+          }}
+          className="group flex items-center gap-2 px-4 py-2 rounded-full
+          bg-rose-500 hover:bg-rose-600 text-white font-medium
+          shadow-md hover:shadow-lg transition-all duration-300
+          hover:scale-105 active:scale-95"
         >
-          <StopCircle className="w-5 h-5" />
+          <TimerReset className="w-4 h-4 transition-transform group-hover:rotate-90" />
+          Reset
         </button>
       </div>
     </div>

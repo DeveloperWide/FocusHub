@@ -11,21 +11,8 @@ const focusSchema = new Schema(
 
     task: {
       type: Schema.Types.ObjectId,
-      validate: {
-        validator: function (value) {
-          if (this.title === "") {
-            return value != null;
-          }
-          if (this.title.length > 0) {
-            return value == null;
-          }
-
-          return true;
-        },
-        message:
-          "Task must exist for task-linked Timers and be null for normal focus Timer.",
-      },
       ref: "Task",
+      default: null,
     },
 
     focusDuration: {

@@ -13,10 +13,12 @@ const TaskInput = ({
 }) => {
   const tasks = useSelector(selectTasks);
   const goals = useSelector(selectGoals);
+
   const [task, setTask] = useState({
     title: "",
     priority: "high",
     type: "task",
+    tag: "",
   });
 
   useEffect(() => {
@@ -25,33 +27,39 @@ const TaskInput = ({
         title: editingTask.title,
         priority: editingTask.priority,
         type: editingTask.type,
+        tag: editingTask.tag || "",
       });
     }
   }, [editingTask]);
 
   const onChangeHandler = (e) => {
-    setTask((prev) => {
-      return { ...prev, [e.target.name]: e.target.value };
-    });
+    setTask((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
     <>
       {(tasks.length < 5 || editingTask) && (
         <div className="w-[95%] mx-auto mt-6 bg-white border border-gray-200 rounded-xl shadow-sm flex items-center gap-3 px-3 py-2">
+          {/* TYPE */}
           <select
             name="type"
             value={task.type}
             onChange={onChangeHandler}
             className="border-none outline-none text-sm font-medium text-gray-600 bg-transparent"
           >
-            <option value="task" selected>
-              Task
-            </option>
+            <option value="task">Task</option>
             {goals.length > 0 &&
-              goals.map((g) => <option key={g.id}>{g.tag}</option>)}
+              goals.map((g) => (
+                <option key={g.id} value={g.tag}>
+                  {g.tag}
+                </option>
+              ))}
           </select>
 
+          {/* TITLE */}
           <TextField
             variant="standard"
             placeholder="Add a new task..."
@@ -59,11 +67,21 @@ const TaskInput = ({
             name="title"
             onChange={onChangeHandler}
             sx={{ flex: 1 }}
-            InputProps={{
-              disableUnderline: true,
-            }}
+            InputProps={{ disableUnderline: true }}
           />
 
+          {/* TAG */}
+          <TextField
+            variant="standard"
+            placeholder="Tag"
+            value={task.tag}
+            name="tag"
+            onChange={onChangeHandler}
+            sx={{ width: 100 }}
+            InputProps={{ disableUnderline: true }}
+          />
+
+          {/* PRIORITY */}
           <select
             name="priority"
             value={task.priority}
@@ -81,6 +99,7 @@ const TaskInput = ({
             </option>
           </select>
 
+          {/* BUTTON */}
           <button
             onClick={() => {
               if (editingTask) {
@@ -90,7 +109,12 @@ const TaskInput = ({
                 addTaskHandler(task, setTask);
               }
 
-              setTask({ title: "", priority: "high", type: "task" });
+              setTask({
+                title: "",
+                priority: "high",
+                type: "task",
+                tag: "",
+              });
             }}
             className={`${editingTask ? "bg-blue-600" : "bg-black"} text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition`}
           >
