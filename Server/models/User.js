@@ -57,6 +57,40 @@ const userSchema = new Schema(
         default: "",
       },
     },
+
+    subscription: {
+      planId: {
+        type: String,
+        enum: ["free", "basic", "pro", "elite"],
+        default: "free",
+      },
+      interval: {
+        type: String,
+        enum: ["monthly", "yearly", null],
+        default: null,
+      },
+      status: {
+        type: String,
+        enum: ["free", "active", "expired", "canceled"],
+        default: "free",
+      },
+      currentPeriodStart: {
+        type: Date,
+        default: null,
+      },
+      currentPeriodEnd: {
+        type: Date,
+        default: null,
+      },
+      cancelAtPeriodEnd: {
+        type: Boolean,
+        default: false,
+      },
+      razorpay: {
+        lastOrderId: { type: String, default: "" },
+        lastPaymentId: { type: String, default: "" },
+      },
+    },
   },
   {
     timestamps: true,
