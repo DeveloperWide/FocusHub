@@ -14,7 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "../../utils/Dropdown";
+} from "../tailgrids/core/dropdown";
 
 interface DropdownMenuProps {
   toggleTheme: never;
