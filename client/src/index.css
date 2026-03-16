@@ -28,25 +28,24 @@ html.dark .table-header {
   @apply py-1;
 }
 
-.icon{
+.icon {
   @apply text-white font-semibold px-3 py-2 rounded-xl cursor-pointer;
   transition: 250ms ease;
 }
 
-.icon:hover{
-  transform: translateY(-3px)
+.icon:hover {
+  transform: translateY(-3px);
 }
 
-.icon-box{
+.icon-box {
   @apply cursor-pointer rounded-[50%] p-[10px];
 }
 
-.sidebar, .createTaskScrollbar{
+.sidebar,
+.createTaskScrollbar {
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
-
-
 
 .updateBtn,
 .deleteBtn {
@@ -60,7 +59,7 @@ html.dark .table-header {
   font-style: normal;
 }
 
-.signup-heading{
+.signup-heading {
   font-weight: 700;
 }
 
@@ -68,20 +67,20 @@ html.dark .table-header {
   font-weight: 600;
 }
 
-.profile-heading{
+.profile-heading {
   font-weight: 600;
 }
 
-.login-btn , .signup-btn{
-    @apply rounded-2xl text-center font-bold w-[50%] h-full;
+.login-btn,
+.signup-btn {
+  @apply rounded-2xl text-center font-bold w-[50%] h-full;
 }
 
-#email , #password , #name{
+#email,
+#password,
+#name {
   @apply border px-3 py-2 rounded-2xl border-gray-500 outline-none mb-3;
 }
-
-
-
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
@@ -90,8 +89,8 @@ html.dark .table-header {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 tbody tr:nth-child(even) {

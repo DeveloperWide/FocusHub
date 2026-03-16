@@ -6,9 +6,9 @@ import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
 import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink, Outlet } from "react-router-dom";
-import { Hourglass, Moon, Sun } from "lucide-react";
+import { Hourglass, Moon, Sparkles, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
-
+import UserDropdownMenu from "../components/Dashboard/DropdownMenu";
 const SIDEBAR_WIDTH = "w-64";
 
 const navItems = [
@@ -39,6 +39,12 @@ const navItems = [
     icon: <Hourglass size={18} />,
     href: "/app/focus-timer",
   },
+  // {
+  //   label: "Pricing",
+  //   icon: <Sparkles size={18} />,
+  //   href: "/app/pricing",
+  //   badge: "New",
+  // },
 ];
 
 const SidebarLayout = () => {
@@ -74,7 +80,7 @@ const SidebarLayout = () => {
       >
         <div className="h-full flex flex-col justify-between">
           {/* Header */}
-          <div>
+          <div className="flex-1">
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">
@@ -135,41 +141,9 @@ const SidebarLayout = () => {
           </div>
 
           {/* Bottom Section */}
-          <div className="border-t border-gray-200 dark:border-slate-800 p-3 space-y-1">
-            {/* Theme Toggle */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="
-              w-full flex items-center
-              px-3 py-2
-              text-sm font-medium
-              rounded-lg
-              text-gray-700 dark:text-slate-200
-              hover:bg-gray-100 dark:hover:bg-slate-800
-              transition"
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-              <span className="ml-3">
-                {isDark ? "Light Mode" : "Dark Mode"}
-              </span>
-            </button>
-
-            {/* Logout */}
-            <NavLink
-              to="/app/logout"
-              className="
-              flex items-center
-              px-3 py-2
-              text-sm font-medium
-              text-red-500
-              rounded-lg
-              hover:bg-red-50 dark:hover:bg-red-500/10
-              transition"
-            >
-              <LogoutIcon fontSize="small" />
-              <span className="ml-3">Log out</span>
-            </NavLink>
+          <div className="border-t border-gray-400 dark:border-slate-800 space-y-2">
+            {/* Add User Profile with Dropdown */}
+            <UserDropdownMenu toggleTheme={toggleTheme} isDark={isDark} />
           </div>
         </div>
       </aside>
@@ -198,7 +172,7 @@ const SidebarLayout = () => {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-100 dark:bg-slate-950">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 dark:bg-slate-950">
           <Outlet />
         </main>
       </div>
