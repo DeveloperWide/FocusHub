@@ -1,29 +1,47 @@
 const express = require("express");
-const Focus = require("../models/Focus");
 const router = express.Router();
-const {authenticateUser} = require("../utils/middlewares");
-const User = require("../models/User");
+const { authenticateUser } = require("../utils/middlewares");
+const focusTimerController = require("../controllers/focusTimerController");
 
-// Get Focus Sessions
-router.get("/focus-tasks", authenticateUser, async (req, res) => {
-        // const user = await User.findById(req.user)
-        const allFocusTasks = await Focus.find({user: req.user.id});
-        res.json({
-            success: true,
-            message: "ALl Tasks",
-            data : allFocusTasks
-        })
-})
+// Stats
+router.get(
+  "/stats/last-7-days",
+  authenticateUser,
+  focusTimerController.getLast7DaysStats,
+);
 
-// Store Focus Session in DB
-router.post("/", authenticateUser, async (req, res) => {
-    const focusTask = new Focus({
-        ...req.body,
-        user: req.user.id
-    });
-    const svdFocusTask = await focusTask.save();
-    console.log(`Saved Focus Task`, svdFocusTask);
-});
+router.get(
+  "/stats/by-goal",
+  authenticateUser,
+  focusTimerController.getByGoalStats,
+);
 
+// Get Focus Timers (production endpoint)
+router.get("/timers", authenticateUser, focusTimerController.getFocusTimers);
+
+// Backwards-compatible endpoint (used in Time page components)
+router.get(
+  "/focus-tasks",
+  authenticateUser,
+  focusTimerController.getFocusTimers,
+);
+
+// Create Focus Timer (production endpoint)
+router.post("/timers", authenticateUser, focusTimerController.createFocusTimer);
+
+// Edit/Delete Focus Timer
+router.patch(
+  "/timers/:id",
+  authenticateUser,
+  focusTimerController.updateFocusTimer,
+);
+router.delete(
+  "/timers/:id",
+  authenticateUser,
+  focusTimerController.deleteFocusTimer,
+);
+
+// Backwards-compatible create endpoint
+router.post("/", authenticateUser, focusTimerController.createFocusTimer);
 
 module.exports = router;

@@ -9,6 +9,7 @@ import {
   selectTasks,
   createTask,
   deleteTask,
+  toggleTaskComplete,
   updateTask,
 } from "../features/tasks/index";
 
@@ -101,12 +102,23 @@ const Task = () => {
       });
   };
 
+  const toggleCompleteHandler = (taskId, isComplete) => {
+    dispatch(toggleTaskComplete({ taskId, isComplete }))
+      .unwrap()
+      .then((updated) => {
+        toast.success(updated.isComplete ? "Task completed" : "Task restored");
+      })
+      .catch(() => {
+        toast.error("Failed to update task");
+      });
+  };
+
   const sortedTasks = [...tasks].sort(
     (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
   );
 
   return (
-    <div>
+    <div className="flex-1 w-full max-w-5xl">
       <ToastContainer />
       <TaskInput
         priorityCount={priorityCount}
@@ -115,11 +127,11 @@ const Task = () => {
         setEditingTask={setEditingTask}
         updateTaskHandler={updateTaskHandler}
       />
-      <p className="text-center text-sm text-gray-500 mt-6">
+      <p className="text-center text-sm text-gray-500 dark:text-slate-400 mt-6">
         How to have a productive day?{" "}
         <Link
           to="/productivity-tips"
-          className="text-black font-semibold hover:underline"
+          className="text-gray-900 dark:text-slate-100 font-semibold hover:underline"
         >
           Read tips
         </Link>
@@ -129,6 +141,7 @@ const Task = () => {
         sortedTasks={sortedTasks}
         deleteTaskHandler={deleteTaskHandler}
         setEditingTask={setEditingTask}
+        toggleCompleteHandler={toggleCompleteHandler}
       />
     </div>
   );

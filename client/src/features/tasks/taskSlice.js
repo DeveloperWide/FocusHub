@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTask, deleteTask, fetchTasks, updateTask } from "./taskThunk";
+import {
+  createTask,
+  deleteTask,
+  fetchTasks,
+  toggleTaskComplete,
+  updateTask,
+} from "./taskThunk";
 
 const initialState = {
   items: [],
@@ -32,6 +38,10 @@ export const taskSlice = createSlice({
         if (index != -1) {
           state.items[index] = action.payload;
         }
+      })
+      .addCase(toggleTaskComplete.fulfilled, (state, action) => {
+        const index = state.items.findIndex((t) => t.id === action.payload.id);
+        if (index !== -1) state.items[index] = action.payload;
       })
 
       // Delete Task

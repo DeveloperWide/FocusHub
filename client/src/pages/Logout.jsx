@@ -1,15 +1,23 @@
 import { useDispatch } from "react-redux";
-import { logoutLocal } from "../features/auth/authSlice";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../features/auth/authThunk";
 
 const Logout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  dispatch(logoutLocal())
-    .unwrap()
-    .then(() => {
-      toast.success("Loggout Out Successfully");
-    });
+  useEffect(() => {
+    dispatch(logoutUser())
+      .unwrap()
+      .finally(() => {
+        toast.success("Logged out successfully");
+        navigate("/login", { replace: true });
+      });
+  }, [dispatch, navigate]);
+
+  return null;
 };
 
 export default Logout;

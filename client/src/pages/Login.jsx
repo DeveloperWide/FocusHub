@@ -79,7 +79,9 @@ const Login = () => {
           />
         </FormControl>
 
-        <p className="text-sm text-blue-500 cursor-pointer">Forgot password?</p>
+        <p className="text-sm text-blue-500 dark:text-blue-300 cursor-pointer">
+          Forgot password?
+        </p>
 
         <button
           disabled={loading}
@@ -89,9 +91,12 @@ const Login = () => {
         </button>
       </form>
 
-      <p className="text-center text-sm text-gray-500 mt-4">
+      <p className="text-center text-sm text-gray-500 dark:text-slate-400 mt-4">
         Not a member?
-        <Link to="/signup" className="text-blue-600 ml-1 font-medium">
+        <Link
+          to="/signup"
+          className="text-blue-600 dark:text-blue-300 ml-1 font-medium"
+        >
           Signup
         </Link>
       </p>

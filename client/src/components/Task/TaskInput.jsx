@@ -42,15 +42,37 @@ const TaskInput = ({
   return (
     <>
       {(tasks.length < 5 || editingTask) && (
-        <div className="w-[95%] mx-auto mt-6 bg-white border border-gray-200 rounded-xl shadow-sm flex items-center gap-3 px-3 py-2">
+        <div
+          className="
+        w-[95%] max-w-4xl
+        mx-auto mt-6
+        bg-white/80 dark:bg-slate-900/70 backdrop-blur-md
+        border border-gray-200 dark:border-slate-700
+        rounded-xl
+        shadow-[0_8px_25px_rgba(0,0,0,0.08)]
+        flex flex-col md:flex-row
+        items-stretch md:items-center
+        gap-3
+        px-4 py-3
+        transition"
+        >
           {/* TYPE */}
           <select
             name="type"
             value={task.type}
             onChange={onChangeHandler}
-            className="border-none outline-none text-sm font-medium text-gray-600 bg-transparent"
+            className="
+          text-sm font-medium
+          text-gray-600 dark:text-slate-200
+          bg-gray-50 dark:bg-slate-950
+          border border-gray-200 dark:border-slate-700
+          rounded-lg
+          px-3 py-2
+          outline-none
+          md:w-auto w-full"
           >
             <option value="task">Task</option>
+
             {goals.length > 0 &&
               goals.map((g) => (
                 <option key={g.id} value={g.tag}>
@@ -66,8 +88,17 @@ const TaskInput = ({
             value={task.title}
             name="title"
             onChange={onChangeHandler}
-            sx={{ flex: 1 }}
-            InputProps={{ disableUnderline: true }}
+            sx={{
+              flex: 1,
+              minWidth: 120,
+            }}
+            InputProps={{
+              disableUnderline: true,
+              style: {
+                fontSize: 14,
+                padding: "6px 8px",
+              },
+            }}
           />
 
           {/* TAG */}
@@ -77,8 +108,16 @@ const TaskInput = ({
             value={task.tag}
             name="tag"
             onChange={onChangeHandler}
-            sx={{ width: 100 }}
-            InputProps={{ disableUnderline: true }}
+            sx={{
+              width: { xs: "100%", md: 120 },
+            }}
+            InputProps={{
+              disableUnderline: true,
+              style: {
+                fontSize: 14,
+                padding: "6px 8px",
+              },
+            }}
           />
 
           {/* PRIORITY */}
@@ -86,14 +125,24 @@ const TaskInput = ({
             name="priority"
             value={task.priority}
             onChange={onChangeHandler}
-            className="text-sm border border-gray-200 rounded-lg px-2 py-1 text-gray-600 outline-none"
+            className="
+          text-sm
+          border border-gray-200 dark:border-slate-700
+          bg-gray-50 dark:bg-slate-950
+          rounded-lg
+          px-3 py-2
+          text-gray-600 dark:text-slate-200
+          outline-none
+          md:w-auto w-full"
           >
             <option value="high" disabled={priorityCount.high >= 1}>
               High
             </option>
+
             <option value="medium" disabled={priorityCount.medium >= 2}>
               Medium
             </option>
+
             <option value="low" disabled={priorityCount.low >= 3}>
               Low
             </option>
@@ -116,7 +165,17 @@ const TaskInput = ({
                 tag: "",
               });
             }}
-            className={`${editingTask ? "bg-blue-600" : "bg-black"} text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition`}
+            className={`
+          ${editingTask ? "bg-indigo-600" : "bg-gray-900 dark:bg-indigo-600"}
+          text-white
+          text-sm
+          font-semibold
+          px-5 py-2
+          rounded-lg
+          hover:opacity-90
+          transition
+          shadow-md
+          md:w-auto w-full`}
           >
             {editingTask ? "Update" : "Add"}
           </button>

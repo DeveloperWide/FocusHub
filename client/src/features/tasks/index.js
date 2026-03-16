@@ -3,7 +3,7 @@ import {
   selectTaskLoading,
   selectTasks,
 } from "./taskSelector";
-import { createTask, deleteTask, updateTask } from "./taskThunk";
+import { createTask, deleteTask, toggleTaskComplete, updateTask } from "./taskThunk";
 
 export {
   selectTaskError,
@@ -11,5 +11,6 @@ export {
   selectTasks,
   createTask,
   deleteTask,
+  toggleTaskComplete,
   updateTask,
 };

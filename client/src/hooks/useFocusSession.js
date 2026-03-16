@@ -15,14 +15,28 @@ export const useFocusSession = () => {
   const timeLeft = useSelector(selectFocusTimeLeft);
 
   useEffect(() => {
-    if (!session || status !== "running") return;
+    const modeLabel =
+      session?.mode === "shortBreak"
+        ? "Short Break"
+        : session?.mode === "longBreak"
+          ? "Long Break"
+          : "Focus";
 
-    document.title = `${formatTime(timeLeft)} • FocusHub`;
+    if (status === "running" && session) {
+      document.title = `${formatTime(timeLeft)} • ${modeLabel} • FocusHub`;
 
-    const interval = setInterval(() => {
-      dispatch(tick());
-    }, 1000);
+      const interval = setInterval(() => {
+        dispatch(tick());
+      }, 1000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
+
+    if (status === "ready") {
+      document.title = `Ready • FocusHub`;
+      return;
+    }
+
+    document.title = `FocusHub`;
   }, [status, session, timeLeft, dispatch]);
 };

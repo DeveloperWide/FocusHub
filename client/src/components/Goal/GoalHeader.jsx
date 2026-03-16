@@ -12,9 +12,11 @@ const GoalHeader = () => {
           Ambitions
         </span>
       </h1>
-      <p className="text-slate-400 text-sm">{goals.length}/3 slots filled</p>
+      <p className="text-slate-400 dark:text-slate-300 text-sm">
+        {goals.length}/3 slots filled
+      </p>
       {/* Simple Progress Bar */}
-      <div className="w-24 h-1 bg-slate-800 mx-auto mt-4 rounded-full overflow-hidden">
+      <div className="w-24 h-1 bg-slate-200 dark:bg-slate-800 mx-auto mt-4 rounded-full overflow-hidden">
         <div
           className="h-full bg-orange-400 transition-all duration-500"
           style={{ width: `${(goals.length / 3) * 100}%` }}

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ringtone from "../assets/ringtone.mp3";
 // import { axiosInstance } from "../utils/axiosInstance";
 
@@ -10,6 +10,21 @@ export const useTimer = (initialMinutes = 25) => {
   const audioRef = useRef(null);
 
   const initialTimeRef = useRef(initialMinutes * 60); // remember session length
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause(); // stop playback
+      audioRef.current.currentTime = 0; // reset position
+      audioRef.current = null;
+    }
+  }, []);
+
+  const playAudio = useCallback(() => {
+    stopAudio();
+    audioRef.current = new Audio(ringtone);
+    audioRef.current.loop = true;
+    audioRef.current.play().catch((err) => console.log("Sound error:", err));
+  }, [stopAudio]);
 
   useEffect(() => {
     if (isRunning) {
@@ -33,23 +48,7 @@ export const useTimer = (initialMinutes = 25) => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning]);
-
-  const playAudio = () => {
-    stopAudio();
-    audioRef.current = new Audio(ringtone);
-    console.log(audioRef);
-    audioRef.current.loop = true;
-    audioRef.current.play().catch((err) => console.log("Sound error:", err));
-  };
-
-  const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause(); // stop playback
-      audioRef.current.currentTime = 0; // reset position
-      audioRef.current = null;
-    }
-  };
+  }, [isRunning, playAudio]);
 
   const stop = () => {
     setIsRunning(false);

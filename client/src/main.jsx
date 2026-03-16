@@ -7,11 +7,14 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "./app/store.js";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { ThemeProvider } from "./context/ThemeProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </Provider>
     <Analytics />
     <SpeedInsights />

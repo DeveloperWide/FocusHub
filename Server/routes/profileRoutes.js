@@ -10,8 +10,10 @@ const { authenticateUser } = require("../utils/middlewares");
 router.put(
   "/update",
   authenticateUser,
-  upload.single("profileImage"),
-  profileController.updateProfile,
+	upload.single("profileImage"),
+	profileController.updateProfile,
 );
+
+router.delete("/me", authenticateUser, profileController.deleteMe);
 
 module.exports = router;

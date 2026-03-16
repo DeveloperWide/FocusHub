@@ -1,42 +1,41 @@
 import { useState, useEffect } from "react";
 import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
-import axios from "axios";
 import { getLast7Days } from "../utils/helper";
-import { getToken } from "../utils/auth";
+import { axiosInstance } from "../utils/axiosInstance";
 
 const ProductivityStreak = () => {
   const [week, setWeek] = useState([]);
   const [completedDays, setCompletedDays] = useState(new Set());
   const [streak, setStreak] = useState(0); // 🔹 new state for streak
-  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // Utility to calculate streak
   const calculateStreak = (completedDays) => {
-    const today = new Date().toISOString().split("T")[0];
-    const yesterdayDate = new Date();
-    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-    const yesterday = yesterdayDate.toISOString().split("T")[0];
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset();
 
-    let streak = 0;
+    const localKey = (d) => {
+      const shifted = new Date(d.getTime() - tzOffset * 60 * 1000);
+      return shifted.toISOString().slice(0, 10);
+    };
 
-    // Decide starting point
-    let current;
-    if (completedDays.has(today)) {
-      current = new Date(today);
-    } else if (completedDays.has(yesterday)) {
-      current = new Date(yesterday);
-    } else {
-      return 0;
+    let streakCount = 0;
+
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    let current = new Date(now);
+    if (!completedDays.has(localKey(current))) {
+      current = yesterday;
+      if (!completedDays.has(localKey(current))) return 0;
     }
 
-    // Walk backwards while days exist in completedDays
-    while (completedDays.has(current.toISOString().split("T")[0])) {
-      streak++;
+    while (completedDays.has(localKey(current))) {
+      streakCount++;
       current.setDate(current.getDate() - 1);
     }
 
-    return streak;
+    return streakCount;
   };
 
   useEffect(() => {
@@ -44,21 +43,11 @@ const ProductivityStreak = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/focus/focus-tasks`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+    axiosInstance
+      .get("/focus/stats/last-7-days")
       .then((res) => {
-        const tasks = res.data.data;
-
-        // Extract all dates where tasks were created
-        const dates = new Set(
-          tasks.map(
-            (task) => new Date(task.createdAt).toISOString().split("T")[0],
-          ),
-        );
+        const days = res.data?.data?.days || [];
+        const dates = new Set(days.filter((d) => d.seconds > 0).map((d) => d.date));
 
         setCompletedDays(dates);
 
@@ -76,7 +65,9 @@ const ProductivityStreak = () => {
       <LocalFireDepartmentRoundedIcon
         sx={{ color: "#ff9501", fontSize: "200px" }}
       />
-      <p className="text-xl font-bold text-gray-500">{streak}-Day Streak!</p>
+      <p className="text-xl font-bold text-gray-500 dark:text-slate-300">
+        {streak}-Day Streak!
+      </p>
 
       <div className="flex gap-3 justify-center mt-4">
         {week.map((day, idx) => {
@@ -85,7 +76,11 @@ const ProductivityStreak = () => {
             <div
               key={idx}
               className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold 
-                ${isCompleted ? "bg-green-500 text-white" : "bg-gray-300 text-gray-700"}`}
+                ${
+                  isCompleted
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-300 text-gray-700 dark:bg-slate-800 dark:text-slate-200"
+                }`}
             >
               {isCompleted ? (
                 <CheckCircleOutlineRoundedIcon sx={{ fontSize: "50px" }} />

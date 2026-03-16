@@ -3,6 +3,7 @@ import {
   createTaskAPI,
   deleteTaskAPI,
   fetchTasksAPI,
+  toggleTaskCompleteAPI,
   updateTaskAPI,
 } from "./taskAPI";
 
@@ -29,5 +30,13 @@ export const deleteTask = createAsyncThunk(
   async (taskId) => {
     await deleteTaskAPI(taskId);
     return taskId;
+  },
+);
+
+export const toggleTaskComplete = createAsyncThunk(
+  "tasks/toggleTaskComplete",
+  async ({ taskId, isComplete }) => {
+    const res = await toggleTaskCompleteAPI(taskId, isComplete);
+    return res.data.data;
   },
 );

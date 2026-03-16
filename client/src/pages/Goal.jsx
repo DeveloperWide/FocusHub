@@ -71,7 +71,7 @@ const Goal = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-slate-950">
       <div className="max-w-xl mx-auto">
         {/* Header Section */}
         <GoalHeader />
@@ -80,7 +80,7 @@ const Goal = () => {
             .fill(0)
             .map((_, i) => <GoalSkeleton key={i} />)
         ) : (
-          <div className="backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl rounded-3xl p-8">
+          <div className="backdrop-blur-xl bg-white dark:bg-slate-900/60 border border-gray-200 dark:border-slate-800 shadow-2xl rounded-3xl p-8">
             {/* Input Section */}
             {(goals.length < 3 || editingGoal) && (
               <div className="space-y-4 mb-10">
@@ -102,7 +102,7 @@ const Goal = () => {
         )}
 
         {/* Footer hint */}
-        <p className="text-center text-slate-600 text-xs mt-8 uppercase tracking-tighter">
+        <p className="text-center text-slate-600 dark:text-slate-400 text-xs mt-8 uppercase tracking-tighter">
           Focus on the top 3. Ignore the rest.
         </p>
       </div>

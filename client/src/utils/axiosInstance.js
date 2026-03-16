@@ -1,16 +1,13 @@
 import axios from "axios";
-import { getToken } from "./auth";
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = getToken();
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  // Helps backend compute "today" correctly for the user's local timezone
+  config.headers["x-tz-offset"] = new Date().getTimezoneOffset();
 
   return config;
 });

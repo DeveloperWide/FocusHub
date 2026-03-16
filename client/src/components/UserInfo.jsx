@@ -1,16 +1,17 @@
-import { getUser } from "../utils/auth";
+import { useSelector } from "react-redux";
+import { selectUser } from "../features/auth/authSelector";
 
 const UserInfo = () => {
-  const user = getUser();
+  const user = useSelector(selectUser);
   return (
     <div className="flex justify-center items-center gap-1 ">
       {/* <img src={`${user.profileImage.url}`} className='h-8 w-8 rounded-full' alt="Mahesh" /> */}
       <div className="user-info">
         <p className="name font-semibold text-[12px`] p-0 m-0 hidden md:block">
-          {user.name}
+          {user?.name || ""}
         </p>
         <p className="email text-[10px] font-semibold text-gray-500 hidden md:block">
-          {user.email}
+          {user?.email || ""}
         </p>
       </div>
     </div>
