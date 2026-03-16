@@ -22,6 +22,7 @@ import { fetchTasks } from "./features/tasks/taskThunk";
 import FocusTimer from "./pages/FocusTimer";
 import { fetchMe } from "./features/auth/authThunk";
 import { selectUser } from "./features/auth/authSelector";
+import Pricing from "./pages/Pricing";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,7 @@ const App = () => {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
+        <Route path="/pricing" element={<Pricing />} />
 
         {/* Sidebar Layout Routes */}
         <Route
@@ -87,6 +89,7 @@ const App = () => {
           <Route path="focus-timer" element={<FocusTimer />} />
           <Route path="activity-logs" element={<ActivityLogs />} />
           <Route path="productivity-streak" element={<ProductivityStreak />} />
+          <Route path="pricing" element={<Pricing embedded />} />
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
