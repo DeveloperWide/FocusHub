@@ -1,4 +1,5 @@
 const Goal = require("../models/Goal");
+const Task = require("../models/Task");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 
@@ -14,7 +15,6 @@ module.exports.getGoals = wrapAsync(async (req, res, next) => {
 
 module.exports.createGoal = wrapAsync(async (req, res, next) => {
   const { title, tag } = req.body;
-  console.log(req.user);
   const goals = await Goal.find({ user: req.user.id });
 
   if (goals.length > 2) {
@@ -29,12 +29,20 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
 
   // Todo: Implement trim() in frontend
   const newGoal = new Goal({
-    title,
-    tag,
+    title: String(title).trim(),
+    tag: String(tag).trim(),
     user: req.user.id,
   });
 
-  const svdGoal = await newGoal.save();
+  let svdGoal;
+  try {
+    svdGoal = await newGoal.save();
+  } catch (err) {
+    if (err?.code === 11000) {
+      throw new ExpressError(409, "Goal tag already exists");
+    }
+    throw err;
+  }
 
   if (!svdGoal) throw new ExpressError(500, "Failed To Create Goal");
 
@@ -57,11 +65,19 @@ module.exports.updateGoal = wrapAsync(async (req, res, next) => {
     });
   }
 
-  const updatedGoal = await Goal.findByIdAndUpdate(
-    id,
-    { title, tag },
-    { new: true },
-  );
+  let updatedGoal;
+  try {
+    updatedGoal = await Goal.findOneAndUpdate(
+      { _id: id, user: req.user.id },
+      { title: String(title).trim(), tag: String(tag).trim() },
+      { new: true },
+    );
+  } catch (err) {
+    if (err?.code === 11000) {
+      throw new ExpressError(409, "Goal tag already exists");
+    }
+    throw err;
+  }
 
   if (!updatedGoal) {
     return res.status(404).json({
@@ -76,9 +92,14 @@ module.exports.updateGoal = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.deleteGoal = wrapAsync(async (req, res, next) => {
-  const goalToBeDeleted = await Goal.findByIdAndDelete(req.params.id);
+  const goalToBeDeleted = await Goal.findOneAndDelete({
+    _id: req.params.id,
+    user: req.user.id,
+  });
 
   if (!goalToBeDeleted) throw new ExpressError(404, "Goal Not Found");
+
+  await Task.deleteMany({ user: req.user.id, goal: goalToBeDeleted._id });
 
   res.status(200).json({
     success: true,

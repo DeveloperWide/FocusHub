@@ -113,12 +113,14 @@ const Signup = () => {
             fullWidth
           />
 
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-400 dark:text-slate-400 mt-1">
             focushub.co.in/u/{data.username || "username"}
           </p>
 
           {usernameLoading && (
-            <p className="text-sm text-gray-500">Checking username...</p>
+            <p className="text-sm text-gray-500 dark:text-slate-300">
+              Checking username...
+            </p>
           )}
 
           {available === true && (
@@ -141,7 +143,7 @@ const Signup = () => {
                       username: name,
                     }))
                   }
-                  className="px-3 py-1 text-xs bg-gray-100 rounded-full hover:bg-gray-200"
+                  className="px-3 py-1 text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition"
                 >
                   {name}
                 </button>

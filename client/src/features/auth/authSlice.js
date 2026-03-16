@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, signupUser } from "./authThunk";
-import { getToken, getUser, logoutUser } from "../../utils/auth";
+import { fetchMe, loginUser, logoutUser, signupUser } from "./authThunk";
 
 const initialState = {
-  user: getUser(),
-  token: getToken(),
+  user: null,
   loading: false,
+  sessionLoading: false,
   error: null,
+  initialized: false,
 };
 
 export const authSlice = createSlice({
@@ -15,18 +15,39 @@ export const authSlice = createSlice({
   reducers: {
     logoutLocal: (state) => {
       state.user = null;
-      state.token = null;
-      logoutUser();
+      state.loading = false;
+      state.sessionLoading = false;
+      state.error = null;
+      state.initialized = true;
     },
   },
   extraReducers: (builder) => {
     builder
-
+      .addCase(fetchMe.pending, (state) => {
+        state.sessionLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchMe.fulfilled, (state, action) => {
+        state.sessionLoading = false;
+        state.user = action.payload.user;
+        state.initialized = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.initialized = true;
+      })
+      .addCase(fetchMe.rejected, (state, action) => {
+        state.sessionLoading = false;
+        state.error = action.payload || "Failed to restore session";
+        state.initialized = true;
+      })
       // pending
       .addMatcher(
         (action) =>
           action.type === loginUser.pending.type ||
-          action.type === signupUser.pending.type,
+          action.type === signupUser.pending.type ||
+          action.type === logoutUser.pending.type,
         (state) => {
           state.loading = true;
           state.error = null;
@@ -41,7 +62,7 @@ export const authSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.user = action.payload.user;
-          state.token = action.payload.token;
+          state.initialized = true;
         },
       )
 
@@ -49,10 +70,12 @@ export const authSlice = createSlice({
       .addMatcher(
         (action) =>
           action.type === loginUser.rejected.type ||
-          action.type === signupUser.rejected.type,
+          action.type === signupUser.rejected.type ||
+          action.type === logoutUser.rejected.type,
         (state, action) => {
           state.loading = false;
           state.error = action.payload || "Authentication failed";
+          state.initialized = true;
         },
       );
   },

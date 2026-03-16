@@ -16,18 +16,49 @@ import { ToastContainer } from "react-toastify";
 import ActivityLogs from "./TimePageComponents/ActivityLogs";
 import ProductivityStreak from "./TimePageComponents/ProductivityStreak";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchGoals } from "./features/goals/goalThunk";
 import { fetchTasks } from "./features/tasks/taskThunk";
 import FocusTimer from "./pages/FocusTimer";
+import { fetchMe } from "./features/auth/authThunk";
+import { selectUser } from "./features/auth/authSelector";
 
 const App = () => {
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
 
   useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    dispatch(fetchMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!user) return;
+
     dispatch(fetchGoals());
     dispatch(fetchTasks());
-  }, [dispatch]);
+
+    // Refresh daily tasks automatically at local midnight
+    let timeoutId;
+
+    const scheduleMidnightRefresh = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 200);
+
+      const delay = Math.max(0, midnight.getTime() - now.getTime());
+      timeoutId = setTimeout(() => {
+        dispatch(fetchTasks());
+        scheduleMidnightRefresh();
+      }, delay);
+    };
+
+    scheduleMidnightRefresh();
+
+    return () => clearTimeout(timeoutId);
+  }, [dispatch, user]);
 
   return (
     <>

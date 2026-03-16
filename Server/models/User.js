@@ -46,6 +46,17 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+
+    profileImage: {
+      url: {
+        type: String,
+        default: "",
+      },
+      filename: {
+        type: String,
+        default: "",
+      },
+    },
   },
   {
     timestamps: true,

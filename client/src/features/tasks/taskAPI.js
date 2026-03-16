@@ -15,3 +15,14 @@ export const updateTaskAPI = (taskId, data) => {
 export const deleteTaskAPI = (taskId) => {
   return axiosInstance.delete(`/tasks/${taskId}`);
 };
+
+export const toggleTaskCompleteAPI = (taskId, isComplete) => {
+  const body =
+    typeof isComplete === "boolean"
+      ? {
+          isComplete,
+        }
+      : {};
+
+  return axiosInstance.patch(`/tasks/${taskId}/complete`, body);
+};

@@ -1,8 +1,26 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900;
+}
+
+html.dark body {
+  @apply bg-slate-950 text-slate-100;
+}
 
 .table-header {
   @apply text-left text-gray-600 font-normal text-[16px] py-2;
+}
+
+html.dark .table-header {
+  @apply text-slate-300;
 }
 
 .task-priority,
@@ -82,4 +100,12 @@ tbody tr:nth-child(even) {
 
 tbody tr:nth-child(odd) {
   background-color: #ffffff; /* white */
+}
+
+html.dark tbody tr:nth-child(even) {
+  background-color: rgba(30, 41, 59, 0.45); /* slate-800-ish */
+}
+
+html.dark tbody tr:nth-child(odd) {
+  background-color: rgba(15, 23, 42, 0.45); /* slate-900-ish */
 }

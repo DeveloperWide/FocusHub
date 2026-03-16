@@ -3,150 +3,202 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import OutlinedFlagRoundedIcon from "@mui/icons-material/OutlinedFlagRounded";
 import AddTaskRoundedIcon from "@mui/icons-material/AddTaskRounded";
 import QueryStatsRoundedIcon from "@mui/icons-material/QueryStatsRounded";
-import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 import AccessAlarmsRoundedIcon from "@mui/icons-material/AccessAlarmsRounded";
-``;
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Link, Outlet } from "react-router-dom";
-import {
-  ActivityIcon,
-  Crown,
-  FocusIcon,
-  Hourglass,
-  UserIcon,
-} from "lucide-react";
+import { NavLink, Outlet } from "react-router-dom";
+import { Hourglass, Moon, Sun } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
-const SIDEBAR_WIDTH = "w-64"; // 16rem
+const SIDEBAR_WIDTH = "w-64";
+
+const navItems = [
+  {
+    label: "Dashboard",
+    icon: <QueryStatsRoundedIcon fontSize="small" />,
+    href: "/app/dashboard",
+  },
+  {
+    label: "Tasks",
+    icon: <AddTaskRoundedIcon fontSize="small" />,
+    href: "/app/tasks",
+    badge: "Pro",
+  },
+  {
+    label: "Goals",
+    icon: <OutlinedFlagRoundedIcon fontSize="small" />,
+    href: "/app/goals",
+    badge: 3,
+  },
+  {
+    label: "Time",
+    icon: <AccessAlarmsRoundedIcon fontSize="small" />,
+    href: "/app/time",
+  },
+  {
+    label: "Focus Timer",
+    icon: <Hourglass size={18} />,
+    href: "/app/focus-timer",
+  },
+];
 
 const SidebarLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-slate-950">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`sidebar overflow-y-scroll fixed top-0 left-0 z-40 h-full ${SIDEBAR_WIDTH} 
-    bg-black/40 dark:bg-[#000]
-    backdrop-blur-lg border-r border-white/10 shadow-xl 
-    transform transition-transform duration-500 ease-in-out
-    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
+        className={`
+        fixed md:relative
+        top-0 left-0 z-40 h-full
+        ${SIDEBAR_WIDTH}
+
+        bg-white dark:bg-slate-900
+        border-r border-gray-200 dark:border-slate-800
+        shadow-lg
+
+        transform transition-transform duration-300 ease-out
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+      `}
       >
-        <div className="h-full py-4 flex flex-col justify-between">
-          {/* Top Header */}
+        <div className="h-full flex flex-col justify-between">
+          {/* Header */}
           <div>
-            <div className="flex justify-between items-center px-4">
-              <h2 className="text-3xl font-bold text-green-600 drop-shadow-md flex items-center gap-1">
-                FocusHub <BarChartRoundedIcon className="text-green-600" />
-              </h2>
+            <div className="flex items-center justify-between px-5 py-4">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                  F
+                </div>
+
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+                  FocusHub
+                </h2>
+              </div>
+
               <button
-                onClick={toggleSidebar}
-                className="sm:hidden text-gray-200 hover:text-white transition-transform hover:scale-110"
+                onClick={() => setIsSidebarOpen(false)}
+                className="md:hidden text-gray-500 hover:text-gray-800 dark:hover:text-white"
               >
-                <ClearRoundedIcon sx={{ fontSize: 30 }} />
+                <ClearRoundedIcon />
               </button>
             </div>
 
-            <hr className="w-full h-0.5 bg-white/20" />
+            <div className="border-b border-gray-200 dark:border-slate-800" />
 
-            {/* Navigation Items */}
-            <ul className="mt-6 space-y-2 font-medium">
-              {[
-                {
-                  label: "Dashboard",
-                  icon: <QueryStatsRoundedIcon />,
-                  href: "/app/dashboard",
-                },
-                {
-                  label: "Tasks",
-                  icon: <AddTaskRoundedIcon />,
-                  href: "/app/tasks",
-                  badge: "Pro",
-                },
-                {
-                  label: "Goals",
-                  icon: <OutlinedFlagRoundedIcon />,
-                  href: "/app/goals",
-                  badge: 3,
-                },
-                {
-                  label: "Time",
-                  icon: <AccessAlarmsRoundedIcon />,
-                  href: "/app/time",
-                },
-                {
-                  label: "Focus Timer",
-                  icon: <Hourglass />,
-                  href: "/app/focus-timer",
-                },
-                /* {
-                  label: "Profile",
-                  icon: <UserIcon />,
-                  href: "/app/profile",
-                },
-                {
-                  label: "Leaderboard",
-                  icon: <Crown />,
-                  href: "/app/leaderboard",
-                }, */
-              ].map((item, idx) => (
-                <li key={idx} className="px-4">
-                  <Link
-                    to={item.href}
-                    className="flex items-center p-2 text-white rounded-lg 
-                hover:bg-green-300/20 hover:backdrop-blur-md transition-all duration-300 ease-in-out 
-                hover:shadow-md hover:scale-[1.02]"
-                  >
-                    <span className="text-green-600">{item.icon}</span>
-                    <span className="ml-3">{item.label}</span>
-                    {item.badge && (
-                      <span className="ml-auto px-2 text-sm font-medium bg-blue-500/30 text-white rounded-full backdrop-blur-sm">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                </li>
+            {/* Navigation */}
+            <nav className="mt-4 px-3 space-y-1">
+              {navItems.map((item, idx) => (
+                <NavLink
+                  key={idx}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `
+                    flex items-center
+                    px-3 py-2.5
+                    text-sm font-medium
+                    rounded-lg
+                    transition
+
+                    ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300"
+                        : "text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800"
+                    }
+                  `
+                  }
+                >
+                  <span className="mr-3 text-gray-400 dark:text-slate-500">
+                    {item.icon}
+                  </span>
+
+                  {item.label}
+
+                  {item.badge && (
+                    <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-200">
+                      {item.badge}
+                    </span>
+                  )}
+                </NavLink>
               ))}
-            </ul>
+            </nav>
           </div>
 
-          {/* Bottom Items */}
-          <ul className="space-y-2 font-medium border-t border-white/10 pt-3">
-            <li className="px-4">
-              <a
-                href="/app/logout"
-                className="flex items-center p-2 text-white rounded-lg 
-            hover:bg-red-400/30 hover:backdrop-blur-md transition-all duration-300 ease-in-out hover:scale-[1.02]"
-              >
-                <LogoutIcon className="text-red-300" />
-                <span className="ml-3">Log Out</span>
-              </a>
-            </li>
-          </ul>
+          {/* Bottom Section */}
+          <div className="border-t border-gray-200 dark:border-slate-800 p-3 space-y-1">
+            {/* Theme Toggle */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="
+              w-full flex items-center
+              px-3 py-2
+              text-sm font-medium
+              rounded-lg
+              text-gray-700 dark:text-slate-200
+              hover:bg-gray-100 dark:hover:bg-slate-800
+              transition"
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              <span className="ml-3">
+                {isDark ? "Light Mode" : "Dark Mode"}
+              </span>
+            </button>
+
+            {/* Logout */}
+            <NavLink
+              to="/app/logout"
+              className="
+              flex items-center
+              px-3 py-2
+              text-sm font-medium
+              text-red-500
+              rounded-lg
+              hover:bg-red-50 dark:hover:bg-red-500/10
+              transition"
+            >
+              <LogoutIcon fontSize="small" />
+              <span className="ml-3">Log out</span>
+            </NavLink>
+          </div>
         </div>
       </aside>
 
-      {/* Content */}
-      <div
-        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out
-        ${isSidebarOpen ? "sm:ml-0" : ""} sm:ml-64`}
-      >
-        {/* Toggle Button for small screens */}
-        <button
-          onClick={toggleSidebar}
-          className="sm:hidden p-3 text-gray-500 hover:bg-gray-100 dark:text-gray-400  hover:cursor-pointer w-10 h-8 mb-4 mx-2"
-        >
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              clipRule="evenodd"
-              fillRule="evenodd"
-              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-            />
-          </svg>
-        </button>
+      {/* Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Mobile Top Bar */}
+        <header className="md:hidden flex items-center h-14 px-4 border-b shadow-sm bg-white dark:bg-slate-900 dark:border-slate-800">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+          >
+            ☰
+          </button>
 
-        {/* Main App Content */}
-        <main className="flex-1 overflow-y-auto">
+          <span className="ml-4 font-semibold text-gray-800 dark:text-slate-200">
+            FocusHub
+          </span>
+
+          <button
+            onClick={toggleTheme}
+            className="ml-auto p-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 bg-gray-100 dark:bg-slate-950">
           <Outlet />
         </main>
       </div>

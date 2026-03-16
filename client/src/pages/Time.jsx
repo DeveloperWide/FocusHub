@@ -18,7 +18,7 @@ const Time = () => {
     <div className="h-full flex flex-col justify-center">
       {/* Timer */}
       <div className="flex flex-col justify-center items-center py-6">
-        <h1 className="text-6xl sm:text-8xl font-bold text-gray-900">
+        <h1 className="text-6xl sm:text-8xl font-bold text-gray-900 dark:text-slate-100">
           {currentTime.toLocaleTimeString()}
           &nbsp;
           {/* {currentTime.getHours() >= 12 ? } */}

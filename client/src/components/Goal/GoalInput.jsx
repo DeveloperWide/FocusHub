@@ -39,16 +39,32 @@ const GoalInput = ({
           name="title"
           onChange={onChangeHandler}
           className="flex"
-          sx={{
+          sx={(theme) => ({
             "& .MuiFilledInput-root": {
-              backgroundColor: "#e3e0d8",
-              color: "black",
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? "rgba(2, 6, 23, 0.55)"
+                  : "#e3e0d8",
+              color:
+                theme.palette.mode === "dark"
+                  ? theme.palette.text.primary
+                  : "black",
               borderRadius: "12px",
               "&:before, &:after": { display: "none" },
-              "&:hover": { backgroundColor: "#e3e0dc" },
+              "&:hover": {
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(15, 23, 42, 0.7)"
+                    : "#e3e0dc",
+              },
             },
-            "& .MuiInputLabel-root": { color: "gray" },
-          }}
+            "& .MuiInputLabel-root": {
+              color:
+                theme.palette.mode === "dark"
+                  ? theme.palette.text.secondary
+                  : "gray",
+            },
+          })}
         />
         <TextField
           label="Tag"
@@ -56,17 +72,30 @@ const GoalInput = ({
           value={goal.tag}
           name="tag"
           onChange={onChangeHandler}
-          sx={{
+          sx={(theme) => ({
             "& .MuiFilledInput-root": {
-              backgroundColor: "#e3e0d8",
-              color: "#3299ab",
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? "rgba(2, 6, 23, 0.55)"
+                  : "#e3e0d8",
+              color: theme.palette.mode === "dark" ? "#67e8f9" : "#3299ab",
               fontWeight: "bold",
               borderRadius: "12px",
               "&:before, &:after": { display: "none" },
-              "&:hover": { backgroundColor: "#e3e0dc" },
+              "&:hover": {
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(15, 23, 42, 0.7)"
+                    : "#e3e0dc",
+              },
             },
-            "& .MuiInputLabel-root": { color: "gray" },
-          }}
+            "& .MuiInputLabel-root": {
+              color:
+                theme.palette.mode === "dark"
+                  ? theme.palette.text.secondary
+                  : "gray",
+            },
+          })}
         />
       </div>
       <div className="">

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { getToken, saveUserData } from "../utils/auth";
+import { useDispatch } from "react-redux";
+import { axiosInstance } from "../utils/axiosInstance";
+import { fetchMe } from "../features/auth/authThunk";
 
 const Profile = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+  const dispatch = useDispatch();
   const [preview, setPreview] = useState(null);
   const [file, setFile] = useState(null);
   const [data, setData] = useState({
@@ -32,26 +33,15 @@ const Profile = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    let token = getToken();
     let formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
     if (file) formData.append("profileImage", file);
-    axios
-      .put(`${BASE_URL}/profile/update`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    axiosInstance
+      .put(`/profile/update`, formData)
       .then((res) => {
-        let updatedUser = res.data.user._doc;
-        console.log(updatedUser);
-
-        const oldToken = getToken();
-        console.log(oldToken);
-
-        saveUserData(oldToken, updatedUser);
-        window.location.reload();
+        console.log(res.data?.user);
+        dispatch(fetchMe());
       })
       .catch((err) => {
         console.log(err);

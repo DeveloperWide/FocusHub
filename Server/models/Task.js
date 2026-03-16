@@ -22,7 +22,15 @@ const taskSchema = new Schema(
     tag: {
       type: String,
       required: true,
-      unique: true,
+      trim: true,
+    },
+
+    dayKey: {
+      type: String,
+      required: true,
+      default: () => new Date().toISOString().slice(0, 10),
+      match: /^\d{4}-\d{2}-\d{2}$/,
+      index: true,
     },
 
     user: {
@@ -34,6 +42,7 @@ const taskSchema = new Schema(
     goal: {
       type: Schema.Types.ObjectId,
       ref: "Goal",
+      default: null,
       validate: {
         validator: function (value) {
           if (this.type == "task") {
@@ -48,11 +57,16 @@ const taskSchema = new Schema(
         message:
           "Goal must exist for goal-linked tasks and be null for day-task.",
       },
+    },
 
-      isComplete: {
-        type: Boolean,
-        default: false,
-      },
+    isComplete: {
+      type: Boolean,
+      default: false,
+    },
+
+    completedAt: {
+      type: Date,
+      default: null,
     },
   },
   {
@@ -67,6 +81,27 @@ const taskSchema = new Schema(
     },
   },
 );
+
+taskSchema.index({ user: 1, dayKey: 1, tag: 1 }, { unique: true });
+taskSchema.index({ user: 1, dayKey: 1, isComplete: 1, priority: 1 });
+
+taskSchema.pre("validate", function (next) {
+  if (!this.dayKey) {
+    const base = this.createdAt instanceof Date ? this.createdAt : new Date();
+    this.dayKey = base.toISOString().slice(0, 10);
+  }
+
+  return next();
+});
+
+taskSchema.pre("save", function (next) {
+  if (this.isModified("isComplete")) {
+    if (this.isComplete && !this.completedAt) this.completedAt = new Date();
+    if (!this.isComplete) this.completedAt = null;
+  }
+
+  return next();
+});
 
 const Task = model("Task", taskSchema);
 module.exports = Task;

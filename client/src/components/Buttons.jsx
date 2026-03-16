@@ -1,15 +1,21 @@
-import { Check, PencilLine } from "lucide-react";
+import { Check, PencilLine, RotateCcw } from "lucide-react";
 import ClearIcon from "@mui/icons-material/Clear";
 
 // Obj -> task || goal
 // setEditing -> setEditingGoal || setEditingTask
 
-const Buttons = ({ obj, deleteHandler, setEditing }) => {
+const Buttons = ({ obj, deleteHandler, setEditing, onCheck }) => {
   return (
     <div className="flex justify-center items-center">
-      <button className="opacity-0 group-hover:opacity-100 p-2 text-green-500 hover:text-green-600 hover:bg-green-500/30 rounded-lg transition-all duration-200 hover:cursor-pointer">
-        <Check />
-      </button>
+      {typeof onCheck === "function" && (
+        <button
+          onClick={onCheck}
+          className="opacity-0 group-hover:opacity-100 p-2 text-green-500 hover:text-green-600 hover:bg-green-500/30 rounded-lg transition-all duration-200 hover:cursor-pointer"
+          title={obj?.isComplete ? "Undo" : "Complete"}
+        >
+          {obj?.isComplete ? <RotateCcw size={18} /> : <Check size={18} />}
+        </button>
+      )}
       <button
         onClick={() => setEditing(obj)}
         className="opacity-0 group-hover:opacity-100 p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-500/30 rounded-lg transition-all duration-200 hover:cursor-pointer"

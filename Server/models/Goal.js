@@ -8,12 +8,12 @@ const goalSchema = new Schema(
       required: true,
     },
 
-    // Add Completed, Giveup  & days field
-    tag: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+	// Add Completed, Giveup  & days field
+	tag: {
+		type: String,
+		required: true,
+		trim: true,
+	},
 
     user: {
       type: Schema.Types.ObjectId,
@@ -33,6 +33,8 @@ const goalSchema = new Schema(
     },
   },
 );
+
+goalSchema.index({ user: 1, tag: 1 }, { unique: true });
 
 const Goal = model("Goal", goalSchema);
 module.exports = Goal;

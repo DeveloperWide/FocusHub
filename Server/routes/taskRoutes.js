@@ -15,6 +15,9 @@ router.post("/", authenticateUser, taskController.createTask);
 // Update Complete Task
 router.put("/:id", authenticateUser, taskController.updateTask);
 
+// Toggle/Set Task Completion
+router.patch("/:id/complete", authenticateUser, taskController.toggleTaskComplete);
+
 // Delete Task
 router.delete("/:id", authenticateUser, taskController.deleteTask);
 
