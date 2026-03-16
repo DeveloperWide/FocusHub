@@ -2,6 +2,8 @@ const Task = require("../models/Task");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 const Goal = require("../models/Goal");
+const User = require("../models/User");
+const { getEffectivePlanId, getEntitlements, getPlan } = require("../utils/billingPlans");
 
 const parseTzOffsetMinutes = (req) => {
   const raw =
@@ -115,6 +117,46 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
       success: false,
       message: "Invalid priority",
     });
+  }
+
+  const user = await User.findById(req.user.id);
+  if (!user) throw new ExpressError(404, "User Not Found");
+
+  const planId = getEffectivePlanId(user);
+  const entitlements = getEntitlements(planId);
+  const perPriorityLimit = entitlements?.tasks?.[trimmedPriority];
+
+  if (Number.isFinite(perPriorityLimit)) {
+    const range = getDayRangeUtc(dayKey, tzOffsetMinutes);
+    const countQuery = {
+      user: req.user.id,
+      priority: trimmedPriority,
+      ...(range
+        ? {
+            $or: [
+              { dayKey },
+              {
+                dayKey: { $exists: false },
+                createdAt: { $gte: range.startUtc, $lt: range.endUtc },
+              },
+              {
+                dayKey: null,
+                createdAt: { $gte: range.startUtc, $lt: range.endUtc },
+              },
+            ],
+          }
+        : { dayKey }),
+    };
+
+    const existingCount = await Task.countDocuments(countQuery);
+    if (existingCount >= perPriorityLimit) {
+      const plan = getPlan(planId);
+      const planName = plan?.name || "your plan";
+      throw new ExpressError(
+        403,
+        `You reached the ${trimmedPriority} task limit for ${planName}. Upgrade to add more.`,
+      );
+    }
   }
 
   let goal = null;

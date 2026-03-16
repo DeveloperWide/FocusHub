@@ -12,6 +12,9 @@ const ExpressError = require("./utils/ExpressError");
 const Task = require("./models/Task");
 const Goal = require("./models/Goal");
 const FocusTimer = require("./models/FocusTimer");
+const User = require("./models/User");
+const Promo = require("./models/Promo");
+const BillingOrder = require("./models/BillingOrder");
 
 // Routes
 const taskRoutes = require("./routes/taskRoutes");
@@ -19,6 +22,7 @@ const goalRoutes = require("./routes/goalRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const focusRoutes = require("./routes/focusRoutes");
+const billingRoutes = require("./routes/billingRoutes");
 
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
@@ -84,6 +88,7 @@ app.use("/api/goals", goalRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/focus", focusRoutes);
+app.use("/api/billing", billingRoutes);
 
 // 404 Route Handler
 app.use((req, res, next) => {
@@ -103,6 +108,9 @@ const startServer = async () => {
       Task.syncIndexes(),
       Goal.syncIndexes(),
       FocusTimer.syncIndexes(),
+      User.syncIndexes(),
+      Promo.syncIndexes(),
+      BillingOrder.syncIndexes(),
     ]);
 
     app.listen(PORT, () => {

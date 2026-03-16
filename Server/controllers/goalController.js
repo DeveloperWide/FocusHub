@@ -1,7 +1,9 @@
 const Goal = require("../models/Goal");
 const Task = require("../models/Task");
+const User = require("../models/User");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
+const { getEffectivePlanId, getEntitlements, getPlan } = require("../utils/billingPlans");
 
 module.exports.getGoals = wrapAsync(async (req, res, next) => {
   let allGoals = await Goal.find({ user: req.user.id });
@@ -15,10 +17,23 @@ module.exports.getGoals = wrapAsync(async (req, res, next) => {
 
 module.exports.createGoal = wrapAsync(async (req, res, next) => {
   const { title, tag } = req.body;
+
+  const user = await User.findById(req.user.id);
+  if (!user) throw new ExpressError(404, "User Not Found");
+
+  const planId = getEffectivePlanId(user);
+  const entitlements = getEntitlements(planId);
+  const goalsLimit = entitlements?.goals;
+
   const goals = await Goal.find({ user: req.user.id });
 
-  if (goals.length > 2) {
-    throw new ExpressError(406, "Only 3 Goals Are Accepted");
+  if (Number.isFinite(goalsLimit) && goals.length >= goalsLimit) {
+    const plan = getPlan(planId);
+    const planName = plan?.name || "your plan";
+    throw new ExpressError(
+      406,
+      `Goal limit reached for ${planName}. Upgrade to add more goals.`,
+    );
   }
 
   if (!title || !tag) {
