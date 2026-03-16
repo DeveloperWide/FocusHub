@@ -68,18 +68,15 @@ const cleanupStaleReservations = async () => {
   );
 
   const decrementBy = staleOrders.length;
-  await Promo.updateOne(
-    { key: EARLY_BIRD_KEY },
-    [
-      {
-        $set: {
-          reserved: {
-            $max: [0, { $subtract: ["$reserved", decrementBy] }],
-          },
+  await Promo.updateOne({ key: EARLY_BIRD_KEY }, [
+    {
+      $set: {
+        reserved: {
+          $max: [0, { $subtract: ["$reserved", decrementBy] }],
         },
       },
-    ],
-  );
+    },
+  ]);
 };
 
 const requireBillingConfigured = () => {
@@ -92,9 +89,9 @@ const requireBillingConfigured = () => {
 };
 
 const createRazorpayOrder = async ({ amount, currency, receipt, notes }) => {
-  const auth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString(
-    "base64",
-  );
+  const auth = Buffer.from(
+    `${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`,
+  ).toString("base64");
 
   const res = await fetch("https://api.razorpay.com/v1/orders", {
     method: "POST",
@@ -198,7 +195,10 @@ exports.createCheckout = wrapAsync(async (req, res) => {
 
     if (updated) {
       earlyBirdReserved = true;
-      discountPercent = Math.max(0, Math.min(90, Number(updated.discountPercent || 0)));
+      discountPercent = Math.max(
+        0,
+        Math.min(90, Number(updated.discountPercent || 0)),
+      );
     }
   }
 
@@ -212,7 +212,7 @@ exports.createCheckout = wrapAsync(async (req, res) => {
     order = await createRazorpayOrder({
       amount,
       currency: "INR",
-      receipt: `fh_${req.user.id}_${Date.now()}`,
+      receipt: `fh_${Math.random().toString(36).slice(2, 10)}`,
       notes: {
         planId,
         interval,
@@ -222,10 +222,9 @@ exports.createCheckout = wrapAsync(async (req, res) => {
     });
   } catch (err) {
     if (earlyBirdReserved) {
-      await Promo.updateOne(
-        { key: EARLY_BIRD_KEY },
-        [{ $set: { reserved: { $max: [0, { $subtract: ["$reserved", 1] }] } } }],
-      );
+      await Promo.updateOne({ key: EARLY_BIRD_KEY }, [
+        { $set: { reserved: { $max: [0, { $subtract: ["$reserved", 1] }] } } },
+      ]);
     }
     throw err;
   }
@@ -307,10 +306,9 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
     await orderDoc.save();
 
     if (orderDoc.earlyBirdReserved) {
-      await Promo.updateOne(
-        { key: EARLY_BIRD_KEY },
-        [{ $set: { reserved: { $max: [0, { $subtract: ["$reserved", 1] }] } } }],
-      );
+      await Promo.updateOne({ key: EARLY_BIRD_KEY }, [
+        { $set: { reserved: { $max: [0, { $subtract: ["$reserved", 1] }] } } },
+      ]);
       orderDoc.earlyBirdReserved = false;
       orderDoc.promoKey = null;
       await orderDoc.save();
@@ -326,17 +324,14 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
   await orderDoc.save();
 
   if (orderDoc.earlyBirdReserved) {
-    await Promo.updateOne(
-      { key: EARLY_BIRD_KEY },
-      [
-        {
-          $set: {
-            reserved: { $max: [0, { $subtract: ["$reserved", 1] }] },
-            claimed: { $add: ["$claimed", 1] },
-          },
+    await Promo.updateOne({ key: EARLY_BIRD_KEY }, [
+      {
+        $set: {
+          reserved: { $max: [0, { $subtract: ["$reserved", 1] }] },
+          claimed: { $add: ["$claimed", 1] },
         },
-      ],
-    );
+      },
+    ]);
     orderDoc.earlyBirdReserved = false;
     await orderDoc.save();
   }
@@ -376,4 +371,3 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
     },
   });
 });
-
