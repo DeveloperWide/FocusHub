@@ -1,13 +1,19 @@
 import { useSelector } from "react-redux";
 import FocusSetupModal from "../components/Timer/FocusSetupModal";
 import FocusSessionView from "../components/Timer/FocusSessionView";
+import { useFocusSession } from "../hooks/useFocusSession";
 
 const FocusTimer = () => {
   const { session, status } = useSelector((s) => s.focus);
+  useFocusSession();
 
   return (
     <div className="h-full w-full -m-4">
-      {status === "idle" && !session ? <FocusSetupModal /> : <FocusSessionView />}
+      {status === "idle" && !session ? (
+        <FocusSetupModal />
+      ) : (
+        <FocusSessionView />
+      )}
     </div>
   );
 };
