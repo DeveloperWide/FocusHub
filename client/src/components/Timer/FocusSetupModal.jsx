@@ -28,7 +28,10 @@ const FocusSetupModal = () => {
   });
 
   useEffect(() => {
-    setData((p) => ({ ...p, duration: focusSettings.focusMinutes || p.duration }));
+    setData((p) => ({
+      ...p,
+      duration: focusSettings.focusMinutes || p.duration,
+    }));
     setSettings((p) => ({
       ...p,
       shortBreakMinutes: focusSettings.shortBreakMinutes ?? p.shortBreakMinutes,
@@ -95,8 +98,14 @@ const FocusSetupModal = () => {
         resetFlow: true,
         settings: {
           focusMinutes: Math.max(1, Number(data.duration) || 25),
-          shortBreakMinutes: Math.max(1, Number(settings.shortBreakMinutes) || 5),
-          longBreakMinutes: Math.max(1, Number(settings.longBreakMinutes) || 15),
+          shortBreakMinutes: Math.max(
+            1,
+            Number(settings.shortBreakMinutes) || 5,
+          ),
+          longBreakMinutes: Math.max(
+            1,
+            Number(settings.longBreakMinutes) || 15,
+          ),
           longBreakEvery: Math.max(1, Number(settings.longBreakEvery) || 4),
           autoNext: Boolean(settings.autoNext),
           notificationsEnabled: Boolean(settings.notificationsEnabled),

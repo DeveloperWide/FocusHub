@@ -9,6 +9,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Hourglass, Moon, Sparkles, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import UserDropdownMenu from "../components/Dashboard/DropdownMenu";
+import { useFocusAutoSave } from "../hooks/useFocusAutoSave";
 const SIDEBAR_WIDTH = "w-64";
 
 const navItems = [
@@ -51,6 +52,8 @@ const SidebarLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
+
+  useFocusAutoSave();
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-slate-950">

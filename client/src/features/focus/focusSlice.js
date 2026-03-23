@@ -82,7 +82,8 @@ const clearPersistedFocusState = () => {
 };
 
 const computeDurationForMode = (settings, mode) => {
-  if (mode === "shortBreak") return Math.max(1, settings.shortBreakMinutes) * 60;
+  if (mode === "shortBreak")
+    return Math.max(1, settings.shortBreakMinutes) * 60;
   if (mode === "longBreak") return Math.max(1, settings.longBreakMinutes) * 60;
   return Math.max(1, settings.focusMinutes) * 60;
 };
@@ -98,7 +99,8 @@ const computeNextMode = (state, currentMode) => {
 
 const endCurrentSegment = (state, endedAtMs, status) => {
   const mode = state.session?.mode || "focus";
-  const totalDuration = state.session?.totalDuration || state.session?.duration || 0;
+  const totalDuration =
+    state.session?.totalDuration || state.session?.duration || 0;
 
   let elapsedSeconds = totalDuration;
   if (status === "cancelled") {
@@ -212,7 +214,11 @@ export const focusSlice = createSlice({
         endCurrentSegment(state, Date.now(), "completed");
 
         // Auto-start next if enabled
-        if (state.status === "ready" && state.settings.autoNext && state.nextSession) {
+        if (
+          state.status === "ready" &&
+          state.settings.autoNext &&
+          state.nextSession
+        ) {
           const next = state.nextSession;
           state.session = {
             title: next.title,
@@ -306,8 +312,10 @@ export const focusSlice = createSlice({
     },
 
     skipToFocus: (state) => {
-      const title = state.session?.title || state.nextSession?.title || "Focus Session";
-      const goalTag = state.session?.goalTag || state.nextSession?.goalTag || null;
+      const title =
+        state.session?.title || state.nextSession?.title || "Focus Session";
+      const goalTag =
+        state.session?.goalTag || state.nextSession?.goalTag || null;
 
       const duration = computeDurationForMode(state.settings, "focus");
       state.session = {
@@ -330,7 +338,10 @@ export const focusSlice = createSlice({
       state.settings = { ...state.settings, ...next };
 
       try {
-        localStorage.setItem(FOCUS_SETTINGS_KEY, JSON.stringify(state.settings));
+        localStorage.setItem(
+          FOCUS_SETTINGS_KEY,
+          JSON.stringify(state.settings),
+        );
       } catch {
         // ignore
       }
