@@ -15,6 +15,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../tailgrids/core/dropdown";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/auth/authSelector";
 
 interface DropdownMenuProps {
   toggleTheme: never;
@@ -23,6 +25,8 @@ interface DropdownMenuProps {
 
 const UserDropdownMenu = ({ toggleTheme, isDark }: DropdownMenuProps) => {
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  console.log(user);
 
   const handleLogout = () => {
     // clear auth data
@@ -31,6 +35,18 @@ const UserDropdownMenu = ({ toggleTheme, isDark }: DropdownMenuProps) => {
     // redirect
     navigate("/login");
   };
+
+  function getInitials(name: string) {
+    if (!name) return "";
+
+    return name
+      .trim()
+      .split(" ") // split into words
+      .filter(Boolean) // remove extra spaces
+      .slice(0, 2) // take only first 2 words
+      .map((word) => word[0].toUpperCase()) // get first letter
+      .join("");
+  }
 
   return (
     <DropdownMenu>
@@ -47,10 +63,10 @@ const UserDropdownMenu = ({ toggleTheme, isDark }: DropdownMenuProps) => {
       "
       >
         <div className="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-semibold">
-          MR
+          {getInitials(user.name)}
         </div>
 
-        <span className="flex-1 text-left">Mahesh Rana</span>
+        <span className="flex-1 text-left">{user.name}</span>
 
         <ChevronDown size={16} className="opacity-60" />
       </DropdownMenuTrigger>
