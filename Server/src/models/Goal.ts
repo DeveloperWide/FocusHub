@@ -1,19 +1,24 @@
-let mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+import { Schema, model } from "mongoose";
 
-const goalSchema = new Schema(
+interface IGoalSchema {
+  title: string;
+  tag: string;
+  user: Schema.Types.ObjectId;
+}
+
+const goalSchema = new Schema<IGoalSchema>(
   {
     title: {
       type: String,
       required: true,
     },
 
-	// Add Completed, Giveup  & days field
-	tag: {
-		type: String,
-		required: true,
-		trim: true,
-	},
+    // Add Completed, Giveup  & days field
+    tag: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
     user: {
       type: Schema.Types.ObjectId,
@@ -24,7 +29,7 @@ const goalSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret) {
+      transform: function (_doc, ret: Record<string, any>) {
         ret.id = ret._id; // convert _id -> id
         delete ret._id; // remove _id
         delete ret.__v; // remove version key
@@ -36,5 +41,5 @@ const goalSchema = new Schema(
 
 goalSchema.index({ user: 1, tag: 1 }, { unique: true });
 
-const Goal = model("Goal", goalSchema);
-module.exports = Goal;
+const Goal = model<IGoalSchema>("Goal", goalSchema);
+export default Goal;

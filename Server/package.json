@@ -28,6 +28,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.1",
     "nodemon": "^3.1.14",

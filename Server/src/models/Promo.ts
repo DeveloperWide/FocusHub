@@ -1,7 +1,14 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+import { Schema, model } from "mongoose";
+interface IPromoSchema {
+  key: string;
+  active: boolean;
+  limit: number;
+  claimed: number;
+  reserved: number;
+  discountPercent: number;
+}
 
-const promoSchema = new Schema(
+const promoSchema = new Schema<IPromoSchema>(
   {
     key: { type: String, required: true, unique: true, index: true },
     active: { type: Boolean, default: true },
@@ -20,6 +27,5 @@ promoSchema.methods.remaining = function () {
   return Math.max(0, limit - claimed - reserved);
 };
 
-const Promo = model("Promo", promoSchema);
-module.exports = Promo;
-
+const Promo = model<IPromoSchema>("Promo", promoSchema);
+export default Promo;

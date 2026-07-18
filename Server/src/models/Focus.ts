@@ -1,8 +1,13 @@
-const mongoose = require("mongoose");
-const { validate } = require("./User");
-const { model, Schema } = mongoose;
+import { Schema, model } from "mongoose";
 
-const focusSchema = new Schema(
+interface IFocusSchema {
+  title: string;
+  task: Schema.Types.ObjectId;
+  focusDuration: number;
+  user: Schema.Types.ObjectId;
+}
+
+const focusSchema = new Schema<IFocusSchema>(
   {
     title: {
       type: String,
@@ -28,7 +33,7 @@ const focusSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret) {
+      transform: function (_doc, ret: Record<string, any>) {
         ret.id = ret._id; // convert _id -> id
         delete ret._id; // remove _id
         delete ret.__v; // remove version key
@@ -38,6 +43,6 @@ const focusSchema = new Schema(
   },
 );
 
-const Focus = model("Focus", focusSchema);
+const Focus = model<IFocusSchema>("Focus", focusSchema);
 
-module.exports = Focus;
+export default Focus;

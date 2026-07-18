@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const { Schema, model } = mongoose;
+import bcrypt from "bcrypt";
+import { Schema, model } from "mongoose";
 
 const reservedUsernames = [
   "admin",
@@ -12,7 +11,31 @@ const reservedUsernames = [
   "root",
 ];
 
-const userSchema = new Schema(
+interface IUser {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  profileImage: {
+    url: string;
+    filename: string;
+  };
+  subscription: {
+    planId: "free" | "basic" | "pro" | "elite";
+    interval: "monthly" | "yearly" | null;
+    status: "free" | "active" | "expired" | "canceled";
+    currentPeriodStart: Date | null;
+    currentPeriodEnd: Date | null;
+
+    cancelAtPeriodEnd: Boolean;
+    razorpay: {
+      lastOrderId: string;
+      lastPaymentId: string;
+    };
+  };
+}
+
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -95,7 +118,7 @@ const userSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret) {
+      transform: function (_doc, ret: Record<string, any>) {
         ret.id = ret._id; // convert _id -> id
         delete ret._id; // remove _id
         delete ret.__v; // remove version key
@@ -114,9 +137,9 @@ userSchema.pre("save", async function (next) {
 });
 
 // Compare password
-userSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = model("User", userSchema);
-module.exports = User;
+const User = model<IUser>("User", userSchema);
+export default User;

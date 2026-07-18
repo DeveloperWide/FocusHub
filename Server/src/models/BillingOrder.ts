@@ -1,14 +1,24 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+import { Schema, model } from "mongoose";
 
 interface IBillingOrder {
   user: {
     type: string;
   };
   planId: string;
+  interval: string;
+  currency: string;
+  baseAmount: number;
+  amount: number;
+  promoKey: string;
+  earlyBirdReserved: boolean;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+  status: "created" | "paid" | "failed";
+  paidAt: Date;
 }
 
-const billingOrderSchema = new Schema(
+const billingOrderSchema = new Schema<IBillingOrder>(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -50,5 +60,5 @@ const billingOrderSchema = new Schema(
 
 billingOrderSchema.index({ createdAt: 1 });
 
-const BillingOrder = model("BillingOrder", billingOrderSchema);
-module.exports = BillingOrder;
+const BillingOrder = model<IBillingOrder>("BillingOrder", billingOrderSchema);
+export default BillingOrder;

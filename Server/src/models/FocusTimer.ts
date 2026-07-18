@@ -1,7 +1,19 @@
-const mongoose = require("mongoose");
-const { model, Schema } = mongoose;
+import { Schema, model } from "mongoose";
 
-const focusTimerSchema = new Schema(
+interface IFocusTimerSchema {
+  title: string;
+  durationSeconds: number;
+  mode: "focus" | "shortBreak" | "longBreak";
+  status: "completed" | "cancelled";
+  startedAt: Date;
+  endedAt: Date;
+  linkType: "goal" | "personal";
+  goal: Schema.Types.ObjectId;
+  goalTag: string;
+  user: Schema.Types.ObjectId;
+}
+
+const focusTimerSchema = new Schema<IFocusTimerSchema>(
   {
     title: {
       type: String,
@@ -65,7 +77,7 @@ const focusTimerSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret) {
+      transform: function (_doc, ret: Record<string, any>) {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
@@ -87,6 +99,6 @@ focusTimerSchema.pre("validate", function (next) {
 focusTimerSchema.index({ user: 1, endedAt: -1 });
 focusTimerSchema.index({ user: 1, linkType: 1, endedAt: -1 });
 
-const FocusTimer = model("FocusTimer", focusTimerSchema);
+const FocusTimer = model<IFocusTimerSchema>("FocusTimer", focusTimerSchema);
 
 module.exports = FocusTimer;
