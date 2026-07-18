@@ -1,9 +1,13 @@
-const Goal = require("../models/Goal");
-const Task = require("../models/Task");
-const User = require("../models/User");
+const Goal = require("../src/models/Goal");
+const Task = require("../src/models/Task");
+const User = require("../src/models/User");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
-const { getEffectivePlanId, getEntitlements, getPlan } = require("../utils/billingPlans");
+const {
+  getEffectivePlanId,
+  getEntitlements,
+  getPlan,
+} = require("../utils/billingPlans");
 
 module.exports.getGoals = wrapAsync(async (req, res, next) => {
   let allGoals = await Goal.find({ user: req.user.id });

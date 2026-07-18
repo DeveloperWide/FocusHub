@@ -1,5 +1,5 @@
-const FocusTimer = require("../models/FocusTimer");
-const Goal = require("../models/Goal");
+const FocusTimer = require("../src/models/FocusTimer");
+const Goal = require("../src/models/Goal");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 const mongoose = require("mongoose");
@@ -159,8 +159,10 @@ module.exports.createFocusTimer = wrapAsync(async (req, res) => {
 
   const svdFocusTimer = await newFocusTimer.save();
 
-  const populatedTimer = await FocusTimer.findById(svdFocusTimer._id)
-    .populate("goal", "title tag");
+  const populatedTimer = await FocusTimer.findById(svdFocusTimer._id).populate(
+    "goal",
+    "title tag",
+  );
 
   res.status(201).json({
     success: true,

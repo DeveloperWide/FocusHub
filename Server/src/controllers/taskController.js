@@ -1,9 +1,13 @@
-const Task = require("../models/Task");
+const Task = require("../src/models/Task");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
-const Goal = require("../models/Goal");
-const User = require("../models/User");
-const { getEffectivePlanId, getEntitlements, getPlan } = require("../utils/billingPlans");
+const Goal = require("../src/models/Goal");
+const User = require("../src/models/User");
+const {
+  getEffectivePlanId,
+  getEntitlements,
+  getPlan,
+} = require("../utils/billingPlans");
 
 const parseTzOffsetMinutes = (req) => {
   const raw =
@@ -27,7 +31,9 @@ const computeLocalDayKey = (date, tzOffsetMinutes) => {
 };
 
 const getDayRangeUtc = (dayKey, tzOffsetMinutes) => {
-  const [y, m, d] = String(dayKey).split("-").map((n) => Number(n));
+  const [y, m, d] = String(dayKey)
+    .split("-")
+    .map((n) => Number(n));
   if (!y || !m || !d) return null;
 
   const startShiftedUtc = Date.UTC(y, m - 1, d);
@@ -41,10 +47,9 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
   const tzOffsetMinutes = parseTzOffsetMinutes(req);
 
   const requestedDayKey = String(req.query?.dayKey || "").trim();
-  const dayKey =
-    /^\d{4}-\d{2}-\d{2}$/.test(requestedDayKey)
-      ? requestedDayKey
-      : computeLocalDayKey(new Date(), tzOffsetMinutes);
+  const dayKey = /^\d{4}-\d{2}-\d{2}$/.test(requestedDayKey)
+    ? requestedDayKey
+    : computeLocalDayKey(new Date(), tzOffsetMinutes);
 
   const range = getDayRangeUtc(dayKey, tzOffsetMinutes);
 
@@ -96,10 +101,9 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
 
   const tzOffsetMinutes = parseTzOffsetMinutes(req);
 
-  const dayKey =
-    /^\d{4}-\d{2}-\d{2}$/.test(String(dayKeyRaw || "").trim())
-      ? String(dayKeyRaw).trim()
-      : computeLocalDayKey(new Date(), tzOffsetMinutes);
+  const dayKey = /^\d{4}-\d{2}-\d{2}$/.test(String(dayKeyRaw || "").trim())
+    ? String(dayKeyRaw).trim()
+    : computeLocalDayKey(new Date(), tzOffsetMinutes);
 
   const trimmedTitle = String(title).trim();
   const trimmedTag = String(tag).trim();

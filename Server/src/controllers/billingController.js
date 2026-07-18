@@ -1,7 +1,7 @@
 const crypto = require("crypto");
-const Promo = require("../models/Promo");
-const BillingOrder = require("../models/BillingOrder");
-const User = require("../models/User");
+const Promo = require("../src/models/Promo");
+const BillingOrder = require("../src/models/BillingOrder");
+const User = require("../src/models/User");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 const {

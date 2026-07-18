@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const User = require("../src/models/User");
 const wrapAsync = require("../utils/asyncWrapper");
 const ExpressError = require("../utils/ExpressError");
 
@@ -17,8 +17,7 @@ const getCookieSecurityOptions = () => {
       ? process.env.COOKIE_SECURE === "true"
       : isProd;
 
-  const sameSite =
-    process.env.COOKIE_SAME_SITE || (isProd ? "none" : "lax");
+  const sameSite = process.env.COOKIE_SAME_SITE || (isProd ? "none" : "lax");
 
   return { secure, sameSite };
 };

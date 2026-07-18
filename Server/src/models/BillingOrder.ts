@@ -1,9 +1,21 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
+interface IBillingOrder {
+  user: {
+    type: string;
+  };
+  planId: string;
+}
+
 const billingOrderSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
 
     planId: { type: String, required: true },
     interval: { type: String, required: true },
@@ -16,7 +28,12 @@ const billingOrderSchema = new Schema(
     promoKey: { type: String, default: null },
     earlyBirdReserved: { type: Boolean, default: false },
 
-    razorpayOrderId: { type: String, required: true, unique: true, index: true },
+    razorpayOrderId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
     razorpayPaymentId: { type: String, default: null },
     razorpaySignature: { type: String, default: null },
 
@@ -35,4 +52,3 @@ billingOrderSchema.index({ createdAt: 1 });
 
 const BillingOrder = model("BillingOrder", billingOrderSchema);
 module.exports = BillingOrder;
-
