@@ -11,7 +11,7 @@ const reservedUsernames = [
   "root",
 ];
 
-interface IUser {
+export interface IUser {
   name: string;
   email: string;
   username: string;

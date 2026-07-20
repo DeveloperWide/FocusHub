@@ -1,18 +1,21 @@
-const crypto = require("crypto");
-const Promo = require("../src/models/Promo");
-const BillingOrder = require("../src/models/BillingOrder");
-const User = require("../src/models/User");
-const wrapAsync = require("../utils/asyncWrapper");
-const ExpressError = require("../utils/ExpressError");
-const {
+import crypto from "crypto";
+import Promo from "../models/Promo";
+import BillingOrder from "../models/BillingOrder";
+import User from "../models/User";
+import { wrapAsync } from "../utils/asyncWrapper";
+import ExpressError from "../utils/ExpressError";
+import {
+  normalizePlanId,
+  normalizeInterval,
   getPlan,
-  getPlanPriceRupees,
   getPublicPlans,
+  getPlanPriceRupees,
   getSubscriptionDays,
   isPaidPlan,
-  normalizeInterval,
-  normalizePlanId,
-} = require("../utils/billingPlans");
+} from "../utils/billingPlans";
+import { Request, Response } from "express";
+import { RAZORPAY_BASE_URL } from "../constants/constant";
+import { RazorpayOrder } from "../types/razorpay.types";
 
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || "";
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "";
@@ -88,12 +91,17 @@ const requireBillingConfigured = () => {
   }
 };
 
-const createRazorpayOrder = async ({ amount, currency, receipt, notes }) => {
+const createRazorpayOrder = async ({
+  amount,
+  currency,
+  receipt,
+  notes,
+}: RazorpayOrder) => {
   const auth = Buffer.from(
     `${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`,
   ).toString("base64");
 
-  const res = await fetch("https://api.razorpay.com/v1/orders", {
+  const res = await fetch(`${RAZORPAY_BASE_URL}/v1/orders`, {
     method: "POST",
     headers: {
       Authorization: `Basic ${auth}`,
@@ -119,14 +127,18 @@ const createRazorpayOrder = async ({ amount, currency, receipt, notes }) => {
   return json;
 };
 
-const safeCompare = (a, b) => {
-  const bufA = Buffer.from(String(a || ""), "utf8");
-  const bufB = Buffer.from(String(b || ""), "utf8");
-  if (bufA.length !== bufB.length) return false;
+const safeCompare = (a: unknown, b: unknown): boolean => {
+  const bufA = Buffer.from(String(a ?? ""), "utf8");
+  const bufB = Buffer.from(String(b ?? ""), "utf8");
+
+  if (bufA.length !== bufB.length) {
+    return false;
+  }
+
   return crypto.timingSafeEqual(bufA, bufB);
 };
 
-exports.getPlans = wrapAsync(async (req, res) => {
+export const getPlans = wrapAsync(async (req: Request, res: Response) => {
   await ensureEarlyBirdPromo();
   await cleanupStaleReservations();
 
@@ -154,7 +166,7 @@ exports.getPlans = wrapAsync(async (req, res) => {
   });
 });
 
-exports.createCheckout = wrapAsync(async (req, res) => {
+export const createCheckout = wrapAsync(async (req: Request, res: Response) => {
   requireBillingConfigured();
 
   const planId = normalizePlanId(req.body?.planId);
@@ -216,7 +228,7 @@ exports.createCheckout = wrapAsync(async (req, res) => {
       notes: {
         planId,
         interval,
-        userId: String(req.user.id),
+        userId: String(req.user?.id),
         promo: earlyBirdReserved ? EARLY_BIRD_KEY : "",
       },
     });
@@ -230,7 +242,7 @@ exports.createCheckout = wrapAsync(async (req, res) => {
   }
 
   const orderDoc = new BillingOrder({
-    user: req.user.id,
+    user: req.user?.id,
     planId,
     interval,
     currency: "INR",
@@ -266,7 +278,7 @@ exports.createCheckout = wrapAsync(async (req, res) => {
   });
 });
 
-exports.verifyPayment = wrapAsync(async (req, res) => {
+export const verifyPayment = wrapAsync(async (req, res) => {
   requireBillingConfigured();
 
   const orderId = String(req.body?.razorpay_order_id || "").trim();
@@ -279,12 +291,13 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
 
   const orderDoc = await BillingOrder.findOne({
     razorpayOrderId: orderId,
-    user: req.user.id,
+    user: req.user?.id,
   });
+
   if (!orderDoc) throw new ExpressError(404, "Order not found");
 
   if (orderDoc.status === "paid") {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user?.id);
     return res.status(200).json({
       success: true,
       message: "Already verified",
@@ -310,7 +323,7 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
         { $set: { reserved: { $max: [0, { $subtract: ["$reserved", 1] }] } } },
       ]);
       orderDoc.earlyBirdReserved = false;
-      orderDoc.promoKey = null;
+      orderDoc.promoKey = "";
       await orderDoc.save();
     }
 
@@ -335,7 +348,6 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
     orderDoc.earlyBirdReserved = false;
     await orderDoc.save();
   }
-
   const days = getSubscriptionDays(orderDoc.interval);
   if (!days) throw new ExpressError(400, "Invalid subscription interval");
 
@@ -345,7 +357,7 @@ exports.verifyPayment = wrapAsync(async (req, res) => {
   const plan = getPlan(orderDoc.planId);
   if (!plan) throw new ExpressError(400, "Invalid subscription plan");
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) throw new ExpressError(404, "User not found");
 
   user.subscription = {

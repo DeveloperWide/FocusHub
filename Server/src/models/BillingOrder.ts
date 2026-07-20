@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
 
-interface IBillingOrder {
+export interface IBillingOrder {
   user: {
     type: string;
   };
-  planId: string;
-  interval: string;
+  planId: "free" | "basic" | "pro" | "elite";
+  interval: "monthly" | "yearly";
   currency: string;
   baseAmount: number;
   amount: number;

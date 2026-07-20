@@ -1,6 +1,6 @@
-const { connectDb } = require("../config/db");
-const Focus = require("../src/models/Focus");
-const activities = require("./data");
+import { connectDb } from "../config/db";
+import Focus from "../models/Focus";
+import activities from "./data";
 
 connectDb()
   .then(() => {

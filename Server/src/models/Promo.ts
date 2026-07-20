@@ -6,6 +6,7 @@ interface IPromoSchema {
   claimed: number;
   reserved: number;
   discountPercent: number;
+  remaining: () => number;
 }
 
 const promoSchema = new Schema<IPromoSchema>(

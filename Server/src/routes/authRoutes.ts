@@ -1,14 +1,21 @@
 import { Router } from "express";
 const router = Router({});
-import authController from "../controllers/authController";
+import {
+  checkUsername,
+  suggestUsername,
+  signup,
+  login,
+  me,
+  logout,
+} from "../controllers/authController";
 import { authenticateUser } from "../utils/middlewares";
 
-router.get("/u/check-username/:username", authController.checkUsername);
-router.get("/u/suggest/:username", authController.suggestUsername);
-router.post("/signup", authController.signup);
-router.post("/login", authController.login);
-router.get("/me", authenticateUser, authController.me);
-router.post("/logout", authController.logout);
+router.get("/u/check-username/:username", checkUsername);
+router.get("/u/suggest/:username", suggestUsername);
+router.post("/signup", signup);
+router.post("/login", login);
+router.get("/me", authenticateUser, me);
+router.post("/logout", logout);
 // router.get("/u/:username");
 
 export default router;
