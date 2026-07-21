@@ -101,4 +101,4 @@ focusTimerSchema.index({ user: 1, linkType: 1, endedAt: -1 });
 
 const FocusTimer = model<IFocusTimerSchema>("FocusTimer", focusTimerSchema);
 
-module.exports = FocusTimer;
+export default FocusTimer;

@@ -1,15 +1,28 @@
-const Task = require("../src/models/Task");
-const wrapAsync = require("../utils/asyncWrapper");
-const ExpressError = require("../utils/ExpressError");
-const Goal = require("../src/models/Goal");
-const User = require("../src/models/User");
-const {
+import { Request } from "express";
+import Task from "../models/Task";
+import { wrapAsync } from "../utils/asyncWrapper";
+import ExpressError from "../utils/ExpressError";
+import Goal from "../models/Goal";
+import User from "../models/User";
+import {
   getEffectivePlanId,
   getEntitlements,
   getPlan,
-} = require("../utils/billingPlans");
+} from "../utils/billingPlans";
+import { Types } from "mongoose";
 
-const parseTzOffsetMinutes = (req) => {
+type Priority = "high" | "medium" | "low";
+interface UpdatePayload {
+  title: string;
+  priority: Priority;
+  type: string;
+  tag: string;
+  goal: Types.ObjectId | null;
+  isComplete?: boolean;
+  completedAt?: Date | null;
+}
+
+const parseTzOffsetMinutes = (req: Request) => {
   const raw =
     req.query?.tzOffset ??
     req.headers["x-tz-offset"] ??
@@ -25,12 +38,12 @@ const parseTzOffsetMinutes = (req) => {
   return Math.trunc(minutes);
 };
 
-const computeLocalDayKey = (date, tzOffsetMinutes) => {
+const computeLocalDayKey = (date: Date, tzOffsetMinutes: number) => {
   const shifted = new Date(date.getTime() - tzOffsetMinutes * 60 * 1000);
   return shifted.toISOString().slice(0, 10);
 };
 
-const getDayRangeUtc = (dayKey, tzOffsetMinutes) => {
+const getDayRangeUtc = (dayKey: unknown, tzOffsetMinutes: number) => {
   const [y, m, d] = String(dayKey)
     .split("-")
     .map((n) => Number(n));
@@ -43,7 +56,7 @@ const getDayRangeUtc = (dayKey, tzOffsetMinutes) => {
   return { startUtc, endUtc };
 };
 
-module.exports.getTasks = wrapAsync(async (req, res, next) => {
+export const getTasks = wrapAsync(async (req, res, next) => {
   const tzOffsetMinutes = parseTzOffsetMinutes(req);
 
   const requestedDayKey = String(req.query?.dayKey || "").trim();
@@ -54,7 +67,7 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
   const range = getDayRangeUtc(dayKey, tzOffsetMinutes);
 
   const query = {
-    user: req.user.id,
+    user: req.user?.id,
     ...(range
       ? {
           $or: [
@@ -80,7 +93,7 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
 
   if (!allTasks) throw new ExpressError(404, "No tasks found");
 
-  res.json({
+  return res.json({
     success: true,
     message: "All Tasks Retrieved...!",
     data: allTasks,
@@ -90,7 +103,7 @@ module.exports.getTasks = wrapAsync(async (req, res, next) => {
   });
 });
 
-module.exports.createTask = wrapAsync(async (req, res, next) => {
+export const createTask = wrapAsync(async (req, res, next) => {
   const { title, priority, type, tag, dayKey: dayKeyRaw } = req.body;
 
   if (!title || !priority || !type || !tag) {
@@ -108,7 +121,7 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
   const trimmedTitle = String(title).trim();
   const trimmedTag = String(tag).trim();
   const trimmedType = String(type).trim();
-  const trimmedPriority = String(priority).trim();
+  const trimmedPriority: Priority = String(priority).trim() as Priority;
 
   if (!trimmedTitle || !trimmedTag || !trimmedType || !trimmedPriority) {
     return res.status(400).json({
@@ -123,7 +136,7 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
     });
   }
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) throw new ExpressError(404, "User Not Found");
 
   const planId = getEffectivePlanId(user);
@@ -133,7 +146,7 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
   if (Number.isFinite(perPriorityLimit)) {
     const range = getDayRangeUtc(dayKey, tzOffsetMinutes);
     const countQuery = {
-      user: req.user.id,
+      user: req.user?.id,
       priority: trimmedPriority,
       ...(range
         ? {
@@ -165,7 +178,10 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
 
   let goal = null;
   if (trimmedType !== "task") {
-    const goalDoc = await Goal.findOne({ tag: trimmedType, user: req.user.id });
+    const goalDoc = await Goal.findOne({
+      tag: trimmedType,
+      user: req.user?.id,
+    });
     if (!goalDoc) {
       return res.status(400).json({
         success: false,
@@ -182,42 +198,34 @@ module.exports.createTask = wrapAsync(async (req, res, next) => {
     goal,
     tag: trimmedTag,
     dayKey,
-    user: req.user.id,
+    user: req.user?.id,
   });
 
-  let svdTask;
-  try {
-    svdTask = await newTask.save();
-  } catch (err) {
-    if (err?.code === 11000) {
-      throw new ExpressError(409, "Tag already used for this day");
-    }
-    throw err;
-  }
+  let svdTask = await newTask.save();
 
-  res.json({
+  return res.json({
     success: true,
     message: "Task Created Successfully",
     data: svdTask,
   });
 });
 
-module.exports.showTask = wrapAsync(async (req, res, next) => {
-  const task = await Task.findOne({ _id: req.params.id, user: req.user.id });
+export const showTask = wrapAsync(async (req, res, next) => {
+  const task = await Task.findOne({ _id: req.params.id, user: req.user?.id });
   if (!task) throw new ExpressError(404, "Task not found");
 
-  res.json({
+  return res.json({
     success: true,
     message: "Your Task",
     data: task,
   });
 });
 
-module.exports.updateTask = wrapAsync(async (req, res) => {
+export const updateTask = wrapAsync(async (req, res) => {
   const { id } = req.params;
   const { title, priority, type, tag, isComplete } = req.body;
 
-  const task = await Task.findOne({ _id: id, user: req.user.id });
+  const task = await Task.findOne({ _id: id, user: req.user?.id });
   if (!task) throw new ExpressError(404, "Task not found");
 
   const nextType = typeof type === "string" ? type.trim() : task.type;
@@ -234,7 +242,7 @@ module.exports.updateTask = wrapAsync(async (req, res) => {
   let goal = null;
 
   if (nextType !== "task") {
-    const goalDoc = await Goal.findOne({ tag: nextType, user: req.user.id });
+    const goalDoc = await Goal.findOne({ tag: nextType, user: req.user?.id });
     if (!goalDoc) {
       return res.status(400).json({
         success: false,
@@ -244,12 +252,12 @@ module.exports.updateTask = wrapAsync(async (req, res) => {
     goal = goalDoc._id;
   }
 
-  const updatePayload = {
-    title: typeof title === "string" ? title.trim() : undefined,
-    priority: nextPriority,
+  const updatePayload: UpdatePayload = {
+    title: typeof title === "string" ? title.trim() : "",
+    priority: nextPriority as Priority,
     type: nextType,
     goal,
-    tag: typeof tag === "string" ? tag.trim() : undefined,
+    tag: typeof tag === "string" ? tag.trim() : "",
   };
 
   if (typeof isComplete === "boolean") {
@@ -257,32 +265,24 @@ module.exports.updateTask = wrapAsync(async (req, res) => {
     updatePayload.completedAt = isComplete ? new Date() : null;
   }
 
-  let updatedTask;
-  try {
-    updatedTask = await Task.findOneAndUpdate(
-      { _id: id, user: req.user.id },
-      updatePayload,
-      { new: true },
-    );
-  } catch (err) {
-    if (err?.code === 11000) {
-      throw new ExpressError(409, "Tag already used for this day");
-    }
-    throw err;
-  }
+  let updatedTask = await Task.findOneAndUpdate(
+    { _id: id, user: req.user?.id },
+    updatePayload,
+    { new: true },
+  );
 
-  res.json({
+  return res.json({
     success: true,
     message: "Task Updated Successfully",
     data: updatedTask,
   });
 });
 
-module.exports.toggleTaskComplete = wrapAsync(async (req, res) => {
+export const toggleTaskComplete = wrapAsync(async (req, res) => {
   const { id } = req.params;
   const { isComplete } = req.body;
 
-  const task = await Task.findOne({ _id: id, user: req.user.id });
+  const task = await Task.findOne({ _id: id, user: req.user?.id });
   if (!task) throw new ExpressError(404, "Task not found");
 
   const nextComplete =
@@ -293,23 +293,23 @@ module.exports.toggleTaskComplete = wrapAsync(async (req, res) => {
 
   const savedTask = await task.save();
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Task completion updated",
     data: savedTask,
   });
 });
 
-module.exports.deleteTask = wrapAsync(async (req, res, next) => {
+export const deleteTask = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
   const deletedTask = await Task.findOneAndDelete({
     _id: id,
-    user: req.user.id,
+    user: req.user?.id,
   });
 
   if (!deletedTask) throw new ExpressError(404, "Task not found");
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Task Deleted Successfully",
   });

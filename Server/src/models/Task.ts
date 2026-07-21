@@ -1,13 +1,13 @@
-import { HydratedDocument, Schema, model } from "mongoose";
+import mongoose, { HydratedDocument, Schema, model } from "mongoose";
 
-interface ITaskSchema {
+export interface ITaskSchema {
   type: string;
   title: string;
   priority: "high" | "medium" | "low";
   tag: string;
   dayKey: string;
-  user: Schema.Types.ObjectId;
-  goal: Schema.Types.ObjectId;
+  user: mongoose.Schema.Types.ObjectId;
+  goal: mongoose.Schema.Types.ObjectId | null;
   isComplete: boolean;
   completedAt: Date | null;
   createdAt: Date;

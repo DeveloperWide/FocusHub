@@ -1,16 +1,16 @@
-const Goal = require("../src/models/Goal");
-const Task = require("../src/models/Task");
-const User = require("../src/models/User");
-const wrapAsync = require("../utils/asyncWrapper");
-const ExpressError = require("../utils/ExpressError");
-const {
+import Goal from "../models/Goal";
+import Task from "../models/Task";
+import User from "../models/User";
+import { wrapAsync } from "../utils/asyncWrapper";
+import ExpressError from "../utils/ExpressError";
+import {
   getEffectivePlanId,
   getEntitlements,
   getPlan,
-} = require("../utils/billingPlans");
+} from "../utils/billingPlans";
 
-module.exports.getGoals = wrapAsync(async (req, res, next) => {
-  let allGoals = await Goal.find({ user: req.user.id });
+export const getGoals = wrapAsync(async (req, res, next) => {
+  let allGoals = await Goal.find({ user: req.user?.id });
 
   res.status(200).json({
     success: true,
@@ -19,17 +19,17 @@ module.exports.getGoals = wrapAsync(async (req, res, next) => {
   });
 });
 
-module.exports.createGoal = wrapAsync(async (req, res, next) => {
+export const createGoal = wrapAsync(async (req, res, next) => {
   const { title, tag } = req.body;
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) throw new ExpressError(404, "User Not Found");
 
   const planId = getEffectivePlanId(user);
   const entitlements = getEntitlements(planId);
   const goalsLimit = entitlements?.goals;
 
-  const goals = await Goal.find({ user: req.user.id });
+  const goals = await Goal.find({ user: req.user?.id });
 
   if (Number.isFinite(goalsLimit) && goals.length >= goalsLimit) {
     const plan = getPlan(planId);
@@ -50,22 +50,14 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
   const newGoal = new Goal({
     title: String(title).trim(),
     tag: String(tag).trim(),
-    user: req.user.id,
+    user: req.user?.id,
   });
 
-  let svdGoal;
-  try {
-    svdGoal = await newGoal.save();
-  } catch (err) {
-    if (err?.code === 11000) {
-      throw new ExpressError(409, "Goal tag already exists");
-    }
-    throw err;
-  }
+  let svdGoal = await newGoal.save();
 
   if (!svdGoal) throw new ExpressError(500, "Failed To Create Goal");
 
-  res.status(200).send({
+  res.status(200).json({
     success: true,
     message: "Your Goal Saved",
     data: svdGoal,
@@ -74,7 +66,7 @@ module.exports.createGoal = wrapAsync(async (req, res, next) => {
 
 // Update Goal Controller
 
-module.exports.updateGoal = wrapAsync(async (req, res, next) => {
+export const updateGoal = wrapAsync(async (req, res, next) => {
   const { id } = req.params;
   const { title, tag } = req.body;
 
@@ -84,19 +76,11 @@ module.exports.updateGoal = wrapAsync(async (req, res, next) => {
     });
   }
 
-  let updatedGoal;
-  try {
-    updatedGoal = await Goal.findOneAndUpdate(
-      { _id: id, user: req.user.id },
-      { title: String(title).trim(), tag: String(tag).trim() },
-      { new: true },
-    );
-  } catch (err) {
-    if (err?.code === 11000) {
-      throw new ExpressError(409, "Goal tag already exists");
-    }
-    throw err;
-  }
+  let updatedGoal = await Goal.findOneAndUpdate(
+    { _id: id, user: req.user?.id },
+    { title: String(title).trim(), tag: String(tag).trim() },
+    { new: true },
+  );
 
   if (!updatedGoal) {
     return res.status(404).json({
@@ -110,15 +94,15 @@ module.exports.updateGoal = wrapAsync(async (req, res, next) => {
   });
 });
 
-module.exports.deleteGoal = wrapAsync(async (req, res, next) => {
+export const deleteGoal = wrapAsync(async (req, res, next) => {
   const goalToBeDeleted = await Goal.findOneAndDelete({
     _id: req.params.id,
-    user: req.user.id,
+    user: req.user?.id,
   });
 
   if (!goalToBeDeleted) throw new ExpressError(404, "Goal Not Found");
 
-  await Task.deleteMany({ user: req.user.id, goal: goalToBeDeleted._id });
+  await Task.deleteMany({ user: req.user?.id, goal: goalToBeDeleted._id });
 
   res.status(200).json({
     success: true,

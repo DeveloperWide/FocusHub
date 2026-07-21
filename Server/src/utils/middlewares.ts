@@ -1,8 +1,15 @@
-const jwt = require("jsonwebtoken");
+import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "maheshsecret";
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "fh_session";
 const SESSION_DAYS = Number(process.env.SESSION_DAYS || 7);
 const SESSION_MAX_AGE_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
+
+interface TokenPayload extends JwtPayload {
+  id: string;
+}
+
+type SameSite = boolean | "none" | "lax" | "strict" | undefined;
 
 const getCookieSecurityOptions = () => {
   const isProd = process.env.NODE_ENV === "production";
@@ -12,8 +19,8 @@ const getCookieSecurityOptions = () => {
       ? process.env.COOKIE_SECURE === "true"
       : isProd;
 
-  const sameSite =
-    process.env.COOKIE_SAME_SITE || (isProd ? "none" : "lax");
+  const sameSite: SameSite =
+    (process.env.COOKIE_SAME_SITE as SameSite) || (isProd ? "none" : "lax");
 
   return { secure, sameSite };
 };
@@ -32,7 +39,11 @@ const getAuthCookieOptions = () => {
 
 // Add middlewares like isOwner & isAdmin
 
-module.exports.authenticateUser = (req, res, next) => {
+module.exports.authenticateUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const cookieToken = req.cookies?.[AUTH_COOKIE_NAME];
     const authHeader = req.headers.authorization;
@@ -52,8 +63,14 @@ module.exports.authenticateUser = (req, res, next) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
+    if (typeof decoded == "string") {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    const payload = decoded as TokenPayload;
+
     // ✅ Attach decoded user info to req.user
-    req.user = { id: decoded.id };
+    req.user = { id: payload.id };
 
     if (cookieToken) {
       const refreshedToken = jwt.sign({ id: decoded.id }, JWT_SECRET, {

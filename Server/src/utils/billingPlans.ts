@@ -37,8 +37,8 @@ export const BILLING_PLANS = {
     tagline: "Unlimited + early access",
     prices: { monthly: 129, yearly: 1299 },
     limits: {
-      goals: null, // unlimited
-      tasks: { high: null, medium: null, low: null }, // unlimited
+      goals: 30, // unlimited
+      tasks: { high: 30, medium: 30, low: 30 }, // unlimited
     },
   },
 } as const;
