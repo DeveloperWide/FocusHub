@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
-interface IFocusTimerSchema {
+export interface IFocusTimerSchema {
   title: string;
   durationSeconds: number;
   mode: "focus" | "shortBreak" | "longBreak";
@@ -8,9 +8,9 @@ interface IFocusTimerSchema {
   startedAt: Date;
   endedAt: Date;
   linkType: "goal" | "personal";
-  goal: Schema.Types.ObjectId;
-  goalTag: string;
-  user: Schema.Types.ObjectId;
+  goal: Types.ObjectId | null;
+  goalTag: string | null;
+  user: Types.ObjectId;
 }
 
 const focusTimerSchema = new Schema<IFocusTimerSchema>(

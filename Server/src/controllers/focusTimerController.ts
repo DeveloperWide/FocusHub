@@ -1,10 +1,18 @@
-const FocusTimer = require("../src/models/FocusTimer");
-const Goal = require("../src/models/Goal");
-const wrapAsync = require("../utils/asyncWrapper");
-const ExpressError = require("../utils/ExpressError");
-const mongoose = require("mongoose");
+import { Request, Response } from "express";
+import FocusTimer from "../models/FocusTimer";
+import Goal from "../models/Goal";
+import { wrapAsync } from "../utils/asyncWrapper";
+import ExpressError from "../utils/ExpressError";
+import mongoose from "mongoose";
+import {
+  DateRange,
+  GetFocusTimerQuery,
+  TimerLinkType,
+  TimerMode,
+  TimerStatus,
+} from "../types/focusTimer.types";
 
-const parseTzOffsetMinutes = (req) => {
+const parseTzOffsetMinutes = (req: Request) => {
   const raw =
     req.query?.tzOffset ??
     req.headers["x-tz-offset"] ??
@@ -22,7 +30,7 @@ const parseTzOffsetMinutes = (req) => {
   return Math.trunc(minutes);
 };
 
-const minutesToTzString = (localOffsetMinutes) => {
+const minutesToTzString = (localOffsetMinutes: number) => {
   const sign = localOffsetMinutes >= 0 ? "+" : "-";
   const abs = Math.abs(localOffsetMinutes);
   const hh = String(Math.floor(abs / 60)).padStart(2, "0");
@@ -30,7 +38,7 @@ const minutesToTzString = (localOffsetMinutes) => {
   return `${sign}${hh}:${mm}`;
 };
 
-const getStartOfLocalDayUtc = (date, tzOffsetMinutes) => {
+const getStartOfLocalDayUtc = (date: Date, tzOffsetMinutes: number) => {
   // tzOffsetMinutes follows JS getTimezoneOffset() semantics: UTC - local.
   const shifted = new Date(date.getTime() - tzOffsetMinutes * 60 * 1000);
 
@@ -43,21 +51,21 @@ const getStartOfLocalDayUtc = (date, tzOffsetMinutes) => {
   return new Date(startShiftedUtc + tzOffsetMinutes * 60 * 1000);
 };
 
-module.exports.getFocusTimers = wrapAsync(async (req, res) => {
-  const query = { user: req.user.id };
+export const getFocusTimers = wrapAsync(async (req: Request, res: Response) => {
+  const query: GetFocusTimerQuery = { user: req.user?.id };
 
   if (req.query?.linkType) {
-    const linkType = String(req.query.linkType).trim();
+    const linkType = String(req.query.linkType).trim() as TimerLinkType;
     if (["goal", "personal"].includes(linkType)) query.linkType = linkType;
   }
 
   if (req.query?.mode) {
-    const mode = String(req.query.mode).trim();
+    const mode = String(req.query.mode).trim() as TimerMode;
     if (["focus", "shortBreak", "longBreak"].includes(mode)) query.mode = mode;
   }
 
   if (req.query?.status) {
-    const status = String(req.query.status).trim();
+    const status = String(req.query.status).trim() as TimerStatus;
     if (["completed", "cancelled"].includes(status)) query.status = status;
   }
 
@@ -70,7 +78,7 @@ module.exports.getFocusTimers = wrapAsync(async (req, res) => {
     const from = req.query?.from ? new Date(String(req.query.from)) : null;
     const to = req.query?.to ? new Date(String(req.query.to)) : null;
 
-    const range = {};
+    const range: DateRange = {};
     if (from && !Number.isNaN(from.getTime())) range.$gte = from;
     if (to && !Number.isNaN(to.getTime())) range.$lte = to;
 
@@ -95,7 +103,7 @@ module.exports.getFocusTimers = wrapAsync(async (req, res) => {
   });
 });
 
-module.exports.createFocusTimer = wrapAsync(async (req, res) => {
+export const createFocusTimer = wrapAsync(async (req, res) => {
   const { title, durationSeconds, goalTag, mode, status, startedAt, endedAt } =
     req.body;
 
@@ -117,7 +125,7 @@ module.exports.createFocusTimer = wrapAsync(async (req, res) => {
   if (hasGoal) {
     const goalDoc = await Goal.findOne({
       tag: trimmedGoalTag,
-      user: req.user.id,
+      user: req.user?.id,
     });
     if (!goalDoc) throw new ExpressError(404, "Goal not found");
 
@@ -136,13 +144,10 @@ module.exports.createFocusTimer = wrapAsync(async (req, res) => {
   }
 
   const startedAtDate = startedAt ? new Date(String(startedAt)) : null;
-  if (startedAt && Number.isNaN(startedAtDate.getTime())) {
-    throw new ExpressError(400, "Invalid startedAt");
-  }
-
   const endedAtDate = endedAt ? new Date(String(endedAt)) : null;
-  if (endedAt && Number.isNaN(endedAtDate.getTime())) {
-    throw new ExpressError(400, "Invalid endedAt");
+
+  if (startedAtDate == null || endedAtDate == null) {
+    throw new ExpressError(400, "startedAt or endedAt is null");
   }
 
   const newFocusTimer = new FocusTimer({
@@ -154,7 +159,7 @@ module.exports.createFocusTimer = wrapAsync(async (req, res) => {
     status: nextStatus,
     startedAt: startedAt ? startedAtDate : null,
     endedAt: endedAt ? endedAtDate : undefined,
-    user: req.user.id,
+    user: req.user?.id,
   });
 
   const svdFocusTimer = await newFocusTimer.save();
@@ -171,14 +176,14 @@ module.exports.createFocusTimer = wrapAsync(async (req, res) => {
   });
 });
 
-module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
+export const updateFocusTimer = wrapAsync(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
     throw new ExpressError(400, "Invalid timer id");
   }
 
-  const timer = await FocusTimer.findOne({ _id: id, user: req.user.id });
+  const timer = await FocusTimer.findOne({ _id: id, user: req.user?.id });
   if (!timer) throw new ExpressError(404, "Timer not found");
 
   if (typeof req.body?.title === "string") {
@@ -196,7 +201,7 @@ module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
   }
 
   if (req.body?.mode !== undefined) {
-    const m = String(req.body.mode || "").trim();
+    const m = String(req.body.mode || "").trim() as TimerMode;
     if (!["focus", "shortBreak", "longBreak"].includes(m)) {
       throw new ExpressError(400, "Invalid mode");
     }
@@ -204,7 +209,7 @@ module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
   }
 
   if (req.body?.status !== undefined) {
-    const s = String(req.body.status || "").trim();
+    const s = String(req.body.status || "").trim() as TimerStatus;
     if (!["completed", "cancelled"].includes(s)) {
       throw new ExpressError(400, "Invalid status");
     }
@@ -212,8 +217,10 @@ module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
   }
 
   if (req.body?.startedAt !== undefined) {
-    const d = req.body.startedAt ? new Date(String(req.body.startedAt)) : null;
-    if (req.body.startedAt && Number.isNaN(d.getTime())) {
+    const d = (
+      req.body.startedAt ? new Date(String(req.body.startedAt)) : null
+    ) as Date;
+    if (req.body.startedAt && (d == null || Number.isNaN(d.getTime()))) {
       throw new ExpressError(400, "Invalid startedAt");
     }
     timer.startedAt = d;
@@ -236,7 +243,7 @@ module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
     } else {
       const goalDoc = await Goal.findOne({
         tag: trimmedGoalTag,
-        user: req.user.id,
+        user: req.user?.id,
       });
       if (!goalDoc) throw new ExpressError(404, "Goal not found");
 
@@ -261,7 +268,7 @@ module.exports.updateFocusTimer = wrapAsync(async (req, res) => {
   });
 });
 
-module.exports.deleteFocusTimer = wrapAsync(async (req, res) => {
+export const deleteFocusTimer = wrapAsync(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -270,7 +277,7 @@ module.exports.deleteFocusTimer = wrapAsync(async (req, res) => {
 
   const deleted = await FocusTimer.findOneAndDelete({
     _id: id,
-    user: req.user.id,
+    user: req.user?.id,
   });
 
   if (!deleted) throw new ExpressError(404, "Timer not found");
@@ -281,7 +288,7 @@ module.exports.deleteFocusTimer = wrapAsync(async (req, res) => {
   });
 });
 
-module.exports.getLast7DaysStats = wrapAsync(async (req, res) => {
+export const getLast7DaysStats = wrapAsync(async (req, res) => {
   const tzOffsetMinutes = parseTzOffsetMinutes(req);
   const localOffsetMinutes = -tzOffsetMinutes;
   const tzString = minutesToTzString(localOffsetMinutes);
@@ -291,7 +298,7 @@ module.exports.getLast7DaysStats = wrapAsync(async (req, res) => {
   const startOfRangeUtc = new Date(startOfTodayUtc.getTime() - 6 * 86400000);
   const endUtc = new Date(startOfTodayUtc.getTime() + 86400000);
 
-  const userId = new mongoose.Types.ObjectId(req.user.id);
+  const userId = new mongoose.Types.ObjectId(req.user?.id);
 
   const agg = await FocusTimer.aggregate([
     {
@@ -350,7 +357,7 @@ module.exports.getLast7DaysStats = wrapAsync(async (req, res) => {
   });
 });
 
-module.exports.getByGoalStats = wrapAsync(async (req, res) => {
+export const getByGoalStats = wrapAsync(async (req, res) => {
   const tzOffsetMinutes = parseTzOffsetMinutes(req);
 
   const now = new Date();
@@ -358,7 +365,7 @@ module.exports.getByGoalStats = wrapAsync(async (req, res) => {
   const startOfRangeUtc = new Date(startOfTodayUtc.getTime() - 6 * 86400000);
   const endUtc = new Date(startOfTodayUtc.getTime() + 86400000);
 
-  const userId = new mongoose.Types.ObjectId(req.user.id);
+  const userId = new mongoose.Types.ObjectId(req.user?.id);
 
   const rows = await FocusTimer.aggregate([
     {

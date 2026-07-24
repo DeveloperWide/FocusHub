@@ -1,28 +1,33 @@
-const express = require("express");
-const app = express();
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const { connectDb } = require("./config/db");
-const dotenv = require("dotenv");
-dotenv.config();
-const PORT = process.env.PORT || 8080;
-const errorHandler = require("./utils/errorHandler");
-const ExpressError = require("./utils/ExpressError");
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { connectDb } from "./config/db";
+import dotenv from "dotenv";
 
-const Task = require("./models/Task");
-const Goal = require("./models/Goal");
-const FocusTimer = require("./models/FocusTimer");
-const User = require("./models/User");
-const Promo = require("./models/Promo");
-const BillingOrder = require("./models/BillingOrder");
+// Error handler Utilities
+import { errorHandler } from "./utils/errorHandler";
+import ExpressError from "./utils/ExpressError";
+
+// Models
+import Task from "./models/Task";
+import Goal from "./models/Goal";
+import FocusTimer from "./models/FocusTimer";
+import User from "./models/User";
+import Promo from "./models/Promo";
+import BillingOrder from "./models/BillingOrder";
 
 // Routes
-const taskRoutes = require("./routes/taskRoutes");
-const goalRoutes = require("./routes/goalRoutes");
-const authRoutes = require("./routes/authRoutes");
-const profileRoutes = require("./routes/profileRoutes");
-const focusRoutes = require("./routes/focusRoutes");
-const billingRoutes = require("./routes/billingRoutes");
+import taskRoutes from "./routes/taskRoutes";
+import goalRoutes from "./routes/goalRoutes";
+import profileRoutes from "./routes/profileRoutes";
+import authRoutes from "./routes/authRoutes";
+import focusRoutes from "./routes/focusRoutes";
+import billingRoutes from "./routes/billingRoutes";
+
+// data
+const app = express();
+dotenv.config();
+const PORT = process.env.PORT || 8080;
 
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
