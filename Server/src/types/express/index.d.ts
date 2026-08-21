@@ -1,14 +1,8 @@
-import { IUser } from "../../models/User";
+import "express-serve-static-core";
 
-declare global {
-  namespace Express {
-    interface User {
-      id: string;
-    }
-
-    interface Request {
-      user?: User;
-    }
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
   }
 }
 

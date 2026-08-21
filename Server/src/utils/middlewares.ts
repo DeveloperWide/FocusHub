@@ -39,7 +39,7 @@ const getAuthCookieOptions = () => {
 
 // Add middlewares like isOwner & isAdmin
 
-module.exports.authenticateUser = (
+export const authenticateUser = (
   req: Request,
   res: Response,
   next: NextFunction,
