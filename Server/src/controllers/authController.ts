@@ -125,6 +125,8 @@ export const signup = wrapAsync(
       });
     }
 
+    console.log(req.body);
+
     const existingUser = await User.findOne({ email });
     if (existingUser) throw new ExpressError(400, "User Already Exists");
 

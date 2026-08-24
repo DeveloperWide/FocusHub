@@ -131,7 +131,7 @@ const Task = () => {
     }) && planId === "free";
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="flex flex-col justify-center items-center w-full">
       <ToastContainer />
       {reachedAnyLimit && (
         <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200 p-4 flex items-center justify-between gap-3">

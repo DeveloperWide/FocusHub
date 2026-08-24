@@ -23,7 +23,7 @@ const TaskList = ({
   }, [sortedTasks]);
 
   return (
-    <div className="max-w-3xl mx-auto mt-6 px-4">
+    <div className="mt-6 px-4 w-[93%] lg:w-[92%]">
       {loading ? (
         Array(4)
           .fill(0)
