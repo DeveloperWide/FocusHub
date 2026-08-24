@@ -43,8 +43,7 @@ const TaskInput = ({
     <>
       {(tasks.length < 5 || editingTask) && (
         <div
-          className="
-        mx-auto mt-6
+          className="mt-6
         bg-white/80 dark:bg-slate-900/70 backdrop-blur-md
         border border-gray-200 dark:border-slate-700
         rounded-xl
@@ -53,7 +52,7 @@ const TaskInput = ({
         items-stretch md:items-center
         gap-3
         px-4 py-3
-        transition"
+        transition w-[93%] lg:w-[92%]"
         >
           {/* TYPE */}
           <select
