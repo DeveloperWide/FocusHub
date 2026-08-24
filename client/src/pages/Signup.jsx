@@ -40,6 +40,8 @@ const Signup = () => {
   };
 
   useEffect(() => {
+    // if we don't have username or username length is less then
+    console.log(data.username);
     if (!data.username || data.username.length < 5) {
       setAvailable(null);
       setSuggestions([]);

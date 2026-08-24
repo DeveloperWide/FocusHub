@@ -52,7 +52,10 @@ const Task = () => {
     }
 
     const limit = priorityLimits?.[task.priority];
-    if (Number.isFinite(limit) && (priorityCount?.[task.priority] || 0) >= limit) {
+    if (
+      Number.isFinite(limit) &&
+      (priorityCount?.[task.priority] || 0) >= limit
+    ) {
       toast.warning(
         `You reached the ${task.priority} task limit. Upgrade to unlock higher limits.`,
       );
@@ -128,7 +131,7 @@ const Task = () => {
     }) && planId === "free";
 
   return (
-    <div className="flex-1 w-full max-w-5xl">
+    <div className="flex justify-center items-center w-full">
       <ToastContainer />
       {reachedAnyLimit && (
         <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200 p-4 flex items-center justify-between gap-3">

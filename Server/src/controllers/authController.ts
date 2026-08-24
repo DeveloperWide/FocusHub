@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/User";
-import wrapAsync from "../utils/asyncWrapper";
+import { wrapAsync } from "../utils/asyncWrapper";
 import ExpressError from "../utils/ExpressError";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "lax";
+const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "fh_session";
 const SESSION_DAYS = Number(process.env.SESSION_DAYS || 7);
 const SESSION_MAX_AGE_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
 // const COOKIE_SAME_SITE = process.env.COOKIE_SAME_SITE;
 
 if (!JWT_SECRET) {
-  throw new Error(`JET_SECRET is not defined in env`);
+  throw new Error(`JWT_SECRET is not defined in env`);
 }
 
 const getCookieSecurityOptions = () => {
@@ -65,9 +65,13 @@ export const checkUsername = wrapAsync(
       return res.status(400).json({ message: "username must be a string" });
     }
 
+    console.log(req.params.username);
+
     const username = req.params.username.toLowerCase();
 
     const user = await User.findOne({ username });
+
+    console.log(user);
 
     if (user) {
       return res.json({

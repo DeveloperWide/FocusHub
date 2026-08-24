@@ -1,8 +1,8 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDb } from "./config/db";
-import dotenv from "dotenv";
 
 // Error handler Utilities
 import { errorHandler } from "./utils/errorHandler";
@@ -26,7 +26,6 @@ import billingRoutes from "./routes/billingRoutes";
 
 // data
 const app = express();
-dotenv.config();
 const PORT = process.env.PORT || 8080;
 
 if (process.env.NODE_ENV === "production") {
@@ -36,12 +35,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(express.json());
 app.use(cookieParser());
 
-const defaultAllowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:3000",
-];
+const defaultAllowedOrigins = ["http://localhost:5173"];
 
 const envAllowedOrigins = String(process.env.CLIENT_URL || "")
   .split(",")

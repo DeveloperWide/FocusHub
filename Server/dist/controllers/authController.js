@@ -7,10 +7,10 @@ exports.me = exports.logout = exports.login = exports.signup = exports.suggestUs
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_1 = __importDefault(require("../models/User"));
-const asyncWrapper_1 = __importDefault(require("../utils/asyncWrapper"));
+const asyncWrapper_1 = require("../utils/asyncWrapper");
 const ExpressError_1 = __importDefault(require("../utils/ExpressError"));
 const JWT_SECRET = process.env.JWT_SECRET;
-const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "lax";
+const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "fh_session";
 const SESSION_DAYS = Number(process.env.SESSION_DAYS || 7);
 const SESSION_MAX_AGE_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
 // const COOKIE_SAME_SITE = process.env.COOKIE_SAME_SITE;
@@ -50,7 +50,7 @@ const clearAuthCookie = (res) => {
         path: "/",
     });
 };
-exports.checkUsername = (0, asyncWrapper_1.default)(async (req, res, next) => {
+exports.checkUsername = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
     if (typeof req.params?.username !== "string") {
         return res.status(400).json({ message: "username must be a string" });
     }
@@ -65,7 +65,7 @@ exports.checkUsername = (0, asyncWrapper_1.default)(async (req, res, next) => {
         available: true,
     });
 });
-exports.suggestUsername = (0, asyncWrapper_1.default)(async (req, res, next) => {
+exports.suggestUsername = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
     if (typeof req.params?.username !== "string") {
         return res.status(400).json({ message: "username must be a string" });
     }
@@ -86,7 +86,7 @@ exports.suggestUsername = (0, asyncWrapper_1.default)(async (req, res, next) => 
         suggestions: availableSuggestions,
     });
 });
-exports.signup = (0, asyncWrapper_1.default)(async (req, res, next) => {
+exports.signup = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
     const { name, username, email, password } = req.body;
     if (!name || !username || !email || !password) {
         return res.status(400).json({
@@ -106,7 +106,7 @@ exports.signup = (0, asyncWrapper_1.default)(async (req, res, next) => {
         user: svdUser,
     });
 });
-exports.login = (0, asyncWrapper_1.default)(async (req, res, next) => {
+exports.login = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({
@@ -130,7 +130,7 @@ const logout = (req, res) => {
     res.status(200).json({ message: "Logged out" });
 };
 exports.logout = logout;
-exports.me = (0, asyncWrapper_1.default)(async (req, res) => {
+exports.me = (0, asyncWrapper_1.wrapAsync)(async (req, res) => {
     if (!req.user) {
         throw new ExpressError_1.default(404, "User Not Found");
     }

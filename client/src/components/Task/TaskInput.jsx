@@ -44,7 +44,6 @@ const TaskInput = ({
       {(tasks.length < 5 || editingTask) && (
         <div
           className="
-        w-[95%] max-w-4xl
         mx-auto mt-6
         bg-white/80 dark:bg-slate-900/70 backdrop-blur-md
         border border-gray-200 dark:border-slate-700
