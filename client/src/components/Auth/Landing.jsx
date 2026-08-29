@@ -1,3 +1,5 @@
+import Ad from "../Ad";
+
 const Landing = () => {
   return (
     <div className="text-center py-6">
@@ -12,6 +14,10 @@ const Landing = () => {
       <p className="text-gray-400 dark:text-slate-400 mt-4 text-sm">
         Login or create an account to get started.
       </p>
+
+      <div className="mt-8">
+        <Ad />
+      </div>
     </div>
   );
 };
