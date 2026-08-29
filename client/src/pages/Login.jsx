@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authThunk";
 import { selectAuthLoading } from "../features/auth/authSelector";
+import Ad from "../components/Ad";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -100,6 +101,8 @@ const Login = () => {
           Signup
         </Link>
       </p>
+
+      <Ad />
     </>
   );
 };

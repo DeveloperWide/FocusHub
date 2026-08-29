@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../features/auth/authThunk";
 import { selectAuthLoading } from "../features/auth/authSelector";
 import { axiosInstance } from "../utils/axiosInstance";
+import Ad from "../components/Ad";
 
 const Signup = () => {
   const [suggestions, setSuggestions] = useState([]);
@@ -92,105 +93,110 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
-        <TextField
-          required
-          type="text"
-          name="name"
-          label="Full Name"
-          value={data.name}
-          onChange={onChangeHandler}
-          fullWidth
-        />
-
-        <div>
+    <>
+      <div>
+        <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
           <TextField
             required
             type="text"
-            name="username"
-            label="Username"
-            value={data.username}
+            name="name"
+            label="Full Name"
+            value={data.name}
             onChange={onChangeHandler}
             fullWidth
           />
 
-          <p className="text-xs text-gray-400 dark:text-slate-400 mt-1">
-            focushub.co.in/u/{data.username || "username"}
-          </p>
+          <div>
+            <TextField
+              required
+              type="text"
+              name="username"
+              label="Username"
+              value={data.username}
+              onChange={onChangeHandler}
+              fullWidth
+            />
 
-          {usernameLoading && (
-            <p className="text-sm text-gray-500 dark:text-slate-300">
-              Checking username...
+            <p className="text-xs text-gray-400 dark:text-slate-400 mt-1">
+              focushub.co.in/u/{data.username || "username"}
             </p>
-          )}
 
-          {available === true && (
-            <p className="text-sm text-green-600">✓ Username available</p>
-          )}
+            {usernameLoading && (
+              <p className="text-sm text-gray-500 dark:text-slate-300">
+                Checking username...
+              </p>
+            )}
 
-          {available === false && (
-            <p className="text-sm text-red-500">Username already taken</p>
-          )}
+            {available === true && (
+              <p className="text-sm text-green-600">✓ Username available</p>
+            )}
 
-          {suggestions.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {suggestions.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() =>
-                    setData((prev) => ({
-                      ...prev,
-                      username: name,
-                    }))
-                  }
-                  className="px-3 py-1 text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition"
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+            {available === false && (
+              <p className="text-sm text-red-500">Username already taken</p>
+            )}
 
-        <TextField
-          required
-          type="email"
-          name="email"
-          label="Email"
-          value={data.email}
-          onChange={onChangeHandler}
-          fullWidth
-        />
+            {suggestions.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {suggestions.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() =>
+                      setData((prev) => ({
+                        ...prev,
+                        username: name,
+                      }))
+                    }
+                    className="px-3 py-1 text-xs bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>Password</InputLabel>
-
-          <OutlinedInput
-            type={showPassword ? "text" : "password"}
-            value={data.password}
-            name="password"
+          <TextField
+            required
+            type="email"
+            name="email"
+            label="Email"
+            value={data.email}
             onChange={onChangeHandler}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={handleClickShowPassword}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
+            fullWidth
           />
-        </FormControl>
 
-        <button
-          disabled={loading || available === false}
-          className="h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition"
-        >
-          {loading ? "Signing up..." : "Create Account"}
-        </button>
-      </form>
-    </div>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Password</InputLabel>
+
+            <OutlinedInput
+              type={showPassword ? "text" : "password"}
+              value={data.password}
+              name="password"
+              onChange={onChangeHandler}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClickShowPassword}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+
+          <button
+            disabled={loading || available === false}
+            className="h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition"
+          >
+            {loading ? "Signing up..." : "Create Account"}
+          </button>
+        </form>
+      </div>
+      <div className="mt-8">
+        <Ad />
+      </div>
+    </>
   );
 };
 
