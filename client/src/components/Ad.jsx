@@ -3,9 +3,7 @@ import { useEffect } from "react";
 const Ad = () => {
   useEffect(() => {
     try {
-      if (window.adsbygoogle) {
-        window.adsbygoogle.push({});
-      }
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (error) {
       console.error("AdSense error:", error);
     }
