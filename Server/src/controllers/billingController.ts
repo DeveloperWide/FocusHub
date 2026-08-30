@@ -1,33 +1,35 @@
 import crypto from "crypto";
 import Promo from "../models/Promo";
-import BillingOrder from "../models/BillingOrder";
+import BillingOrder from "../models/Payment";
 import User from "../models/User";
 import { wrapAsync } from "../utils/asyncWrapper";
 import ExpressError from "../utils/ExpressError";
+
 import {
   normalizePlanId,
   normalizeInterval,
   getPlan,
   getPublicPlans,
   getPlanPriceRupees,
-  getSubscriptionDays,
   isPaidPlan,
+  getSubscriptionDays,
 } from "../utils/billingPlans";
+
 import { Request, Response } from "express";
 import { RAZORPAY_BASE_URL } from "../constants/constant";
 import { RazorpayOrder } from "../types/razorpay.types";
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || "";
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "";
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 
 const EARLY_BIRD_KEY = "earlyBird";
-const EARLY_BIRD_LIMIT = Number(process.env.EARLY_BIRD_LIMIT || 1000);
+const EARLY_BIRD_LIMIT = Number(process.env.EARLY_BIRD_LIMIT);
 const EARLY_BIRD_DISCOUNT_PERCENT = Number(
-  process.env.EARLY_BIRD_DISCOUNT_PERCENT || 15,
+  process.env.EARLY_BIRD_DISCOUNT_PERCENT,
 );
 
 const RESERVATION_TTL_MINUTES = Number(
-  process.env.EARLY_BIRD_RESERVATION_TTL_MINUTES || 60,
+  process.env.EARLY_BIRD_RESERVATION_TTL_MINUTES,
 );
 
 const ensureEarlyBirdPromo = async () => {
@@ -305,6 +307,8 @@ export const verifyPayment = wrapAsync(async (req, res) => {
     });
   }
 
+  if (!RAZORPAY_KEY_SECRET) throw new ExpressError(500, "Something Went Wrong");
+
   const expected = crypto
     .createHmac("sha256", RAZORPAY_KEY_SECRET)
     .update(`${orderId}|${paymentId}`)
@@ -367,10 +371,7 @@ export const verifyPayment = wrapAsync(async (req, res) => {
     currentPeriodStart: now,
     currentPeriodEnd: periodEnd,
     cancelAtPeriodEnd: false,
-    razorpay: {
-      lastOrderId: orderId,
-      lastPaymentId: paymentId,
-    },
+    subscriptionId: "",
   };
 
   await user.save();

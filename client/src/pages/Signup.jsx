@@ -14,8 +14,10 @@ import { signupUser } from "../features/auth/authThunk";
 import { selectAuthLoading } from "../features/auth/authSelector";
 import { axiosInstance } from "../utils/axiosInstance";
 import Ad from "../components/Ad";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 const Signup = () => {
+  usePageMeta("Create an account", "Create a FocusHub account to organize tasks, goals, and focused work.");
   const [suggestions, setSuggestions] = useState([]);
   const [available, setAvailable] = useState(null);
   const [usernameLoading, setUsernameLoading] = useState(false);

@@ -14,7 +14,8 @@ import Goal from "./models/Goal";
 import FocusTimer from "./models/FocusTimer";
 import User from "./models/User";
 import Promo from "./models/Promo";
-import BillingOrder from "./models/BillingOrder";
+import BillingOrder from "./models/Payment";
+import ContactMessage from "./models/ContactMessage";
 
 // Routes
 import taskRoutes from "./routes/taskRoutes";
@@ -23,6 +24,8 @@ import profileRoutes from "./routes/profileRoutes";
 import authRoutes from "./routes/authRoutes";
 import focusRoutes from "./routes/focusRoutes";
 import billingRoutes from "./routes/billingRoutes";
+import subscriptionRoutes from "./routes/subscriptionRoutes";
+import contactRoutes from "./routes/contactRoutes";
 
 // data
 const app = express();
@@ -88,6 +91,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/focus", focusRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/contact", contactRoutes);
 
 // 404 Route Handler
 app.use((req, res, next) => {
@@ -110,6 +115,7 @@ const startServer = async () => {
       User.syncIndexes(),
       Promo.syncIndexes(),
       BillingOrder.syncIndexes(),
+      ContactMessage.syncIndexes(),
     ]);
 
     app.listen(PORT, () => {

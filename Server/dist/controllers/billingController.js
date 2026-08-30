@@ -6,18 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyPayment = exports.createCheckout = exports.getPlans = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const Promo_1 = __importDefault(require("../models/Promo"));
-const BillingOrder_1 = __importDefault(require("../models/BillingOrder"));
+const Payment_1 = __importDefault(require("../models/Payment"));
 const User_1 = __importDefault(require("../models/User"));
 const asyncWrapper_1 = require("../utils/asyncWrapper");
 const ExpressError_1 = __importDefault(require("../utils/ExpressError"));
 const billingPlans_1 = require("../utils/billingPlans");
 const constant_1 = require("../constants/constant");
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || "";
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "";
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 const EARLY_BIRD_KEY = "earlyBird";
-const EARLY_BIRD_LIMIT = Number(process.env.EARLY_BIRD_LIMIT || 1000);
-const EARLY_BIRD_DISCOUNT_PERCENT = Number(process.env.EARLY_BIRD_DISCOUNT_PERCENT || 15);
-const RESERVATION_TTL_MINUTES = Number(process.env.EARLY_BIRD_RESERVATION_TTL_MINUTES || 60);
+const EARLY_BIRD_LIMIT = Number(process.env.EARLY_BIRD_LIMIT);
+const EARLY_BIRD_DISCOUNT_PERCENT = Number(process.env.EARLY_BIRD_DISCOUNT_PERCENT);
+const RESERVATION_TTL_MINUTES = Number(process.env.EARLY_BIRD_RESERVATION_TTL_MINUTES);
 const ensureEarlyBirdPromo = async () => {
     await Promo_1.default.updateOne({ key: EARLY_BIRD_KEY }, {
         $setOnInsert: {
@@ -33,7 +33,7 @@ const ensureEarlyBirdPromo = async () => {
 };
 const cleanupStaleReservations = async () => {
     const cutoff = new Date(Date.now() - RESERVATION_TTL_MINUTES * 60 * 1000);
-    const staleOrders = await BillingOrder_1.default.find({
+    const staleOrders = await Payment_1.default.find({
         status: "created",
         earlyBirdReserved: true,
         createdAt: { $lt: cutoff },
@@ -41,7 +41,7 @@ const cleanupStaleReservations = async () => {
     if (staleOrders.length === 0)
         return;
     const staleIds = staleOrders.map((o) => o._id);
-    await BillingOrder_1.default.updateMany({ _id: { $in: staleIds } }, { $set: { status: "failed", earlyBirdReserved: false, promoKey: null } });
+    await Payment_1.default.updateMany({ _id: { $in: staleIds } }, { $set: { status: "failed", earlyBirdReserved: false, promoKey: null } });
     const decrementBy = staleOrders.length;
     await Promo_1.default.updateOne({ key: EARLY_BIRD_KEY }, [
         {
@@ -173,7 +173,7 @@ exports.createCheckout = (0, asyncWrapper_1.wrapAsync)(async (req, res) => {
         }
         throw err;
     }
-    const orderDoc = new BillingOrder_1.default({
+    const orderDoc = new Payment_1.default({
         user: req.user?.id,
         planId,
         interval,
@@ -215,7 +215,7 @@ exports.verifyPayment = (0, asyncWrapper_1.wrapAsync)(async (req, res) => {
     if (!orderId || !paymentId || !signature) {
         throw new ExpressError_1.default(400, "Missing payment verification fields");
     }
-    const orderDoc = await BillingOrder_1.default.findOne({
+    const orderDoc = await Payment_1.default.findOne({
         razorpayOrderId: orderId,
         user: req.user?.id,
     });
@@ -229,6 +229,8 @@ exports.verifyPayment = (0, asyncWrapper_1.wrapAsync)(async (req, res) => {
             data: { subscription: user?.subscription || null },
         });
     }
+    if (!RAZORPAY_KEY_SECRET)
+        throw new ExpressError_1.default(500, "Something Went Wrong");
     const expected = crypto_1.default
         .createHmac("sha256", RAZORPAY_KEY_SECRET)
         .update(`${orderId}|${paymentId}`)
@@ -284,10 +286,7 @@ exports.verifyPayment = (0, asyncWrapper_1.wrapAsync)(async (req, res) => {
         currentPeriodStart: now,
         currentPeriodEnd: periodEnd,
         cancelAtPeriodEnd: false,
-        razorpay: {
-            lastOrderId: orderId,
-            lastPaymentId: paymentId,
-        },
+        subscriptionId: "",
     };
     await user.save();
     res.status(200).json({

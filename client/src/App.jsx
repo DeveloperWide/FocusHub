@@ -9,7 +9,6 @@ import Time from "./pages/Time";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Landing from "./components/Auth/Landing";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Logout from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
@@ -23,6 +22,12 @@ import FocusTimer from "./pages/FocusTimer";
 import { fetchMe } from "./features/auth/authThunk";
 import { selectUser } from "./features/auth/authSelector";
 import Pricing from "./pages/Pricing";
+import PublicLayout from "./components/public/PublicLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/Contact";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -66,10 +71,17 @@ const App = () => {
       <ToastContainer />
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />}>
-          <Route index element={<Landing />} />
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/contact" element={<Contact />} />
+        </Route>
+
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
         <Route path="/pricing" element={<Pricing />} />
 

@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const db_1 = require("./config/db");
-const dotenv_1 = __importDefault(require("dotenv"));
 // Error handler Utilities
 const errorHandler_1 = require("./utils/errorHandler");
 const ExpressError_1 = __importDefault(require("./utils/ExpressError"));
@@ -17,7 +17,8 @@ const Goal_1 = __importDefault(require("./models/Goal"));
 const FocusTimer_1 = __importDefault(require("./models/FocusTimer"));
 const User_1 = __importDefault(require("./models/User"));
 const Promo_1 = __importDefault(require("./models/Promo"));
-const BillingOrder_1 = __importDefault(require("./models/BillingOrder"));
+const Payment_1 = __importDefault(require("./models/Payment"));
+const ContactMessage_1 = __importDefault(require("./models/ContactMessage"));
 // Routes
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
@@ -25,21 +26,17 @@ const profileRoutes_1 = __importDefault(require("./routes/profileRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const focusRoutes_1 = __importDefault(require("./routes/focusRoutes"));
 const billingRoutes_1 = __importDefault(require("./routes/billingRoutes"));
+const subscriptionRoutes_1 = __importDefault(require("./routes/subscriptionRoutes"));
+const contactRoutes_1 = __importDefault(require("./routes/contactRoutes"));
 // data
 const app = (0, express_1.default)();
-dotenv_1.default.config();
 const PORT = process.env.PORT || 8080;
 if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
-const defaultAllowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
-];
+const defaultAllowedOrigins = ["http://localhost:5173"];
 const envAllowedOrigins = String(process.env.CLIENT_URL || "")
     .split(",")
     .map((s) => s.trim().replace(/\/$/, ""))
@@ -82,6 +79,8 @@ app.use("/api/auth", authRoutes_1.default);
 app.use("/api/profile", profileRoutes_1.default);
 app.use("/api/focus", focusRoutes_1.default);
 app.use("/api/billing", billingRoutes_1.default);
+app.use("/api/subscriptions", subscriptionRoutes_1.default);
+app.use("/api/contact", contactRoutes_1.default);
 // 404 Route Handler
 app.use((req, res, next) => {
     next(new ExpressError_1.default(404, `Route ${req.originalUrl} not found`));
@@ -99,7 +98,8 @@ const startServer = async () => {
             FocusTimer_1.default.syncIndexes(),
             User_1.default.syncIndexes(),
             Promo_1.default.syncIndexes(),
-            BillingOrder_1.default.syncIndexes(),
+            Payment_1.default.syncIndexes(),
+            ContactMessage_1.default.syncIndexes(),
         ]);
         app.listen(PORT, () => {
             console.log(`Server is listening on PORT ${PORT}`);

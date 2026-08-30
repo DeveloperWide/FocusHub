@@ -1,0 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const middlewares_1 = require("../utils/middlewares");
+const subscriptionController_1 = require("../controllers/subscriptionController");
+const router = (0, express_1.Router)({});
+router.post("/checkout", middlewares_1.authenticateUser, subscriptionController_1.createSubscriptionCheckout);
+exports.default = router;
