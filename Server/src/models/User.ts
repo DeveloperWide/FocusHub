@@ -27,11 +27,8 @@ export interface IUser {
     currentPeriodStart: Date | null;
     currentPeriodEnd: Date | null;
 
-    cancelAtPeriodEnd: Boolean;
-    razorpay: {
-      lastOrderId: string;
-      lastPaymentId: string;
-    };
+    cancelAtPeriodEnd: boolean;
+    subscriptionId: string | null;
   };
 }
 

@@ -108,3 +108,11 @@ html.dark tbody tr:nth-child(even) {
 html.dark tbody tr:nth-child(odd) {
   background-color: rgba(15, 23, 42, 0.45); /* slate-900-ish */
 }
+
+.prose-content h2 {
+  @apply text-2xl font-extrabold tracking-tight text-gray-900 dark:text-slate-100;
+}
+
+.prose-content p {
+  @apply mt-3;
+}

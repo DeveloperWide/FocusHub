@@ -17,6 +17,7 @@ import {
   formatInr,
   getEffectivePlanId,
 } from "../utils/billingPlans";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 const loadRazorpay = () => {
   if (typeof window === "undefined") return Promise.resolve(false);
@@ -43,6 +44,7 @@ const normalizeServerPlans = (plans) => {
 };
 
 const Pricing = ({ embedded = false }) => {
+  usePageMeta("Pricing", "Explore FocusHub plans and task and goal limits.");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);

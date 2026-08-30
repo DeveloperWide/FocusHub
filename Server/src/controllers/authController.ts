@@ -47,6 +47,8 @@ const setAuthCookie = (res: Response, userId: mongoose.Types.ObjectId) => {
   });
 
   res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions());
+
+  return { token };
 };
 
 const clearAuthCookie = (res: Response) => {
@@ -134,11 +136,12 @@ export const signup = wrapAsync(
     let svdUser = await user.save();
     if (!svdUser) throw new ExpressError(500, "failed To Save User");
 
-    setAuthCookie(res, svdUser._id);
+    const token = setAuthCookie(res, svdUser._id);
 
     res.status(201).json({
       message: `User created successfully`,
       user: svdUser,
+      token: token.token,
     });
   },
 );

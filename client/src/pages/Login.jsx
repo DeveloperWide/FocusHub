@@ -13,8 +13,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authThunk";
 import { selectAuthLoading } from "../features/auth/authSelector";
 import Ad from "../components/Ad";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 const Login = () => {
+  usePageMeta("Login", "Log in to your FocusHub workspace.");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

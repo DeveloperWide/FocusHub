@@ -15,7 +15,7 @@ const SESSION_DAYS = Number(process.env.SESSION_DAYS || 7);
 const SESSION_MAX_AGE_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
 // const COOKIE_SAME_SITE = process.env.COOKIE_SAME_SITE;
 if (!JWT_SECRET) {
-    throw new Error(`JET_SECRET is not defined in env`);
+    throw new Error(`JWT_SECRET is not defined in env`);
 }
 const getCookieSecurityOptions = () => {
     const isProd = process.env.NODE_ENV === "production";
@@ -40,6 +40,7 @@ const setAuthCookie = (res, userId) => {
         expiresIn: `${SESSION_DAYS}d`,
     });
     res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions());
+    return { token };
 };
 const clearAuthCookie = (res) => {
     const { secure, sameSite } = getCookieSecurityOptions();
@@ -54,8 +55,10 @@ exports.checkUsername = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => 
     if (typeof req.params?.username !== "string") {
         return res.status(400).json({ message: "username must be a string" });
     }
+    console.log(req.params.username);
     const username = req.params.username.toLowerCase();
     const user = await User_1.default.findOne({ username });
+    console.log(user);
     if (user) {
         return res.json({
             available: false,
@@ -93,6 +96,7 @@ exports.signup = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
             message: "All fields are required",
         });
     }
+    console.log(req.body);
     const existingUser = await User_1.default.findOne({ email });
     if (existingUser)
         throw new ExpressError_1.default(400, "User Already Exists");
@@ -100,10 +104,11 @@ exports.signup = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
     let svdUser = await user.save();
     if (!svdUser)
         throw new ExpressError_1.default(500, "failed To Save User");
-    setAuthCookie(res, svdUser._id);
+    const token = setAuthCookie(res, svdUser._id);
     res.status(201).json({
         message: `User created successfully`,
         user: svdUser,
+        token: token.token,
     });
 });
 exports.login = (0, asyncWrapper_1.wrapAsync)(async (req, res, next) => {
