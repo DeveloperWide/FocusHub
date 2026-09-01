@@ -6,11 +6,7 @@ import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { selectUser } from "../features/auth/authSelector";
 import { fetchMe } from "../features/auth/authThunk";
-import {
-  createCheckoutAPI,
-  fetchBillingPlansAPI,
-  verifyPaymentAPI,
-} from "../services/billingService";
+import { fetchBillingPlansAPI } from "../services/billingService";
 import {
   BILLING_PLANS,
   PAID_PLAN_IDS,
@@ -18,17 +14,26 @@ import {
   getEffectivePlanId,
 } from "../utils/billingPlans";
 import { usePageMeta } from "../hooks/usePageMeta";
+import {
+  createCheckoutAPI,
+  verifyPaymentAPI,
+} from "../services/subscriptionService";
 
 const loadRazorpay = () => {
   if (typeof window === "undefined") return Promise.resolve(false);
   if (window.Razorpay) return Promise.resolve(true);
 
   return new Promise((resolve) => {
+    // create script Element
     const script = document.createElement("script");
+
+    // Add attributes for script tag
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
+
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
+
     document.body.appendChild(script);
   });
 };
@@ -105,7 +110,7 @@ const Pricing = ({ embedded = false }) => {
 
   const backHref = embedded ? "/app/dashboard" : user ? "/app/dashboard" : "/";
 
-  const handleSubscribe = async (planId) => {
+  const createCheckout = async (planId, interval) => {
     if (!user) {
       navigate("/login");
       return;
@@ -114,28 +119,37 @@ const Pricing = ({ embedded = false }) => {
     setBusyPlanId(planId);
 
     try {
+      // Load Razorpay Checkout
       const loaded = await loadRazorpay();
+
       if (!loaded) {
         throw new Error("Failed to load Razorpay checkout");
       }
 
-      const checkoutRes = await createCheckoutAPI({ planId, interval });
+      // Create subscription from your backend
+      const checkoutRes = await createCheckoutAPI({
+        planId,
+        interval,
+      });
+
       const payload = checkoutRes.data?.data;
 
-      if (!payload?.orderId || !payload?.keyId) {
-        throw new Error("Checkout not available right now");
+      console.log("Subscription checkout response:", payload);
+
+      if (!payload?.checkout?.keyId || !payload?.checkout?.subscriptionId) {
+        throw new Error("Subscription checkout is not available");
       }
 
       const plan = paidPlans.find((p) => p.id === planId);
+
       const displayName = plan?.name || "FocusHub Plan";
 
+      // Razorpay subscription checkout
       const options = {
-        key: payload.keyId,
-        amount: payload.amount,
-        currency: payload.currency || "INR",
+        key: payload.checkout.keyId,
+        subscription_id: payload.checkout.subscriptionId,
         name: "FocusHub",
         description: `${displayName} • ${intervalLabel}`,
-        order_id: payload.orderId,
         prefill: {
           name: user?.name || "",
           email: user?.email || "",
@@ -144,16 +158,38 @@ const Pricing = ({ embedded = false }) => {
           color: isDark ? "#818cf8" : "#4f46e5",
         },
         modal: {
-          ondismiss: () => setBusyPlanId(null),
+          ondismiss: () => {
+            setBusyPlanId(null);
+          },
         },
+
         handler: async (response) => {
           try {
             setBusyPlanId("verifying");
-            await verifyPaymentAPI(response);
+
+            console.log("Razorpay subscription payment response:", response);
+
+            await verifyPaymentAPI({
+              razorpay_payment_id: response.razorpay_payment_id,
+
+              razorpay_subscription_id: response.razorpay_subscription_id,
+
+              razorpay_signature: response.razorpay_signature,
+
+              // Your MongoDB subscription ID
+              subscriptionId: payload.subscriptionId,
+            });
+
+            // Refresh logged-in user so plan/subscription
+            // changes are reflected in Redux
             await dispatch(fetchMe()).unwrap();
+
             toast.success("You're upgraded!");
+
             navigate("/app/dashboard");
           } catch (err) {
+            console.error("Verification failed:", err);
+
             toast.error(
               err?.response?.data?.message || "Payment verification failed",
             );
@@ -164,19 +200,28 @@ const Pricing = ({ embedded = false }) => {
       };
 
       const rz = new window.Razorpay(options);
+
       rz.on("payment.failed", (resp) => {
+        console.error("Payment failed:", resp);
+
         const msg =
           resp?.error?.description ||
           resp?.error?.reason ||
           "Payment failed. Please try again.";
+
         toast.error(msg);
+
         setBusyPlanId(null);
       });
+
       rz.open();
     } catch (err) {
+      console.error("Checkout failed:", err);
+
       toast.error(
         err?.response?.data?.message || err?.message || "Checkout failed",
       );
+
       setBusyPlanId(null);
     }
   };
@@ -237,22 +282,20 @@ const Pricing = ({ embedded = false }) => {
             <button
               type="button"
               onClick={() => setInterval("monthly")}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                interval === "monthly"
-                  ? "bg-indigo-600 text-white"
-                  : "text-gray-700 dark:text-slate-200 hover:bg-white/70 dark:hover:bg-slate-800/60"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${interval === "monthly"
+                ? "bg-indigo-600 text-white"
+                : "text-gray-700 dark:text-slate-200 hover:bg-white/70 dark:hover:bg-slate-800/60"
+                }`}
             >
               Monthly
             </button>
             <button
               type="button"
               onClick={() => setInterval("yearly")}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                interval === "yearly"
-                  ? "bg-indigo-600 text-white"
-                  : "text-gray-700 dark:text-slate-200 hover:bg-white/70 dark:hover:bg-slate-800/60"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${interval === "yearly"
+                ? "bg-indigo-600 text-white"
+                : "text-gray-700 dark:text-slate-200 hover:bg-white/70 dark:hover:bg-slate-800/60"
+                }`}
             >
               Yearly <span className="ml-1 text-xs opacity-80">(save)</span>
             </button>
@@ -269,20 +312,18 @@ const Pricing = ({ embedded = false }) => {
             return (
               <div
                 key={plan.id}
-                className={`relative rounded-3xl border bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl p-7 overflow-hidden ${
-                  isBest
-                    ? "border-indigo-300 dark:border-indigo-500/40 ring-2 ring-indigo-200/70 dark:ring-indigo-500/15"
-                    : "border-gray-200 dark:border-slate-800"
-                }`}
+                className={`relative rounded-3xl border bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl p-7 overflow-hidden ${isBest
+                  ? "border-indigo-300 dark:border-indigo-500/40 ring-2 ring-indigo-200/70 dark:ring-indigo-500/15"
+                  : "border-gray-200 dark:border-slate-800"
+                  }`}
               >
                 {plan.badge && (
                   <div className="absolute top-5 right-5">
                     <span
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-                        isBest
-                          ? "bg-indigo-600 text-white"
-                          : "bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-200"
-                      }`}
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${isBest
+                        ? "bg-indigo-600 text-white"
+                        : "bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-200"
+                        }`}
                     >
                       {plan.badge === "Best value" ? (
                         <Zap size={14} />
@@ -316,17 +357,17 @@ const Pricing = ({ embedded = false }) => {
                   </p>
                 )}
 
+                {/* Upgrade Button */}
                 <button
                   type="button"
                   disabled={isBusy || isCurrent}
-                  onClick={() => handleSubscribe(plan.id)}
-                  className={`mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold transition ${
-                    isCurrent
-                      ? "bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-slate-400 cursor-not-allowed"
-                      : isBest
-                        ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                        : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
-                  }`}
+                  onClick={() => createCheckout(plan.id, interval)}
+                  className={`mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold transition ${isCurrent
+                    ? "bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-slate-400 cursor-not-allowed"
+                    : isBest
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                      : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
+                    }`}
                 >
                   {isCurrent
                     ? "Current plan"
@@ -337,6 +378,7 @@ const Pricing = ({ embedded = false }) => {
                         : "Upgrade"}
                 </button>
 
+                {/* Plan Features list */}
                 <ul className="mt-6 space-y-3">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">
