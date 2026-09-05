@@ -15,17 +15,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "../tailgrids/core/dropdown";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/auth/authSelector";
 
 interface DropdownMenuProps {
-  toggleTheme: never;
-  isDark: string;
+  toggleTheme: () => void;
+  isDark: boolean;
 }
 
 const UserDropdownMenu = ({ toggleTheme, isDark }: DropdownMenuProps) => {
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  const user = useAppSelector(selectUser);
   console.log(user);
 
   const handleLogout = () => {

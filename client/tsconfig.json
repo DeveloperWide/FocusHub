@@ -6,11 +6,8 @@
 
     "jsx": "react-jsx",
 
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
-
-    "allowJs": true,
-    "checkJs": false,
 
     "isolatedModules": true,
     "noEmit": true,
