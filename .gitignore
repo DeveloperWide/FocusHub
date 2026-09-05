@@ -1,4 +1,5 @@
 todo.txt
 node_modules
+Server/dist/
 .env
 .env.production
