@@ -28,7 +28,7 @@ const loadRazorpay = () => {
     const script = document.createElement("script");
 
     // Add attributes for script tag
-    script.src = "https://checkout.razorpay.com/v1/checkout";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
 
     script.onload = () => resolve(true);
