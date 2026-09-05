@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: focushub-server
+    runtime: node
+    rootDir: Server
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
