@@ -34,6 +34,7 @@ const subscriptionSchema = new mongoose_1.Schema({
             "created",
             "authenticated",
             "active",
+            "paused",
             "pending",
             "halted",
             "cancelled",
@@ -60,6 +61,10 @@ const subscriptionSchema = new mongoose_1.Schema({
         default: null,
     },
     endedAt: {
+        type: Date,
+        default: null,
+    },
+    lastEventAt: {
         type: Date,
         default: null,
     },

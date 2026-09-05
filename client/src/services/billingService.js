@@ -11,4 +11,3 @@ export const createCheckoutAPI = ({ planId, interval }) => {
 export const verifyPaymentAPI = (payload) => {
   return axiosInstance.post("/billing/verify", payload);
 };
-

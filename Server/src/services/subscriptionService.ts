@@ -26,9 +26,17 @@ export const createSubscription = async ({
 
     const existingSubscription = await Subscription.findOne({
       user: userId,
-      status: {
-        $in: ["created", "authenticated", "active", "pending", "halted"],
-      },
+      $or: [
+        {
+          status: {
+            $in: ["created", "authenticated", "pending", "halted", "paused"],
+          },
+        },
+        {
+          status: { $in: ["active", "cancelled"] },
+          currentPeriodEnd: { $gt: new Date() },
+        },
+      ],
     });
 
     if (existingSubscription) {
@@ -59,7 +67,7 @@ export const createSubscription = async ({
       razorpaySubscription,
     };
   } catch (err) {
-    console.log(err);
-    console.log("subscription Creation Failed");
+    console.error("Subscription creation failed", err);
+    throw err;
   }
 };

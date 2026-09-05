@@ -32,6 +32,7 @@ import Contact from "./pages/Contact";
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  console.log(user)
 
   useEffect(() => {
     localStorage.removeItem("token");

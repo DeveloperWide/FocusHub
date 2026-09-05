@@ -105,7 +105,7 @@ export default function Dashboard() {
             </h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
               Plan: <span className="font-semibold">{planName}</span> • Time left
-              today: {timeLeft.hours}h {timeLeft.minutes}m
+              today: {timeLeft.hours}h {timeLeft.minutes}
             </p>
           </div>
 

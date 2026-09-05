@@ -23,7 +23,7 @@ export interface IUser {
   subscription: {
     planId: "free" | "basic" | "pro" | "elite";
     interval: "monthly" | "yearly" | null;
-    status: "free" | "active" | "expired" | "canceled";
+    status: "free" | "active" | "expired" | "cancelled";
     currentPeriodStart: Date | null;
     currentPeriodEnd: Date | null;
 
@@ -91,7 +91,7 @@ const userSchema = new Schema<IUser>(
       },
       status: {
         type: String,
-        enum: ["free", "active", "expired", "canceled"],
+        enum: ["free", "active", "expired", "cancelled"],
         default: "free",
       },
       currentPeriodStart: {
@@ -106,9 +106,9 @@ const userSchema = new Schema<IUser>(
         type: Boolean,
         default: false,
       },
-      razorpay: {
-        lastOrderId: { type: String, default: "" },
-        lastPaymentId: { type: String, default: "" },
+      subscriptionId: {
+        type: String,
+        default: null,
       },
     },
   },

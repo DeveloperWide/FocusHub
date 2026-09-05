@@ -67,7 +67,7 @@ const userSchema = new mongoose_1.Schema({
         },
         status: {
             type: String,
-            enum: ["free", "active", "expired", "canceled"],
+            enum: ["free", "active", "expired", "cancelled"],
             default: "free",
         },
         currentPeriodStart: {
@@ -82,9 +82,9 @@ const userSchema = new mongoose_1.Schema({
             type: Boolean,
             default: false,
         },
-        razorpay: {
-            lastOrderId: { type: String, default: "" },
-            lastPaymentId: { type: String, default: "" },
+        subscriptionId: {
+            type: String,
+            default: null,
         },
     },
 }, {

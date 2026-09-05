@@ -16,6 +16,7 @@ import User from "./models/User";
 import Promo from "./models/Promo";
 import BillingOrder from "./models/Payment";
 import ContactMessage from "./models/ContactMessage";
+import Subscription from "./models/Subscription";
 
 // Routes
 import taskRoutes from "./routes/taskRoutes";
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
+app.use("/api/subscriptions/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -116,6 +118,7 @@ const startServer = async () => {
       Promo.syncIndexes(),
       BillingOrder.syncIndexes(),
       ContactMessage.syncIndexes(),
+      Subscription.syncIndexes(),
     ]);
 
     app.listen(PORT, () => {

@@ -15,9 +15,17 @@ const createSubscription = async ({ userId, planId, interval, }) => {
         }
         const existingSubscription = await Subscription_1.default.findOne({
             user: userId,
-            status: {
-                $in: ["created", "authenticated", "active", "pending", "halted"],
-            },
+            $or: [
+                {
+                    status: {
+                        $in: ["created", "authenticated", "pending", "halted", "paused"],
+                    },
+                },
+                {
+                    status: { $in: ["active", "cancelled"] },
+                    currentPeriodEnd: { $gt: new Date() },
+                },
+            ],
         });
         if (existingSubscription) {
             throw new Error("User already have an Active or Pending Subscription");
@@ -44,8 +52,8 @@ const createSubscription = async ({ userId, planId, interval, }) => {
         };
     }
     catch (err) {
-        console.log(err);
-        console.log("subscription Creation Failed");
+        console.error("Subscription creation failed", err);
+        throw err;
     }
 };
 exports.createSubscription = createSubscription;

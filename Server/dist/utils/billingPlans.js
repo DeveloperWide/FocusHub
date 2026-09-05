@@ -158,7 +158,7 @@ const getEffectivePlanId = (user) => {
     const periodEnd = sub.currentPeriodEnd
         ? new Date(sub.currentPeriodEnd).getTime()
         : null;
-    const active = status === "active" &&
+    const active = (status === "active" || status === "cancelled") &&
         periodEnd !== null &&
         Number.isFinite(periodEnd) &&
         periodEnd > Date.now();
