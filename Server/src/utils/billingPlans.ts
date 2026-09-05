@@ -201,7 +201,7 @@ export const getEffectivePlanId = (user: IUser): PlanKey => {
     : null;
 
   const active =
-    status === "active" &&
+    (status === "active" || status === "cancelled") &&
     periodEnd !== null &&
     Number.isFinite(periodEnd) &&
     periodEnd > Date.now();

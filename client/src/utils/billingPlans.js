@@ -61,14 +61,17 @@ export const formatInr = (rupees) => {
 };
 
 export const getEffectivePlanId = (user) => {
-  const sub = user?.subscription;
+  const sub = user?.subscription ? user.subscription : null;
   if (!sub) return "free";
 
   const status = String(sub.status || "").toLowerCase();
   const planId = String(sub.planId || "free").toLowerCase();
 
   const endMs = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).getTime() : null;
-  const active = status === "active" && Number.isFinite(endMs) && endMs > Date.now();
+  const active =
+    (status === "active" || status === "cancelled") &&
+    Number.isFinite(endMs) &&
+    endMs > Date.now();
 
   return active && BILLING_PLANS[planId] ? planId : "free";
 };

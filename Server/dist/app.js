@@ -19,6 +19,7 @@ const User_1 = __importDefault(require("./models/User"));
 const Promo_1 = __importDefault(require("./models/Promo"));
 const Payment_1 = __importDefault(require("./models/Payment"));
 const ContactMessage_1 = __importDefault(require("./models/ContactMessage"));
+const Subscription_1 = __importDefault(require("./models/Subscription"));
 // Routes
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
@@ -34,6 +35,7 @@ const PORT = process.env.PORT || 8080;
 if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
+app.use("/api/subscriptions/webhook", express_1.default.raw({ type: "application/json" }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 const defaultAllowedOrigins = ["http://localhost:5173"];
@@ -100,6 +102,7 @@ const startServer = async () => {
             Promo_1.default.syncIndexes(),
             Payment_1.default.syncIndexes(),
             ContactMessage_1.default.syncIndexes(),
+            Subscription_1.default.syncIndexes(),
         ]);
         app.listen(PORT, () => {
             console.log(`Server is listening on PORT ${PORT}`);

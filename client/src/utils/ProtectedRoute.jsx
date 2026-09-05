@@ -12,12 +12,6 @@ const ProtectedRoute = ({ children }) => {
   const user = useSelector(selectUser);
   const initialized = useSelector(selectAuthInitialized);
 
-  useEffect(() => {
-    if (!initialized) {
-      dispatch(fetchMe());
-    }
-  }, [dispatch, initialized]);
-
   if (!initialized) return null;
 
   if (!user) {

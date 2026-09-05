@@ -48,6 +48,9 @@ const normalizeServerPlans = (plans) => {
   return map;
 };
 
+const wait = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
+
 const Pricing = ({ embedded = false }) => {
   usePageMeta("Pricing", "Explore FocusHub plans and task and goal limits.");
   const navigate = useNavigate();
@@ -110,7 +113,7 @@ const Pricing = ({ embedded = false }) => {
 
   const backHref = embedded ? "/app/dashboard" : user ? "/app/dashboard" : "/";
 
-  const createCheckout = async (planId, interval) => {
+  const handleSubscribe = async (planId) => {
     if (!user) {
       navigate("/login");
       return;
@@ -180,11 +183,18 @@ const Pricing = ({ embedded = false }) => {
               subscriptionId: payload.subscriptionId,
             });
 
-            // Refresh logged-in user so plan/subscription
-            // changes are reflected in Redux
-            await dispatch(fetchMe()).unwrap();
+            let refreshedUser = null;
+            for (let attempt = 0; attempt < 5; attempt += 1) {
+              refreshedUser = await dispatch(fetchMe()).unwrap();
+              if (getEffectivePlanId(refreshedUser?.user) === planId) break;
+              if (attempt < 4) await wait(1500);
+            }
 
-            toast.success("You're upgraded!");
+            toast.success(
+              getEffectivePlanId(refreshedUser?.user) === planId
+                ? "You're upgraded!"
+                : "Payment received. Your plan is activating shortly.",
+            );
 
             navigate("/app/dashboard");
           } catch (err) {
@@ -361,7 +371,7 @@ const Pricing = ({ embedded = false }) => {
                 <button
                   type="button"
                   disabled={isBusy || isCurrent}
-                  onClick={() => createCheckout(plan.id, interval)}
+                  onClick={() => handleSubscribe(plan.id)}
                   className={`mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold transition ${isCurrent
                     ? "bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-slate-400 cursor-not-allowed"
                     : isBest

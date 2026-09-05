@@ -17,6 +17,7 @@ export interface ISubscription {
     | "halted"
     | "cancelled"
     | "completed"
+    | "paused"
     | "expired";
 
   currentPeriodStart: Date | null;
@@ -26,6 +27,7 @@ export interface ISubscription {
   cancelledAt: Date | null;
 
   endedAt: Date | null;
+  lastEventAt: Date | null;
 }
 
 const subscriptionSchema = new Schema<ISubscription>(
@@ -67,6 +69,7 @@ const subscriptionSchema = new Schema<ISubscription>(
         "created",
         "authenticated",
         "active",
+        "paused",
         "pending",
         "halted",
         "cancelled",
@@ -98,6 +101,11 @@ const subscriptionSchema = new Schema<ISubscription>(
     },
 
     endedAt: {
+      type: Date,
+      default: null,
+    },
+
+    lastEventAt: {
       type: Date,
       default: null,
     },

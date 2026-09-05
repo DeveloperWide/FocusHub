@@ -5,4 +5,6 @@ const middlewares_1 = require("../utils/middlewares");
 const subscriptionController_1 = require("../controllers/subscriptionController");
 const router = (0, express_1.Router)({});
 router.post("/checkout", middlewares_1.authenticateUser, subscriptionController_1.createSubscriptionCheckout);
+router.post("/verify", middlewares_1.authenticateUser, subscriptionController_1.verifySubscription);
+router.post("/webhook", subscriptionController_1.razorpayWebhook);
 exports.default = router;
