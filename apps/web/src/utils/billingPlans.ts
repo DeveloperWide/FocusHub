@@ -10,7 +10,7 @@ export const BILLING_PLANS = Object.freeze({
     name: "Basic",
     tagline: "More room to plan",
     badge: null,
-    prices: { monthly: 49, yearly: 499 },
+    prices: { monthly: 99, yearly: 999 },
     limits: { goals: 5, tasks: { high: 2, medium: 4, low: 6 } },
     features: [
       "More daily tasks per priority",
@@ -24,7 +24,7 @@ export const BILLING_PLANS = Object.freeze({
     name: "Pro",
     tagline: "Best value for builders",
     badge: "Best value",
-    prices: { monthly: 99, yearly: 999 },
+    prices: { monthly: 149, yearly: 1499 },
     limits: { goals: 10, tasks: { high: 4, medium: 8, low: 12 } },
     features: [
       "Up to 10 active goals",
@@ -38,7 +38,7 @@ export const BILLING_PLANS = Object.freeze({
     name: "Elite",
     tagline: "Unlimited + early access",
     badge: "Early access",
-    prices: { monthly: 129, yearly: 1299 },
+    prices: { monthly: 199, yearly: 1999 },
     limits: { goals: null, tasks: { high: null, medium: null, low: null } },
     features: [
       "Unlimited goals & tasks",

@@ -105,6 +105,8 @@ const Pricing = ({ embedded = false }) => {
     });
   }, [serverPlanMap]);
 
+  console.log(paidPlans)
+
   const intervalLabel = interval === "yearly" ? "Year" : "Month";
 
   const promoActive = Boolean(
