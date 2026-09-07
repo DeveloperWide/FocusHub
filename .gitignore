@@ -4,3 +4,4 @@ Server/dist/
 .env
 .env.production
 todo.js
+**/dist/
