@@ -40,7 +40,7 @@ app.use("/api/subscriptions/webhook", express.raw({ type: "application/json" }))
 app.use(express.json());
 app.use(cookieParser());
 
-const defaultAllowedOrigins = ["http://localhost:5173"];
+const defaultAllowedOrigins = ["http://localhost:5173" , "focus-dvsn7n3id-maheshrana9520-gmailcoms-projects.vercel.app", "https://focushub.co.in/"];
 
 const envAllowedOrigins = String(process.env.CLIENT_URL || "")
   .split(",")
