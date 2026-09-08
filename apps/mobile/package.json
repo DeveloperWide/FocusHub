@@ -14,6 +14,7 @@
     "reset-project": "node ./scripts/reset-project.js"
   },
   "dependencies": {
+    "@focushub/api-client": "workspace:*",
     "@focushub/contracts": "workspace:*",
     "@focushub/domain": "workspace:*",
     "@expo/ui": "~57.0.16",
