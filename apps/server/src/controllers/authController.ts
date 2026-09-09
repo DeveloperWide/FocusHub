@@ -5,6 +5,7 @@ import { wrapAsync } from "../utils/asyncWrapper";
 import ExpressError from "../utils/ExpressError";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import { AuthTokenResponse } from "../types/auth.types";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || "fh_session";
@@ -41,7 +42,10 @@ const getAuthCookieOptions = () => {
   };
 };
 
-const setAuthCookie = (res: Response, userId: mongoose.Types.ObjectId) => {
+const setAuthCookie = (
+  res: Response,
+  userId: mongoose.Types.ObjectId,
+): AuthTokenResponse => {
   const token = jwt.sign({ id: userId }, JWT_SECRET, {
     expiresIn: `${SESSION_DAYS}d`,
   });
@@ -162,11 +166,12 @@ export const login = wrapAsync(
     let isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new ExpressError(400, "Invalid credentials");
 
-    setAuthCookie(res, user._id);
+    const token = setAuthCookie(res, user._id);
 
     res.status(200).json({
       message: `Successfully logged in.`,
       user,
+      token: token.token,
     });
   },
 );

@@ -5,3 +5,4 @@ Server/dist/
 .env.production
 todo.js
 **/dist/
+**/.turbo/
